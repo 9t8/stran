@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 std::unique_ptr<token> lex_next_token(std::istream &in) {
 	auto next_char(in.peek());
@@ -16,7 +17,14 @@ std::unique_ptr<token> lex_next_token(std::istream &in) {
 		return std::unique_ptr<endl>(new endl);
 	}
 
-	if (std::isalpha(next_char)) {
+	if (next_char == '+' || next_char == '-'
+		|| next_char == '.' || std::isdigit(next_char)) {
+		double val;
+		in >> val;
+		return std::unique_ptr<decimal>(new decimal(val));
+	}
+
+	if (std::isgraph(next_char)) {
 		std::ostringstream name;
 
 		for (;; next_char = in.peek()) {
@@ -32,15 +40,8 @@ std::unique_ptr<token> lex_next_token(std::istream &in) {
 		}
 	}
 
-	if (next_char == '+' || next_char == '-'
-		|| next_char == '.' || std::isdigit(next_char)) {
-		double val;
-		in >> val;
-		return std::unique_ptr<decimal>(new decimal(val));
-	}
-
 	std::cerr << "ERROR - unexpected character type: '" << static_cast<char>(next_char)
-	<< "' (character number " << next_char << ")\n";
+	<< "' (character code " << next_char << ")\n";
 
 	assert(0 && "unexpected character type - see std::cerr");
 	throw; // suppress warning

@@ -1,7 +1,7 @@
 #ifndef _stranex_token_h_
 #define _stranex_token_h_
 
-#include <sstream>
+#include <string>
 #include <vector>
 
 struct token {
@@ -28,30 +28,18 @@ struct endl : public token {
 	}
 };
 
-// pre-cons tree only
+// syntax tree only
 struct list : public token {
-	operator std::string() const override {
-		std::ostringstream oss;
-		oss << "[";
-	if (!elements.empty()) {
-	oss << *elements.front();
-		for (int i(1); i < elements.size(); ++i) {
-			oss << " " << *elements[i];
-		}
-	}
-	oss << "]";
-	return oss.str();
-	}
+	operator std::string() const override;
 
 	std::vector<std::unique_ptr<token>> elements;
 };
 
-// post-cons tree and later only
+// environmental only
 struct pair : public token {
-	operator std::string() const override {
-		return "(" + static_cast<std::string>(*car)
-			   + " . " + static_cast<std::string>(*cdr) + ")";
-	}
+	static bool stringify_into_lists;
+
+	operator std::string() const override;
 
 	std::shared_ptr<token> car, cdr;
 };
@@ -75,4 +63,5 @@ struct identifier : public token {
 
 	std::string name;
 };
+
 #endif

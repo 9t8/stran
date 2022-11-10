@@ -1,4 +1,5 @@
 file
+	token.cpp,
 	token.h,
 	parse.cpp,
 	parse.h,

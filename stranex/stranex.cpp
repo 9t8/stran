@@ -1,8 +1,7 @@
 // r3rs interpreter with boost for numeric tower
 // lex code to token list
-// parse to pre-cons tree
-// consify to post-cons tree
-// interprets to output
+// parse to syntax tree
+// interprets to output and environment
 
 #include "lex.h"
 #include "parse.h"
