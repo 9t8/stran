@@ -1,0 +1,13 @@
+file
+	token.h,
+	parse.cpp,
+	parse.h,
+	lex.cpp,
+	lex.h,
+	interpret.cpp,
+	stranex.cpp,
+	interpret.h;
+
+mainconfig
+	"" = "";
+
