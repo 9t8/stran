@@ -9,14 +9,14 @@ const std::type_info &get_next_token_type(std::deque<std::unique_ptr<token>> &to
 	return typeid(next_token);
 }
 
-std::unique_ptr<object> beginl::parse(std::deque<std::unique_ptr<token>> &tokens) const {
-	std::unique_ptr<list> p_list(new list);
+std::unique_ptr<datum> begin_list::parse(std::deque<std::unique_ptr<token>> &tokens) const {
+	std::unique_ptr<list> p(new list);
 	tokens.pop_front();
-	while (get_next_token_type(tokens) != typeid(endl)) {
-		p_list->elements.push_back(tokens.front()->parse(tokens));
+	while (get_next_token_type(tokens) != typeid(end_list)) {
+		p->elements.push_back(tokens.front()->parse(tokens));
 	}
 	tokens.pop_front();
-	return p_list;
+	return p;
 }
 
 list::operator std::string() const {

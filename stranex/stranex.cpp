@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-int main(int argc, const char *argv[]) {
+int main(int argc, const char **argv) {
 	std::deque<std::unique_ptr<token>> tokens(lex(std::cin));
 
 	std::cerr << "===-- tokens --===\n";
@@ -22,10 +22,10 @@ int main(int argc, const char *argv[]) {
 		std::cerr << *tokens[i] << "\n";
 	}
 
-	std::vector<std::unique_ptr<object>> trees(parse(tokens));
+	std::vector<std::unique_ptr<datum>> trees(parse(tokens));
 
 	std::cerr << "===-- trees --===\n";
 	for (size_t i(0); i != trees.size(); ++i) {
 		std::cerr << *trees[i] << "\n";
-	asdf}
+	}
 }

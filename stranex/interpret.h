@@ -3,10 +3,6 @@
 
 #include "object.h"
 
-#include <unordered_map>
-
-using env_type = std::unordered_map<std::string, std::shared_ptr<object>>;
-
-void interpret(std::vector<std::unique_ptr<object>> &trees, std::ostream &os);
+void interpret(std::vector<std::unique_ptr<datum>> &trees, std::ostream &os);
 
 #endif

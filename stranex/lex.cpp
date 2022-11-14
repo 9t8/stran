@@ -9,19 +9,19 @@ std::unique_ptr<token> read_next(std::istream &is) {
 
 	if (next_char == '(') {
 		is.get();
-		return std::unique_ptr<beginl>(new beginl);
+		return std::unique_ptr<token>(new begin_list);
 	}
 
 	if (next_char == ')') {
 		is.get();
-		return std::unique_ptr<endl>(new endl);
+		return std::unique_ptr<token>(new end_list);
 	}
 
 	if (next_char == '+' || next_char == '-'
 		|| next_char == '.' || std::isdigit(next_char)) {
 		double val;
 		is >> val;
-		return std::unique_ptr<decimal>(new decimal(val));
+		return std::unique_ptr<token>(new decimal(val));
 	}
 
 	if (std::isgraph(next_char)) {
@@ -35,7 +35,7 @@ std::unique_ptr<token> read_next(std::istream &is) {
 			if (next_char == ')' || std::isspace(next_char)) {
 				std::string name_str(name.str());
 				assert(!name_str.empty() && "name is empty somehow");
-				return std::unique_ptr<identifier>(new identifier(name_str));
+				return std::unique_ptr<token>(new identifier(name_str));
 			}
 
 			name << static_cast<char>(is.get());
