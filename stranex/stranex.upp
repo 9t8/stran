@@ -1,6 +1,6 @@
 file
-	token.cpp,
-	token.h,
+	object.cpp,
+	object.h,
 	parse.cpp,
 	parse.h,
 	lex.cpp,

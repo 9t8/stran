@@ -3,6 +3,12 @@
 // parse to syntax tree
 // interprets to output and environment
 
+// virtual inheritance?
+
+// ways to implement empty list
+// null pointer
+// subclass
+
 #include "lex.h"
 #include "parse.h"
 
@@ -12,14 +18,14 @@ int main(int argc, const char *argv[]) {
 	std::deque<std::unique_ptr<token>> tokens(lex(std::cin));
 
 	std::cerr << "===-- tokens --===\n";
-for (const auto &token : tokens) {
-		std::cerr << *token << "\n";
+	for (size_t i(0); i != tokens.size(); ++i) {
+		std::cerr << *tokens[i] << "\n";
 	}
 
-	std::vector<std::unique_ptr<token>> trees(parse(tokens));
+	std::vector<std::unique_ptr<object>> trees(parse(tokens));
 
-	std::cerr << "===-- pre-cons trees --===\n";
-for (const auto &tree : trees) {
-		std::cerr << *tree << "\n";
-	}
+	std::cerr << "===-- trees --===\n";
+	for (size_t i(0); i != trees.size(); ++i) {
+		std::cerr << *trees[i] << "\n";
+	asdf}
 }

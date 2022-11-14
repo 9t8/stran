@@ -1,11 +1,11 @@
 #ifndef _stranex_parse_h_
 #define _stranex_parse_h_
 
-#include "token.h"
+#include "object.h"
 
 #include <deque>
 
 // destroys tokens
-std::vector<std::unique_ptr<token>> parse(std::deque<std::unique_ptr<token>> &tokens);
+std::vector<std::unique_ptr<object>> parse(std::deque<std::unique_ptr<token>> &tokens);
 
 #endif

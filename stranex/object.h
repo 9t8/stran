@@ -1,16 +1,26 @@
-#ifndef _stranex_token_h_
-#define _stranex_token_h_
+#ifndef _stranex_object_h_
+#define _stranex_object_h_
 
 #include <string>
 #include <vector>
+#include <deque>
+#include <cassert>
 
-struct token {
-	virtual ~token() {}
+struct object {
+	virtual ~object() {}
 
 	virtual operator std::string() const = 0;
 
-	friend std::ostream &operator<<(std::ostream &os, const token &t) {
+	friend std::ostream &operator<<(std::ostream &os, const object &t) {
 		return os << static_cast<std::string>(t);
+	}
+};
+
+struct token : public object {
+	virtual std::unique_ptr<object> parse(std::deque<std::unique_ptr<token>> &tokens) const {
+		std::unique_ptr<token> p_token(std::move(tokens.front()));
+		tokens.pop_front();
+		return p_token;
 	}
 };
 
@@ -19,6 +29,8 @@ struct beginl : public token {
 	operator std::string() const override {
 		return "(";
 	}
+
+	std::unique_ptr<object> parse(std::deque<std::unique_ptr<token>> &tokens) const override;
 };
 
 // token list only
@@ -26,17 +38,22 @@ struct endl : public token {
 	operator std::string() const override {
 		return ")";
 	}
+
+	std::unique_ptr<object> parse(std::deque<std::unique_ptr<token>> &tokens) const override {
+		assert(0 && "unexpected end of list token");
+		throw; // suppress warning
+	}
 };
 
 // syntax tree only
-struct list : public token {
+struct list : public object {
 	operator std::string() const override;
 
-	std::vector<std::unique_ptr<token>> elements;
+	std::vector<std::unique_ptr<object>> elements;
 };
 
-// environmental only
-struct pair : public token {
+// environment only
+struct pair : public object {
 	static bool stringify_into_lists;
 
 	operator std::string() const override;
