@@ -1,5 +1,6 @@
 file
-	object.cpp,
+	datum.cpp,
+	datum.h,
 	object.h,
 	parse.cpp,
 	parse.h,

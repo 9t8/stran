@@ -1,7 +1,7 @@
 #ifndef _stranex_lex_h_
 #define _stranex_lex_h_
 
-#include "object.h"
+#include "datum.h"
 
 #include <deque>
 
