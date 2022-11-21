@@ -9,14 +9,26 @@ const std::type_info &get_next_token_type(std::deque<std::unique_ptr<token>> &to
 	return typeid(next_token);
 }
 
-std::unique_ptr<datum> begin_list::parse(std::deque<std::unique_ptr<token>> &tokens) const {
-	std::unique_ptr<list> p(new list);
+std::shared_ptr<const datum> begin_list::parse(std::deque<std::unique_ptr<token>> &tokens) const {
+	std::shared_ptr<list> p(new list);
 	tokens.pop_front();
 	while (get_next_token_type(tokens) != typeid(end_list)) {
 		p->elements.push_back(tokens.front()->parse(tokens));
 	}
 	tokens.pop_front();
 	return p;
+}
+
+std::shared_ptr<const datum> procedure::call(
+	env_type &env, std::vector<std::unique_ptr<const datum>> &args
+) const {
+	assert(args.size() == params.size() && "incorrect number of arguments");
+
+	env_type new_env(env);
+	for (size_t i(0); i < params.size(); ++i) {
+		new_env[params[i]] = std::move(args[i]);
+	}
+	return body->eval(new_env);
 }
 
 list::operator std::string() const {
@@ -31,6 +43,8 @@ list::operator std::string() const {
 	oss << "]";
 	return oss.str();
 }
+
+// unused
 
 bool pair::stringify_into_lists(true);
 

@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 struct datum;
-using env_type = std::unordered_map<std::string, std::shared_ptr<datum>>;
+typedef std::unordered_map<std::string, std::shared_ptr<const datum>> env_type;
 
 struct datum : public object {
 	// self-evaluating by default
@@ -18,15 +18,10 @@ struct datum : public object {
 	}
 };
 
-struct procedure : public datum {
-	virtual std::shared_ptr<datum> call() const;
-	
-	std::unique_ptr<datum> body;
-};
-
 struct token : public object {
-	virtual std::unique_ptr<datum> parse(std::deque<std::unique_ptr<token>> &tokens) const {
-		std::unique_ptr<datum> p(dynamic_cast<datum *>(tokens.front().release()));
+	virtual std::shared_ptr<const datum> parse(std::deque<std::unique_ptr<token>> &tokens) const {
+		assert(tokens.front().get() == this && "tokens.front is not current token");
+		std::shared_ptr<const datum> p(dynamic_cast<const datum *>(tokens.front().release()));
 		assert(p != nullptr && "tokens.front() is not a datum");
 		tokens.pop_front();
 		return p;
@@ -38,7 +33,7 @@ struct begin_list : public token {
 		return "(";
 	}
 
-	std::unique_ptr<datum> parse(std::deque<std::unique_ptr<token>> &tokens) const override;
+	std::shared_ptr<const datum> parse(std::deque<std::unique_ptr<token>> &tokens) const override;
 };
 
 struct end_list : public token {
@@ -46,7 +41,7 @@ struct end_list : public token {
 		return ")";
 	}
 
-	std::unique_ptr<datum> parse(std::deque<std::unique_ptr<token>> &tokens) const override {
+	std::shared_ptr<const datum> parse(std::deque<std::unique_ptr<token>> &tokens) const override {
 		assert(0 && "unexpected end of list token");
 		throw; // suppress warning
 	}
@@ -68,10 +63,20 @@ struct identifier : public token, public datum {
 	std::string name;
 };
 
+struct procedure : public datum {
+	virtual std::shared_ptr<const datum> call(
+		env_type &env, std::vector<std::unique_ptr<const datum>> &args
+	) const;
+
+	std::vector<std::string> params;
+
+	std::unique_ptr<const datum> body;
+};
+
 struct list : public datum {
 	operator std::string() const override;
 
-	std::vector<std::unique_ptr<datum>> elements;
+	std::vector<std::shared_ptr<const datum>> elements;
 };
 
 struct decimal : public token, public datum {
@@ -84,7 +89,8 @@ struct decimal : public token, public datum {
 	double val;
 };
 
-// currently unused
+// unused
+
 struct pair : public object {
 	static bool stringify_into_lists;
 

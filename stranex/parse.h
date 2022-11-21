@@ -6,6 +6,6 @@
 #include <deque>
 
 // destroys tokens
-std::vector<std::unique_ptr<datum>> parse(std::deque<std::unique_ptr<token>> &tokens);
+std::vector<std::shared_ptr<const datum>> parse(std::deque<std::unique_ptr<token>> &tokens);
 
 #endif

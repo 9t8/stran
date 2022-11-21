@@ -6,9 +6,9 @@ file
 	parse.h,
 	lex.cpp,
 	lex.h,
-	interpret.cpp,
+	eval.cpp,
 	stranex.cpp,
-	interpret.h;
+	eval.h;
 
 mainconfig
 	"" = "";
