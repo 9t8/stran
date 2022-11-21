@@ -33,7 +33,8 @@ std::unique_ptr<token> read_next(std::istream &is) {
 
 			if (next_char == ')' || std::isspace(next_char)) {
 				std::string name_str(name.str());
-				assert(!name_str.empty() && "name is empty somehow");
+				assert(!name_str.empty() && "name is (somehow) empty");
+
 				return std::unique_ptr<token>(new identifier(name_str));
 			}
 

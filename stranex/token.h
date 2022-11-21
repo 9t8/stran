@@ -14,8 +14,10 @@ struct token : object {
 	// parses to itself by default
 	virtual std::shared_ptr<const datum> parse(token_list &tokens) const {
 		assert(tokens.front().get() == this && "tokens.front is not current token");
+
 		std::shared_ptr<const datum> p(dynamic_cast<const datum *>(tokens.front().release()));
 		assert(p != nullptr && "tokens.front() is not a datum");
+
 		tokens.pop_front();
 		return p;
 	}

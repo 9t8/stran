@@ -1,4 +1,10 @@
-// r3rs interpreter with boost for numeric tower
+// r3rs interpreter
+
+// ===-- to do --===
+// define and lambda
+// pairs
+// actual input handling
+// use boost for full numeric tower
 
 #include "lex.h"
 #include "parse.h"
