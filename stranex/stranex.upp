@@ -1,18 +1,18 @@
 file
-	datum.cpp,
-	pair.cpp,
-	pair.h,
-	token.cpp,
-	token.h,
-	datum.h,
-	object.h,
-	parse.cpp,
-	parse.h,
-	lex.cpp,
-	lex.h,
-	eval.cpp,
 	stranex.cpp,
-	eval.h;
+	object.h,
+	datum.h,
+	datum.cpp,
+	pair.h,
+	pair.cpp,
+	token.h,
+	token.cpp,
+	parse.h,
+	parse.cpp,
+	lex.h,
+	lex.cpp,
+	eval.h,
+	eval.cpp;
 
 mainconfig
 	"" = "";
