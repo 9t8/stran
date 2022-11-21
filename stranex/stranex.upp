@@ -3,8 +3,6 @@ file
 	object.h,
 	datum.h,
 	datum.cpp,
-	pair.h,
-	pair.cpp,
 	token.h,
 	token.cpp,
 	parse.h,
@@ -12,7 +10,9 @@ file
 	lex.h,
 	lex.cpp,
 	eval.h,
-	eval.cpp;
+	eval.cpp,
+	pair.h,
+	pair.cpp;
 
 mainconfig
 	"" = "";
