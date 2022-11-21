@@ -3,8 +3,6 @@
 
 #include "datum.h"
 
-#include <deque>
-
-std::deque<std::unique_ptr<token>> lex(std::istream &is);
+token_list lex(std::istream &is);
 
 #endif

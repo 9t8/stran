@@ -1,6 +1,5 @@
 #include "lex.h"
 
-#include <cassert>
 #include <iostream>
 #include <sstream>
 
@@ -49,8 +48,8 @@ std::unique_ptr<token> read_next(std::istream &is) {
 	throw; // suppress warning
 }
 
-std::deque<std::unique_ptr<token>> lex(std::istream &is) {
-	std::deque<std::unique_ptr<token>> tokens;
+token_list lex(std::istream &is) {
+	token_list tokens;
 	is >> std::ws;
 	while (!is.eof()) {
 		tokens.push_back(read_next(is));

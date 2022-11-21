@@ -9,20 +9,20 @@
 #include <iostream>
 
 int main(int argc, const char **argv) {
-	std::deque<std::unique_ptr<token>> tokens(lex(std::cin));
+	token_list tokens(lex(std::cin));
 
 	std::cout << "===-- tokens --===\n" << std::flush;
 	for (size_t i(0); i != tokens.size(); ++i) {
 		std::cout << *tokens[i] << std::endl;
 	}
 
-	std::vector<std::shared_ptr<const datum>> trees(parse(tokens));
+	syntax_tree tree(parse(tokens));
 
-	std::cout << "===-- trees --===\n" << std::flush;
-	for (size_t i(0); i != trees.size(); ++i) {
-		std::cout << *trees[i] << std::endl;
+	std::cout << "===-- subtrees --===\n" << std::flush;
+	for (size_t i(0); i != tree.size(); ++i) {
+		std::cout << *tree[i] << std::endl;
 	}
 
 	std::cout << "===-- output --===\n" << std::flush;
-	eval(trees, std::cout);
+	eval(tree, std::cout);
 }

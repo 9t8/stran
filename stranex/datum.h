@@ -4,22 +4,48 @@
 #include "object.h"
 
 #include <vector>
-#include <deque>
-#include <cassert>
 #include <unordered_map>
 
 struct datum;
+
 typedef std::unordered_map<std::string, std::shared_ptr<const datum>> env_type;
 
-struct datum : public object {
+typedef std::vector<std::shared_ptr<const datum>> syntax_tree;
+
+struct datum : object, std::enable_shared_from_this<datum> {
 	// self-evaluating by default
 	virtual std::shared_ptr<const datum> eval(env_type &env) const {
-		return std::shared_ptr<const datum>(this);
+		return shared_from_this();
 	}
 };
 
-struct token : public object {
-	virtual std::shared_ptr<const datum> parse(std::deque<std::unique_ptr<token>> &tokens) const {
+struct procedure : datum {
+	virtual std::shared_ptr<const datum> call(
+		env_type &env, std::vector<std::unique_ptr<const datum>> &args
+	) const;
+
+	std::vector<std::string> params;
+
+	std::unique_ptr<const datum> body;
+};
+
+struct list : datum {
+	operator std::string() const override;
+
+	syntax_tree elements;
+};
+
+// token stuff
+
+#include <deque>
+#include <cassert>
+
+struct token;
+
+typedef std::deque<std::unique_ptr<token>> token_list;
+
+struct token : object {
+	virtual std::shared_ptr<const datum> parse(token_list &tokens) const {
 		assert(tokens.front().get() == this && "tokens.front is not current token");
 		std::shared_ptr<const datum> p(dynamic_cast<const datum *>(tokens.front().release()));
 		assert(p != nullptr && "tokens.front() is not a datum");
@@ -28,26 +54,26 @@ struct token : public object {
 	}
 };
 
-struct begin_list : public token {
+struct begin_list : token {
 	operator std::string() const override {
 		return "(";
 	}
 
-	std::shared_ptr<const datum> parse(std::deque<std::unique_ptr<token>> &tokens) const override;
+	std::shared_ptr<const datum> parse(token_list &tokens) const override;
 };
 
-struct end_list : public token {
+struct end_list : token {
 	operator std::string() const override {
 		return ")";
 	}
 
-	std::shared_ptr<const datum> parse(std::deque<std::unique_ptr<token>> &tokens) const override {
+	std::shared_ptr<const datum> parse(token_list &tokens) const override {
 		assert(0 && "unexpected end of list token");
 		throw; // suppress warning
 	}
 };
 
-struct identifier : public token, public datum {
+struct identifier : token, datum {
 	identifier(const std::string &n) : name(n) {}
 
 	operator std::string() const override {
@@ -63,23 +89,7 @@ struct identifier : public token, public datum {
 	std::string name;
 };
 
-struct procedure : public datum {
-	virtual std::shared_ptr<const datum> call(
-		env_type &env, std::vector<std::unique_ptr<const datum>> &args
-	) const;
-
-	std::vector<std::string> params;
-
-	std::unique_ptr<const datum> body;
-};
-
-struct list : public datum {
-	operator std::string() const override;
-
-	std::vector<std::shared_ptr<const datum>> elements;
-};
-
-struct decimal : public token, public datum {
+struct decimal : token, datum {
 	decimal(const double &v) : val(v) {}
 
 	operator std::string() const override {
@@ -87,16 +97,6 @@ struct decimal : public token, public datum {
 	}
 
 	double val;
-};
-
-// unused
-
-struct pair : public object {
-	static bool stringify_into_lists;
-
-	operator std::string() const override;
-
-	std::shared_ptr<token> car, cdr;
 };
 
 #endif

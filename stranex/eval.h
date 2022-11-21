@@ -3,6 +3,6 @@
 
 #include "datum.h"
 
-void eval(std::vector<std::shared_ptr<const datum>> &trees, std::ostream &os);
+void eval(syntax_tree &tree, std::ostream &os);
 
 #endif

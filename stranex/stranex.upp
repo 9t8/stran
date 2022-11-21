@@ -1,5 +1,7 @@
 file
 	datum.cpp,
+	pair.cpp,
+	pair.h,
 	datum.h,
 	object.h,
 	parse.cpp,
