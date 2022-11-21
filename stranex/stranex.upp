@@ -2,6 +2,8 @@ file
 	datum.cpp,
 	pair.cpp,
 	pair.h,
+	token.cpp,
+	token.h,
 	datum.h,
 	object.h,
 	parse.cpp,
