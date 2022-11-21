@@ -1,7 +1,5 @@
 // r3rs interpreter with boost for numeric tower
 
-// virtual inheritance?
-
 #include "lex.h"
 #include "parse.h"
 #include "eval.h"
