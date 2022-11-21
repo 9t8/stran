@@ -12,7 +12,8 @@ file
 	eval.h,
 	eval.cpp,
 	pair.h,
-	pair.cpp;
+	pair.cpp,
+	src.tpp;
 
 mainconfig
 	"" = "";

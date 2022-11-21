@@ -13,7 +13,6 @@ typedef std::unordered_map<std::string, std::shared_ptr<const datum>> env_type;
 typedef std::vector<std::shared_ptr<const datum>> syntax_tree;
 
 struct datum : object, std::enable_shared_from_this<datum> {
-	// self-evaluating by default
 	virtual std::shared_ptr<const datum> eval(env_type &env) const {
 		return shared_from_this();
 	}
