@@ -11,7 +11,7 @@ struct token;
 typedef std::deque<std::unique_ptr<token>> token_list;
 
 struct token : object {
-	//parses to itself by default
+	// parses to itself by default
 	virtual std::shared_ptr<const datum> parse(token_list &tokens) const {
 		assert(tokens.front().get() == this && "tokens.front is not current token");
 		std::shared_ptr<const datum> p(dynamic_cast<const datum *>(tokens.front().release()));
