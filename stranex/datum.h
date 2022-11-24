@@ -25,6 +25,7 @@ struct datum : object, std::enable_shared_from_this<datum> {
 
 struct function : datum {
 	// todo: decide variable name: f or fs?
+	// also maybe remove syntax_tree?
 	function(const std::vector<std::string> &fs) : formals(fs) {}
 
 	virtual p_datum call(
