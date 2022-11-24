@@ -45,7 +45,7 @@ std::unique_ptr<token> read_next(std::istream &is) {
 	std::cerr << "ERROR - unexpected character type: '" << static_cast<char>(next_char)
 	<< "' (character code " << next_char << ")\n";
 
-	assert(0 && "unexpected character type - see std::cerr");
+	assert(0 && "unexpected character type - see stderr");
 	throw; // suppress warning
 }
 

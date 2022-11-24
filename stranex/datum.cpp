@@ -1,16 +1,13 @@
 #include "datum.h"
 
 #include <sstream>
-#include <cassert>
 
-std::shared_ptr<const datum> procedure::call(
-	env_type &env, std::vector<std::unique_ptr<const datum>> &args
+p_datum procedure::internal_call(
+	environment &env, const syntax_tree &args
 ) const {
-	assert(args.size() == params.size() && "incorrect number of arguments");
-
-	env_type new_env(env);
-	for (size_t i(0); i < params.size(); ++i) {
-		new_env[params[i]] = std::move(args[i]);
+	environment new_env(env);
+	for (size_t i(0); i < formals.size(); ++i) {
+		new_env[formals[i]] = args[i]->eval(env);
 	}
 	return body->eval(new_env);
 }

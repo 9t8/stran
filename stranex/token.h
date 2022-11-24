@@ -4,17 +4,17 @@
 #include "datum.h"
 
 #include <deque>
-#include <cassert>
 
 struct token;
 
 typedef std::deque<std::unique_ptr<token>> token_list;
 
 struct token : object {
-	virtual std::shared_ptr<const datum> parse(token_list &tokens) const {
+	// parses to itself by default
+	virtual p_datum parse(token_list &tokens) const {
 		assert(tokens.front().get() == this && "tokens.front is not current token");
 
-		std::shared_ptr<const datum> p(dynamic_cast<const datum *>(tokens.front().release()));
+		p_datum p(dynamic_cast<const datum *>(tokens.front().release()));
 		assert(p != nullptr && "tokens.front() is not a datum");
 
 		tokens.pop_front();
@@ -27,7 +27,7 @@ struct begin_list : token {
 		return "(";
 	}
 
-	std::shared_ptr<const datum> parse(token_list &tokens) const override;
+	p_datum parse(token_list &tokens) const override;
 };
 
 struct end_list : token {
@@ -35,7 +35,7 @@ struct end_list : token {
 		return ")";
 	}
 
-	std::shared_ptr<const datum> parse(token_list &tokens) const override {
+	p_datum parse(token_list &tokens) const override {
 		assert(0 && "unexpected end of list token");
 		throw; // suppress warning
 	}
@@ -48,8 +48,8 @@ struct identifier : token, datum {
 		return name;
 	}
 
-	std::shared_ptr<const datum> eval(env_type &env) const override {
-		env_type::iterator it(env.find(name));
+	p_datum eval(environment &env) const override {
+		environment::iterator it(env.find(name));
 		assert(it != env.end() && "undefined identifier");
 		return it->second;
 	}

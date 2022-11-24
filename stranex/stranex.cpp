@@ -1,6 +1,7 @@
 // r3rs interpreter
 
-// ===-- to do --===
+// todo
+// change vectors to pair chains (dot can be a special token)?
 // define and lambda
 // pairs
 // actual input handling
