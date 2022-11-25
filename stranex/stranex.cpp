@@ -2,7 +2,6 @@
 
 // todo
 // change vectors to pair chains (dot can be a special token)?
-// define and lambda
 // pairs
 // actual input handling
 // use boost for full numeric tower
@@ -16,18 +15,23 @@
 int main(int argc, const char **argv) {
 	token_list tokens(lex(std::cin));
 
-	std::cout << "===-- tokens --===\n" << std::flush;
-	for (size_t i(0); i != tokens.size(); ++i) {
-		std::cout << *tokens[i] << std::endl;
+	if (tokens.empty()) {
+		std::cout << "no tokens - exiting\n";
+		return 0;
+	}
+	std::cout << "===-- tokens --===" << std::endl;
+	for (size_t i(0); i != tokens.size() - 1; ++i) {
+		std::cout << *tokens[i] << " " << std::flush;
+	}
+	std::cout << *tokens.back() << std::endl;
+
+	std::vector<p_datum> syntax_tree(parse(tokens));
+
+	std::cout << "===-- syntax tree --===" << std::endl;
+	for (size_t i(0); i != syntax_tree.size(); ++i) {
+		std::cout << *syntax_tree[i] << std::endl;
 	}
 
-	syntax_tree tree(parse(tokens));
-
-	std::cout << "===-- subtrees --===\n" << std::flush;
-	for (size_t i(0); i != tree.size(); ++i) {
-		std::cout << *tree[i] << std::endl;
-	}
-
-	std::cout << "===-- output --===\n" << std::flush;
-	eval(tree, std::cout);
+	std::cout << "===-- output --===" << std::endl;
+	eval(syntax_tree, std::cout);
 }

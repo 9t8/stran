@@ -4,6 +4,6 @@
 #include "token.h"
 
 // destroys tokens
-syntax_tree parse(token_list &tokens);
+std::vector<p_datum> parse(token_list &tokens);
 
 #endif

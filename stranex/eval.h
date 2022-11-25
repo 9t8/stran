@@ -3,6 +3,6 @@
 
 #include "datum.h"
 
-void eval(syntax_tree &tree, std::ostream &os);
+void eval(std::vector<p_datum> &syntax_tree, std::ostream &os);
 
 #endif

@@ -1,9 +1,9 @@
 #include "parse.h"
 
-syntax_tree parse(token_list &tokens) {
-	syntax_tree tree;
+std::vector<p_datum> parse(token_list &tokens) {
+	std::vector<p_datum> syntax_tree;
 	while (!tokens.empty()) {
-		tree.push_back(tokens.front()->parse(tokens));
+		syntax_tree.push_back(tokens.front()->parse(tokens));
 	}
-	return tree;
+	return syntax_tree;
 }
