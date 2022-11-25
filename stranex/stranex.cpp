@@ -17,15 +17,13 @@
 int main(int argc, const char **argv) {
 	token_list tokens(lex(std::cin));
 
-	if (tokens.empty()) {
-		std::cout << "no tokens - exiting\n";
-		return 0;
-	}
 	std::cout << "===-- tokens --===" << std::endl;
-	for (size_t i(0); i != tokens.size() - 1; ++i) {
-		std::cout << *tokens[i] << " " << std::flush;
+	if (tokens.empty()) {
+		for (size_t i(0); i != tokens.size() - 1; ++i) {
+			std::cout << *tokens[i] << " " << std::flush;
+		}
+		std::cout << *tokens.back() << std::endl;
 	}
-	std::cout << *tokens.back() << std::endl;
 
 	std::vector<p_datum> syntax_tree(parse(tokens));
 
@@ -36,4 +34,6 @@ int main(int argc, const char **argv) {
 
 	std::cout << "===-- output --===" << std::endl;
 	eval(syntax_tree, std::cout);
+
+	system("pause");
 }
