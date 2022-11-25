@@ -1,6 +1,8 @@
 // r3rs interpreter
 
 // todo
+// add comment support
+// add dot token
 // change vectors to pair chains (dot can be a special token)?
 // pairs
 // actual input handling
