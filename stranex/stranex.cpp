@@ -4,7 +4,7 @@
 // change vectors to pair chains (dot can be a special token)?
 // pairs
 // actual input handling
-// use boost for full numeric tower
+// use boost for full numerical tower
 
 #include "lex.h"
 #include "parse.h"
