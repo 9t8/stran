@@ -3,7 +3,6 @@
 p_token lex_token(std::string &s) {
 	assert(!s.empty() && "attempted to tokenize an empty string");
 
-	// this part not working probs
 	if (isdigit(s[0]) || s[0] == '+' || s[0] == '-' || s[0] == '.') {
 		size_t idx(0);
 		double val(stod(s, &idx));
@@ -31,11 +30,11 @@ token_list lex(filtered_input &fi) {
 			tokens.push_back(lex_token(curr_word));
 			curr_word.clear();
 		}
-		
+
 		if (isspace(curr_char)) {
 			continue;
 		}
-		
+
 		switch (curr_char) {
 			case EOF:
 				return tokens;
