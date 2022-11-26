@@ -7,7 +7,9 @@
 
 struct token;
 
-typedef std::deque<std::unique_ptr<token>> token_list;
+typedef std::unique_ptr<token> p_token;
+
+typedef std::deque<p_token> token_list;
 
 struct token : object {
 	// parses to itself by default

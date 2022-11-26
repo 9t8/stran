@@ -8,6 +8,8 @@ file
 	parse.h,
 	parse.cpp,
 	lex.h,
+	filtered_input.h,
+	filtered_input.cpp,
 	lex.cpp,
 	eval.h,
 	eval.cpp,

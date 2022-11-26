@@ -1,61 +1,60 @@
 #include "lex.h"
 
-#include <iostream>
-#include <sstream>
+p_token lex_token(std::string &s) {
+	assert(!s.empty() && "attempted to tokenize an empty string");
 
-std::unique_ptr<token> read_next(std::istream &is) {
-	auto next_char(is.peek());
-
-	if (next_char == '(') {
-		is.get();
-		return std::unique_ptr<token>(new begin_list);
+	// this part not working probs
+	if (isdigit(s[0]) || s[0] == '+' || s[0] == '-' || s[0] == '.') {
+		size_t idx(0);
+		double val(stod(s, &idx));
+		assert(idx == s.size() && "invalid character in decimal");
+		return p_token(new decimal(val));
 	}
 
-	if (next_char == ')') {
-		is.get();
-		return std::unique_ptr<token>(new end_list);
-	}
-
-	if (next_char == '+' || next_char == '-'
-		|| next_char == '.' || std::isdigit(next_char)) {
-		double val;
-		is >> val;
-		return std::unique_ptr<token>(new decimal(val));
-	}
-
-	if (std::isgraph(next_char)) {
-		std::ostringstream name;
-
-		for (;; next_char = is.peek()) {
-			if (next_char == '(') {
-				assert(0 && "illegal character in identifier: (");
-			}
-
-			if (next_char == ')' || std::isspace(next_char)) {
-				std::string name_str(name.str());
-				assert(!name_str.empty() && "name is (somehow) empty");
-
-				return std::unique_ptr<token>(new identifier(name_str));
-			}
-
-			name << static_cast<char>(is.get());
-		}
-	}
-
-	std::cerr << "ERROR - unexpected character type: '" << static_cast<char>(next_char)
-	<< "' (character code " << next_char << ")\n";
-
-	assert(0 && "unexpected character type - see stderr");
-	throw; // suppress warning
+	return p_token(new identifier(s));
 }
 
-token_list lex(std::istream &is) {
+token_list lex(filtered_input &fi) {
 	token_list tokens;
-	// todo: switch to lexing line-by-line and even char-by-char
-	is >> std::ws;
-	while (!is.eof()) {
-		tokens.push_back(read_next(is));
-		is >> std::ws;
+
+	std::string curr_word;
+	for (;;) {
+		int curr_char(fi.get());
+
+		if (!isspace(curr_char) && curr_char != EOF && curr_char != '(' && curr_char != ')'
+			&& curr_char != '"' && curr_char != ';') {
+			curr_word += curr_char;
+			continue;
+		}
+
+		if (!curr_word.empty()) {
+			tokens.push_back(lex_token(curr_word));
+			curr_word.clear();
+		}
+		
+		if (isspace(curr_char)) {
+			continue;
+		}
+		
+		switch (curr_char) {
+			case EOF:
+				return tokens;
+
+			case '(':
+				tokens.push_back(p_token(new begin_list));
+				continue;
+
+			case ')':
+				tokens.push_back(p_token(new end_list));
+				continue;
+
+			case ';':
+				while (curr_char != '\n' && curr_char != EOF) {
+					curr_char = fi.get();
+				}
+				continue;
+		}
+
+		assert(0 && "character not yet supported");
 	}
-	return tokens;
 }

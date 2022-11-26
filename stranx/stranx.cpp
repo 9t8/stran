@@ -1,8 +1,7 @@
 // r3rs interpreter
 
 // todo
-// add comment support
-// add dot token
+// add dot token/datum
 // change vectors to pair chains (dot can be a special token)?
 // pairs
 // actual input handling
@@ -15,7 +14,8 @@
 #include <iostream>
 
 int main(int argc, const char **argv) {
-	token_list tokens(lex(std::cin));
+	filtered_input fi(std::cin);
+	token_list tokens(lex(fi));
 
 	std::cout << "===-- tokens --===" << std::endl;
 	if (!tokens.empty()) {
