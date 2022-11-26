@@ -20,7 +20,7 @@ p_datum lambda(environment &env, const std::vector<p_datum> &args) {
 	const std::vector<p_datum> &formals_list(
 		dynamic_cast<const list &>(formals_datum).elements
 	);
-	
+
 	std::vector<std::string> formals(formals_list.size());
 	for (size_t i(0); i != formals.size(); ++i) {
 		const datum &formal(*formals_list[i]);
@@ -28,7 +28,7 @@ p_datum lambda(environment &env, const std::vector<p_datum> &args) {
 
 		formals[i] = dynamic_cast<const identifier &>(formal).name;
 	}
-	
+
 	return p_datum(new procedure(formals, args[1]));
 }
 

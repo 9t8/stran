@@ -1,5 +1,5 @@
-#ifndef _stranex_object_h_
-#define _stranex_object_h_
+#ifndef _stranx_object_h_
+#define _stranx_object_h_
 
 #include <string>
 

@@ -1,5 +1,5 @@
-#ifndef _stranex_parse_h_
-#define _stranex_parse_h_
+#ifndef _stranx_parse_h_
+#define _stranx_parse_h_
 
 #include "token.h"
 

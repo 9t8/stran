@@ -1,5 +1,5 @@
-#ifndef _stranex_eval_h_
-#define _stranex_eval_h_
+#ifndef _stranx_eval_h_
+#define _stranx_eval_h_
 
 #include "datum.h"
 

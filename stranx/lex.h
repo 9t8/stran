@@ -1,5 +1,5 @@
-#ifndef _stranex_lex_h_
-#define _stranex_lex_h_
+#ifndef _stranx_lex_h_
+#define _stranx_lex_h_
 
 #include "token.h"
 

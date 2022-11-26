@@ -18,7 +18,7 @@ int main(int argc, const char **argv) {
 	token_list tokens(lex(std::cin));
 
 	std::cout << "===-- tokens --===" << std::endl;
-	if (tokens.empty()) {
+	if (!tokens.empty()) {
 		for (size_t i(0); i != tokens.size() - 1; ++i) {
 			std::cout << *tokens[i] << " " << std::flush;
 		}

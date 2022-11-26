@@ -1,5 +1,5 @@
 file
-	stranex.cpp,
+	stranx.cpp,
 	object.h,
 	datum.h,
 	datum.cpp,

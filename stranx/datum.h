@@ -1,5 +1,5 @@
-#ifndef _stranex_datum_h_
-#define _stranex_datum_h_
+#ifndef _stranx_datum_h_
+#define _stranx_datum_h_
 
 #include "object.h"
 
@@ -24,6 +24,7 @@ struct datum : object, std::enable_shared_from_this<datum> {
 struct function : datum {
 	function(const std::vector<std::string> &fs) : formals(fs) {}
 
+	// todo change here to allow varargs
 	virtual p_datum call(
 		environment &env, const std::vector<p_datum> &args
 	) const final {

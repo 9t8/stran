@@ -1,5 +1,5 @@
-#ifndef _stranex_token_h_
-#define _stranex_token_h_
+#ifndef _stranx_token_h_
+#define _stranx_token_h_
 
 #include "datum.h"
 

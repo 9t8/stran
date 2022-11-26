@@ -51,6 +51,7 @@ std::unique_ptr<token> read_next(std::istream &is) {
 
 token_list lex(std::istream &is) {
 	token_list tokens;
+	// todo: switch to lexing line-by-line and even char-by-char
 	is >> std::ws;
 	while (!is.eof()) {
 		tokens.push_back(read_next(is));
