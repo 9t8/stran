@@ -1,16 +1,22 @@
 #include "lex.h"
 
-p_token lex_token(std::string &s) {
+void lex_token(token_list &tokens, std::string &s) {
 	assert(!s.empty() && "attempted to tokenize an empty string");
+
+	if (s == ".") {
+		tokens.push_back(p_token(new dot));
+		return;
+	}
 
 	if (isdigit(s[0]) || s[0] == '+' || s[0] == '-' || s[0] == '.') {
 		size_t idx(0);
 		double val(stod(s, &idx));
-		assert(idx == s.size() && "invalid character in decimal");
-		return p_token(new decimal(val));
+		assert(idx == s.size() && "invalid character while parsing decimal");
+		tokens.push_back(p_token(new decimal(val)));
+		return;
 	}
 
-	return p_token(new identifier(s));
+	tokens.push_back(p_token(new identifier(s)));
 }
 
 token_list lex(filtered_input &fi) {
@@ -20,14 +26,14 @@ token_list lex(filtered_input &fi) {
 	for (;;) {
 		int curr_char(fi.get());
 
-		if (!isspace(curr_char) && curr_char != EOF && curr_char != '(' && curr_char != ')'
-			&& curr_char != '"' && curr_char != ';') {
+		if (!isspace(curr_char) && curr_char != EOF && curr_char != '(' && curr_char != ')' &&
+			curr_char != '"' && curr_char != ';') {
 			curr_word += curr_char;
 			continue;
 		}
 
 		if (!curr_word.empty()) {
-			tokens.push_back(lex_token(curr_word));
+			lex_token(tokens, curr_word);
 			curr_word.clear();
 		}
 

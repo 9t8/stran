@@ -14,10 +14,10 @@ typedef std::deque<p_token> token_list;
 struct token : object {
 	// parses to itself by default
 	virtual p_datum parse(token_list &tokens) const {
-		assert(tokens.front().get() == this && "tokens.front is not current token");
+		assert(tokens.at(0).get() == this && "first token in tokens is not current token");
 
 		p_datum p(dynamic_cast<const datum *>(tokens.front().release()));
-		assert(p != nullptr && "tokens.front() is not a datum");
+		assert(p != nullptr && "this token is not a datum");
 
 		tokens.pop_front();
 		return p;
@@ -40,6 +40,21 @@ struct end_list : token {
 	p_datum parse(token_list &tokens) const override {
 		assert(0 && "unexpected end of list token");
 		throw; // suppress warning
+	}
+};
+
+struct dot : token, datum {
+	operator std::string() const override {
+		return ".";
+	}
+
+	p_datum parse(token_list &tokens) const override {
+		token &next_next(*tokens.at(2));
+		token &next(*tokens[1]);
+		assert(typeid(next) != typeid(end_list) && typeid(next_next) == typeid(end_list) &&
+			   "illegal location for dot token");
+
+		return token::parse(tokens);
 	}
 };
 

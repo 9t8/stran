@@ -3,7 +3,7 @@
 const std::type_info &get_next_token_type(token_list &tokens) {
 	assert(!tokens.empty() && "expected a token but none found (too many opening parens?)");
 
-	token &next_token(*tokens.front()); // suppress warning
+	token &next_token(*tokens.front());
 	return typeid(next_token);
 }
 

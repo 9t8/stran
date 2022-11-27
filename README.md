@@ -1,3 +1,3 @@
 # stranx
 
-scheme translator experiment so i can learn c++ (smart pointers/polymorphism, libraries)
+scheme translator experiment so i can learn c++ (templates, smart pointers/polymorphism, libraries)

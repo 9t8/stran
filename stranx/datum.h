@@ -4,9 +4,9 @@
 #include "object.h"
 
 #include <cassert>
-#include <vector>
-#include <unordered_map>
 #include <sstream>
+#include <unordered_map>
+#include <vector>
 
 struct datum;
 
@@ -36,9 +36,8 @@ protected:
 	std::vector<std::string> formals;
 
 private:
-	virtual p_datum internal_call(
-		environment &env, const std::vector<p_datum> &args
-	) const = 0;
+	virtual p_datum internal_call(environment &env,
+			const std::vector<p_datum> &args) const = 0;
 };
 
 struct procedure : function {
@@ -52,18 +51,15 @@ struct procedure : function {
 	}
 
 private:
-	p_datum internal_call(
-		environment &env, const std::vector<p_datum> &args
-	) const override;
+	p_datum internal_call(environment &env,
+			const std::vector<p_datum> &args) const override;
 
 	p_datum body;
 };
 
-struct native_function : function {
-	native_function(
-		const std::vector<std::string> &formals,
-		p_datum(*p_f)(environment &env, const std::vector<p_datum> &args)
-	) : function(formals), p_func(p_f) {}
+template <class t> struct native_function : function {
+	native_function(const std::vector<std::string> &formals, t l)
+			: function(formals), lambda(l) {}
 
 	operator std::string() const override {
 		std::ostringstream oss;
@@ -75,11 +71,10 @@ private:
 	p_datum internal_call(
 		environment &env, const std::vector<p_datum> &args
 	) const override {
-		return p_func(env, args);
+		return lambda(env, args);
 	}
 
-	// todo: change function pointer to std::function or template argument
-	p_datum(*p_func)(environment &env, const std::vector<p_datum> &args);
+	t lambda;
 };
 
 struct list : datum {

@@ -7,9 +7,9 @@
 // actual input handling
 // use boost for full numerical tower
 
+#include "eval.h"
 #include "lex.h"
 #include "parse.h"
-#include "eval.h"
 
 #include <iostream>
 

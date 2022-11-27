@@ -2,9 +2,8 @@
 
 #include <sstream>
 
-p_datum procedure::internal_call(
-	environment &env, const std::vector<p_datum> &args
-) const {
+p_datum procedure::internal_call(environment &env,
+		const std::vector<p_datum> &args) const {
 	environment new_env(env);
 	for (size_t i(0); i != formals.size(); ++i) {
 		new_env[formals[i]] = args[i]->eval(env);
