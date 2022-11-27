@@ -56,6 +56,11 @@ struct dot : token, datum {
 
 		return token::parse(tokens);
 	}
+
+	p_datum eval(environment &env) const override {
+		assert(0 && "illegal dot token");
+		throw;
+	}
 };
 
 struct identifier : token, datum {
