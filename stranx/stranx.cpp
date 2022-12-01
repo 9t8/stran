@@ -1,8 +1,9 @@
 // todo
 // pairs
-// change vectors to pair chains (dot can be a special token)?
+// change std::vectors to pair chains (dot can be a special token)?
 // actual input handling
 // use boost for full numerical tower
+// call/cc via syntax_tree bullshittery?
 
 #include "eval.h"
 #include "lex.h"
