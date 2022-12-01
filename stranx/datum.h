@@ -58,7 +58,7 @@ private:
 };
 
 template <class t> struct native_function : function {
-	native_function(const std::vector<std::string> &formals, t l)
+	native_function(const std::vector<std::string> &formals, const t &l)
 			: function(formals), lambda(l) {}
 
 	operator std::string() const override {

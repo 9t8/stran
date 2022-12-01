@@ -39,22 +39,13 @@ struct end_list : token {
 
 	p_datum parse(token_list &tokens) const override {
 		assert(0 && "unexpected end of list token");
-		throw; // suppress warning
+		throw;
 	}
 };
 
 struct dot : token, datum {
 	operator std::string() const override {
 		return ".";
-	}
-
-	p_datum parse(token_list &tokens) const override {
-		token &next_next(*tokens.at(2));
-		token &next(*tokens[1]);
-		assert(typeid(next) != typeid(end_list) && typeid(next_next) == typeid(end_list) &&
-			   "illegal location for dot token");
-
-		return token::parse(tokens);
 	}
 
 	p_datum eval(environment &env) const override {

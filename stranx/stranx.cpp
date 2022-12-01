@@ -1,5 +1,3 @@
-// r3rs interpreter
-
 // todo
 // pairs
 // change vectors to pair chains (dot can be a special token)?
