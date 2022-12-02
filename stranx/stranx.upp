@@ -12,9 +12,7 @@ file
 	filtered_input.cpp,
 	lex.cpp,
 	eval.h,
-	eval.cpp,
-	pair.h,
-	pair.cpp;
+	eval.cpp;
 
 mainconfig
 	"" = "";

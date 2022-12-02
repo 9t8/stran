@@ -22,13 +22,14 @@ struct datum : object, std::enable_shared_from_this<datum> {
 };
 
 struct function : datum {
-	function(const std::vector<std::string> &fs) : formals(fs) {}
+	function(const std::vector<std::string> &fs, const bool &v = false)
+			: formals(fs) , variadic(v) {}
 
 	// todo change here to allow varargs
 	virtual p_datum call(
 		environment &env, const std::vector<p_datum> &args
 	) const final {
-		assert(args.size() == formals.size() && "wrong number of arguments");
+		assert(variadic || args.size() == formals.size() && "wrong number of arguments");
 		return internal_call(env, args);
 	}
 
@@ -38,6 +39,8 @@ protected:
 private:
 	virtual p_datum internal_call(environment &env,
 			const std::vector<p_datum> &args) const = 0;
+
+	bool variadic;
 };
 
 struct procedure : function {
@@ -89,6 +92,14 @@ struct list : datum {
 	}
 
 	std::vector<p_datum> elements;
+};
+
+struct pair : object {
+	static bool stringify_into_lists;
+
+	operator std::string() const override;
+
+	std::shared_ptr<datum> car, cdr;
 };
 
 #endif
