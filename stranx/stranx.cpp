@@ -1,5 +1,5 @@
-// todo
-// pairs
+// general todo
+// pairs - in progress
 // change std::vectors to pair chains (dot can be a special token)?
 // actual input handling
 // use boost for full numerical tower

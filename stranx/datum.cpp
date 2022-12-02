@@ -11,7 +11,7 @@ p_datum procedure::internal_call(environment &env,
 	return body->eval(new_env);
 }
 
-list::operator std::string() const {
+/*list::operator std::string() const {
 	std::ostringstream oss;
 	oss << "[";
 	if (!elements.empty()) {
@@ -22,7 +22,7 @@ list::operator std::string() const {
 	}
 	oss << "]";
 	return oss.str();
-}
+}*/
 
 bool pair::stringify_into_lists(true);
 

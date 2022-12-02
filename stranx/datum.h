@@ -80,7 +80,7 @@ private:
 	t lambda;
 };
 
-struct list : datum {
+/*struct list : datum {
 	operator std::string() const override;
 
 	p_datum eval(environment &env) const override {
@@ -92,14 +92,16 @@ struct list : datum {
 	}
 
 	std::vector<p_datum> elements;
-};
+};*/
 
+// todo: i have made the decision to completely remove lists (above) and inherit pair from
+// datum.
 struct pair : object {
 	static bool stringify_into_lists;
 
 	operator std::string() const override;
 
-	std::shared_ptr<datum> car, cdr;
+	p_datum car, cdr;
 };
 
 #endif
