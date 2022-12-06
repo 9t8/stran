@@ -27,9 +27,10 @@ struct function : datum {
 
 	// todo change here to allow varargs
 	virtual p_datum call(
-		environment &env, const std::vector<p_datum> &args
+		environment &env, const p_datum &args
 	) const final {
 		assert(variadic || args.size() == formals.size() && "wrong number of arguments");
+		
 		return internal_call(env, args);
 	}
 
@@ -80,26 +81,17 @@ private:
 	t lambda;
 };
 
-/*struct list : datum {
-	operator std::string() const override;
-
-	p_datum eval(environment &env) const override {
-		assert(!elements.empty() && "expression is empty");
-
-		// throws if first element is not a function
-		return dynamic_cast<const function &>(*elements[0]->eval(env))
-			   .call(env, std::vector<p_datum>(elements.begin() + 1, elements.end()));
-	}
-
-	std::vector<p_datum> elements;
-};*/
-
-// todo: i have made the decision to completely remove lists (above) and inherit pair from
-// datum.
-struct pair : object {
+struct pair : datum {
 	static bool stringify_into_lists;
 
 	operator std::string() const override;
+
+	p_datum eval(environment &env) const override {
+		assert(car != nullptr && "expression is not a list");
+
+		// throws if first element is not a function
+		return dynamic_cast<const function &>(*car->eval(env)).call(env, cdr);
+	}
 
 	p_datum car, cdr;
 };
