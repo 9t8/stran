@@ -14,6 +14,9 @@ p_datum procedure::call(environment &env, const p_datum &args) const {
 		curr_arg.reset(dynamic_cast<const pair *>(curr_arg->cdr.get()));
 	}
 	if (variadic) {
+		std::shared_ptr<pair> pack(new pair);
+
+		new_env[formals[i]] = pack;
 	} else {
 		new_env[formals[i]] = curr_arg->car->eval(env);
 		assert(typeid(*curr_arg->car) == typeid(empty_list));
