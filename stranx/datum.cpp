@@ -2,30 +2,29 @@
 
 #include <sstream>
 
-p_datum procedure::internal_call(environment &env,
-		const std::vector<p_datum> &args) const {
+p_datum procedure::call(environment &env, const p_datum &args) const {
 	environment new_env(env);
-	for (size_t i(0); i != formals.size(); ++i) {
-		new_env[formals[i]] = args[i]->eval(env);
+
+	// fixme: is this safe?
+	std::shared_ptr<const pair> curr_arg(dynamic_cast<const pair *>(args.get()));
+	for (size_t i(0); i < formals.size() - 1; ++i) {
+		assert(curr_arg != nullptr && "malformed argument list");
+
+		new_env[formals[i]] = curr_arg->car->eval(env);
+		curr_arg.reset(dynamic_cast<const pair *>(curr_arg->cdr.get()));
 	}
+	if (variadic) {
+	} else {
+		new_env[formals[i]] = curr_arg->car->eval(env);
+		assert(typeid(*curr_arg->car) == typeid(empty_list));
+	}
+
 	return body->eval(new_env);
 }
 
-/*list::operator std::string() const {
-	std::ostringstream oss;
-	oss << "[";
-	if (!elements.empty()) {
-		for (size_t i(0); i != elements.size() - 1; ++i) {
-			oss << *elements[i] << " ";
-		}
-		oss << *elements.back();
-	}
-	oss << "]";
-	return oss.str();
-}*/
-
 bool pair::stringify_into_lists(true);
 
+// write iteratively, use ostringstream
 std::string stringify_elements(const pair &p) {
 	return static_cast<std::string>(*p.car) + " . " + static_cast<std::string>(*p.cdr);
 }

@@ -7,19 +7,20 @@
 void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 	environment env( {
 		{
-			"define", p_datum(new native_function({"variable", "expression"},
-			[](environment &env, const std::vector<p_datum> &args) {
+			"define", p_datum(new native_function(
+			[](environment &env, const p_datum &args) {
 				const datum &variable(*args[0]);
 				assert(typeid(variable) == typeid(identifier) &&
 					   "first argument must be an identifier");
 
 				env[dynamic_cast<const identifier &>(variable).name] = args[1]->eval(env);
-				return p_datum(new list);
+				return p_datum(new empty_list);
 			}
-												 ))
+			))
 		}, {
-			"lambda", p_datum(new native_function({"formals", "body"},
-			[](environment &env, const std::vector<p_datum> &args) {
+			"lambda", p_datum(new native_function(
+			[](environment &env, const p_datum &args) {
+				// turn args into vector while verifying them
 				const datum &formals_datum(*args[0]);
 				// todo: accept varargs
 				assert(typeid(formals_datum) == typeid(list) &&
@@ -29,7 +30,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 					dynamic_cast<const list &>(formals_datum).elements);
 
 				std::vector<std::string> formals(formals_list.size());
-				for (size_t i(0); i != formals.size(); ++i) {
+				for (size_t i(0); i < formals.size(); ++i) {
 					const datum &formal(*formals_list[i]);
 					assert(typeid(formal) == typeid(identifier) &&
 						   "all formals must be identifiers");
@@ -39,11 +40,11 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 
 				return p_datum(new procedure(formals, args[1]));
 			}
-												 ))
+			))
 		}
 	});
 
-	for (size_t i(0); i != syntax_tree.size(); ++i) {
+	for (size_t i(0); i < syntax_tree.size(); ++i) {
 		os << *syntax_tree[i]->eval(env) << std::endl;
 	}
 }

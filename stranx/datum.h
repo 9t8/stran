@@ -10,6 +10,7 @@
 
 struct datum;
 
+// todo: remove const from datum or set-car! won't work
 typedef std::shared_ptr<const datum> p_datum;
 
 typedef std::unordered_map<std::string, p_datum> environment;
@@ -22,31 +23,14 @@ struct datum : object, std::enable_shared_from_this<datum> {
 };
 
 struct function : datum {
-	function(const std::vector<std::string> &fs, const bool &v = false)
-			: formals(fs) , variadic(v) {}
-
-	// todo change here to allow varargs
-	virtual p_datum call(
-		environment &env, const p_datum &args
-	) const final {
-		assert(variadic || args.size() == formals.size() && "wrong number of arguments");
-		
-		return internal_call(env, args);
-	}
-
-protected:
-	std::vector<std::string> formals;
-
-private:
-	virtual p_datum internal_call(environment &env,
-			const std::vector<p_datum> &args) const = 0;
-
-	bool variadic;
+	virtual p_datum call(environment &env, const p_datum &args) const = 0;
 };
 
 struct procedure : function {
-	procedure(const std::vector<std::string> &formals, const p_datum &b)
-			: function(formals), body(b) {}
+	procedure(const std::vector<std::string> &fs, const p_datum &b)
+			: formals(fs), body(b), variadic(false) {
+		assert(!(variadic && fs.empty()) && "procedure taking no arguments cannot be variadic");
+	}
 
 	operator std::string() const override {
 		std::ostringstream oss;
@@ -54,16 +38,19 @@ struct procedure : function {
 		return oss.str();
 	}
 
-private:
-	p_datum internal_call(environment &env,
-			const std::vector<p_datum> &args) const override;
+	p_datum call(environment &env, const p_datum &args) const override;
 
+protected:
+	std::vector<std::string> formals;
+
+private:
 	p_datum body;
+
+	bool variadic;
 };
 
-template <class t> struct native_function : function {
-	native_function(const std::vector<std::string> &formals, const t &l)
-			: function(formals), lambda(l) {}
+template <class lambda_type> struct native_function : function {
+	native_function(const lambda_type &l) : lambda(l) {}
 
 	operator std::string() const override {
 		std::ostringstream oss;
@@ -71,25 +58,33 @@ template <class t> struct native_function : function {
 		return oss.str();
 	}
 
-private:
-	p_datum internal_call(
-		environment &env, const std::vector<p_datum> &args
-	) const override {
+	p_datum call(environment &env, const p_datum &args) const override {
 		return lambda(env, args);
 	}
 
-	t lambda;
+private:
+	lambda_type lambda;
+};
+
+struct empty_list : datum {
+	operator std::string() const override {
+		return "()";
+	}
+
+	p_datum eval(environment &env) const override {
+		assert(0 && "attempted to evaluate empty list");
+		throw;
+	}
 };
 
 struct pair : datum {
 	static bool stringify_into_lists;
 
+	pair() : car(new empty_list) , cdr(new empty_list) {}
+
 	operator std::string() const override;
 
 	p_datum eval(environment &env) const override {
-		assert(car != nullptr && "expression is not a list");
-
-		// throws if first element is not a function
 		return dynamic_cast<const function &>(*car->eval(env)).call(env, cdr);
 	}
 

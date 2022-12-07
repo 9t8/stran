@@ -1,6 +1,5 @@
 // general todo
-// pairs - in progress
-// change std::vectors to pair chains (dot can be a special token)?
+// replace news with make_shared
 // actual input handling
 // use boost for full numerical tower
 // call/cc via syntax_tree bullshittery?
@@ -17,7 +16,7 @@ int main(int argc, const char **argv) {
 
 	std::cout << "===-- tokens --===" << std::endl;
 	if (!tokens.empty()) {
-		for (size_t i(0); i != tokens.size() - 1; ++i) {
+		for (size_t i(0); i < tokens.size() - 1; ++i) {
 			std::cout << *tokens[i] << " " << std::flush;
 		}
 		std::cout << *tokens.back() << std::endl;
@@ -26,7 +25,7 @@ int main(int argc, const char **argv) {
 	std::vector<p_datum> syntax_tree(parse(tokens));
 
 	std::cout << "===-- syntax tree --===" << std::endl;
-	for (size_t i(0); i != syntax_tree.size(); ++i) {
+	for (size_t i(0); i < syntax_tree.size(); ++i) {
 		std::cout << *syntax_tree[i] << std::endl;
 	}
 
