@@ -9,15 +9,24 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 		{
 			"define", p_datum(new native_function(
 			[](const p_datum &args, environment &env) {
-				const datum &variable(*args[0]);
+				std::shared_ptr<const pair> args_list(dynamic_cast<const pair *>(args.get()));
+				assert(args_list != nullptr &&
+					   "malformed argument list (not enough arguments?)");
+				std::shared_ptr<const pair> cdr(
+					dynamic_cast<const pair *>(args_list->cdr.get()));
+				assert(cdr != nullptr && "malformed argument list (not enough arguments?)");
+				assert(dynamic_cast<const pair *>(cdr->cdr.get()) == nullptr &&
+					   "too many arguments");
+
+				const datum &variable(*args_list->car);
 				assert(typeid(variable) == typeid(identifier) &&
 					   "first argument must be an identifier");
 
-				env[dynamic_cast<const identifier &>(variable).name] = args[1]->eval(env);
+				env[dynamic_cast<const identifier &>(variable).name] = cdr->car->eval(env);
 				return p_datum(new empty_list);
 			}
 			))
-		}, {
+		}/*, {
 			"lambda", p_datum(new native_function(
 			[](const p_datum &args, environment &env) {
 				// turn args into vector while verifying them
@@ -41,7 +50,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 				return p_datum(new procedure(formals, args[1]));
 			}
 			))
-		}
+		}*/
 	});
 
 	for (size_t i(0); i < syntax_tree.size(); ++i) {

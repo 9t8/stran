@@ -20,7 +20,7 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 	std::shared_ptr<const pair> curr_arg(dynamic_cast<const pair *>(args.get()));
 
 	for (size_t i(0); i < formals.size() - 1; ++i) {
-		assert(curr_arg != nullptr && "malformed argument list");
+		assert(curr_arg != nullptr && "malformed argument list (not enough arguments?)");
 
 		new_env[formals[i]] = eval_arg(curr_arg, env);
 	}
