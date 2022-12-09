@@ -31,6 +31,4 @@ int main(int argc, const char **argv) {
 
 	std::cout << "===-- output --===" << std::endl;
 	eval(syntax_tree, std::cout);
-
-	system("pause");
 }
