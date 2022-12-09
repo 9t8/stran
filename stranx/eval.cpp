@@ -8,7 +8,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 	environment env( {
 		{
 			"define", p_datum(new native_function(
-			[](environment &env, const p_datum &args) {
+			[](const p_datum &args, environment &env) {
 				const datum &variable(*args[0]);
 				assert(typeid(variable) == typeid(identifier) &&
 					   "first argument must be an identifier");
@@ -19,7 +19,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 			))
 		}, {
 			"lambda", p_datum(new native_function(
-			[](environment &env, const p_datum &args) {
+			[](const p_datum &args, environment &env) {
 				// turn args into vector while verifying them
 				const datum &formals_datum(*args[0]);
 				// todo: accept varargs

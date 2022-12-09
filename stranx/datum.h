@@ -23,7 +23,7 @@ struct datum : object, std::enable_shared_from_this<datum> {
 };
 
 struct function : datum {
-	virtual p_datum call(environment &env, const p_datum &args) const = 0;
+	virtual p_datum call(const p_datum &args, environment &env) const = 0;
 };
 
 struct procedure : function {
@@ -38,12 +38,14 @@ struct procedure : function {
 		return oss.str();
 	}
 
-	p_datum call(environment &env, const p_datum &args) const override;
+	p_datum call(const p_datum &args, environment &env) const override;
 
 protected:
 	std::vector<std::string> formals;
 
 private:
+	environment create_new_env(const p_datum &args, environment &env) const;
+
 	p_datum body;
 
 	bool variadic;
@@ -58,8 +60,8 @@ template <class lambda_type> struct native_function : function {
 		return oss.str();
 	}
 
-	p_datum call(environment &env, const p_datum &args) const override {
-		return lambda(env, args);
+	p_datum call(const p_datum &args, environment &env) const override {
+		return lambda(args, env);
 	}
 
 private:
