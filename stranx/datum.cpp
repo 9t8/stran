@@ -16,12 +16,9 @@ p_datum eval_arg(std::shared_ptr<const pair> &curr_arg, environment &env) {
 environment procedure::create_new_env(const p_datum &args, environment &env) const {
 	environment new_env(env);
 
-	if (formals.empty()) {
-		return new_env;
-	}
-
 	// fixme: is this safe?
 	std::shared_ptr<const pair> curr_arg(dynamic_cast<const pair *>(args.get()));
+
 	for (size_t i(0); i < formals.size() - 1; ++i) {
 		assert(curr_arg != nullptr && "malformed argument list");
 
@@ -29,8 +26,9 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 	}
 
 	if (!variadic) {
-		new_env[formals.back()] = eval_arg(curr_arg, env);
-
+		if (!formals.empty()) {
+			new_env[formals.back()] = eval_arg(curr_arg, env);
+		}
 		assert(curr_arg == nullptr && "too many arguments");
 
 		return new_env;
