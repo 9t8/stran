@@ -24,7 +24,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 
 				env[dynamic_cast<const identifier &>(variable).name] = cdr->car->eval(env);
 				return p_datum(new empty_list);
-			}
+			} // double destruction here?
 			))
 		}/*, {
 			"lambda", p_datum(new native_function(
