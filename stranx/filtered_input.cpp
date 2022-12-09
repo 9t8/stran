@@ -19,6 +19,5 @@ int filtered_input::get() {
 	}
 
 	std::cerr << "ERROR - unexpected character: character code " << c << "\n";
-	assert(0);
 	throw;
 }
