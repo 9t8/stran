@@ -87,7 +87,7 @@ struct pair : datum {
 	operator std::string() const override;
 
 	p_datum eval(environment &env) const override {
-		return dynamic_cast<const function &>(*car->eval(env)).call(env, cdr);
+		return dynamic_cast<const function &>(*car->eval(env)).call(cdr, env);
 	}
 
 	p_datum car, cdr;
