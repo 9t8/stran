@@ -23,8 +23,10 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 					   "first argument must be an identifier");
 
 				env[dynamic_cast<const identifier &>(variable).name] = cdr->car->eval(env);
+
+
 				return p_datum(new empty_list);
-			} // double destruction here?
+			} // illegal read during destruction
 			))
 		}/*, {
 			"lambda", p_datum(new native_function(
