@@ -40,7 +40,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 				std::vector<std::string> formals;
 				while (curr_formal != nullptr) {
 					assert(typeid(*curr_formal->car) == typeid(identifier) &&
-						   "all formals must be identifiers");
+						   "all formals must be identifiers (variadics are not supported)");
 
 					formals.push_back(dynamic_cast<const identifier &>(*curr_formal->car).name);
 					curr_formal = dynamic_cast<const pair *>(curr_formal->cdr.get());
