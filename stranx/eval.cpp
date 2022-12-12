@@ -9,19 +9,19 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 		{
 			"define", p_datum(new native_function(
 			[](const p_datum &args, environment &env) {
-				const pair *args_list(dynamic_cast<const pair *>(args.get()));
-				assert(args_list != nullptr &&
+				assert(typeid(*args) == typeid(pair) &&
+				"malformed argument list (not enough arguments?)");
+				const pair &args_list(dynamic_cast<const pair &>(*args));
+				assert(typeid(*args_list.cdr) == typeid(pair) &&
 					   "malformed argument list (not enough arguments?)");
-				const pair *cdr(dynamic_cast<const pair *>(args_list->cdr.get()));
-				assert(cdr != nullptr && "malformed argument list (not enough arguments?)");
-				assert(dynamic_cast<const pair *>(cdr->cdr.get()) == nullptr &&
-					   "too many arguments");
+				const pair &cdr(dynamic_cast<const pair &>(*args_list.cdr));
+				assert(typeid(*cdr.cdr) == typeid(empty_list) && "too many arguments");
 
-				const datum &variable(*args_list->car);
-				assert(typeid(variable) == typeid(identifier) &&
+				assert(typeid(*args_list.car) == typeid(identifier) &&
 					   "first argument must be an identifier");
+				const identifier &variable(dynamic_cast<const identifier &>(*args_list.car));
 
-				env[dynamic_cast<const identifier &>(variable).name] = cdr->car->eval(env);
+				env[variable.name] = cdr.car->eval(env);
 
 
 				return std::make_shared<empty_list>();
@@ -30,9 +30,11 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 		}/*, {
 			"lambda", p_datum(new native_function(
 			[](const p_datum &args, environment &env) {
-				// turn args into vector while verifying them
-				const datum &formals_datum(*args[0]);
-				// todo: accept varargs
+				const pair *args_list(dynamic_cast<const pair *>(args.get()));
+				assert(args_list != nullptr &&
+					   "malformed argument list (not enough arguments?)");
+
+				const datum &formals_datum(*args_list->car);
 				assert(typeid(formals_datum) == typeid(list) &&
 					   "first argument must be a list");
 
@@ -48,7 +50,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 					formals[i] = dynamic_cast<const identifier &>(formal).name;
 				}
 
-				return std::make_shared<procedure>(formals, args[1]);
+				return std::make_shared<procedure>(formals, args_list->cdr);
 			}
 			))
 		}*/
