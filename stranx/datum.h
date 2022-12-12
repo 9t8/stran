@@ -26,8 +26,8 @@ struct function : datum {
 };
 
 struct procedure : function {
-	procedure(const std::vector<std::string> &fs, const p_datum &b)
-			: formals(fs), body(b), variadic(false) {
+	procedure(const std::vector<std::string> &fs, const p_datum &b, const bool &v)
+			: formals(fs), body(b), variadic(v) {
 		assert(!(variadic && fs.empty()) && "procedure taking no arguments cannot be variadic");
 	}
 
