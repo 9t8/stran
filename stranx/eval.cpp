@@ -42,7 +42,8 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 					assert(typeid(*curr_formal->car) == typeid(identifier) &&
 						   "all formals must be identifiers");
 
-					formals[i] = dynamic_cast<const identifier &>(formal).name;
+					formals.push_back(dynamic_cast<const identifier &>(*curr_formal->car).name);
+					curr_formal = dynamic_cast<const pair *>(curr_formal->cdr.get());
 				}
 				return std::make_shared<procedure>(formals, args_list.cdr, false);
 			}
