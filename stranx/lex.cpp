@@ -4,7 +4,7 @@ void lex_token(token_list &tokens, std::string &s) {
 	assert(!s.empty() && "attempted to tokenize an empty string");
 
 	if (s == ".") {
-		tokens.push_back(p_token(new dot));
+		tokens.push_back(std::make_unique<dot>());
 		return;
 	}
 
@@ -12,11 +12,11 @@ void lex_token(token_list &tokens, std::string &s) {
 		size_t idx(0);
 		double val(stod(s, &idx));
 		assert(idx == s.size() && "invalid character while parsing decimal");
-		tokens.push_back(p_token(new decimal(val)));
+		tokens.push_back(std::make_unique<decimal>(val));
 		return;
 	}
 
-	tokens.push_back(p_token(new identifier(s)));
+	tokens.push_back(std::make_unique<identifier>(s));
 }
 
 token_list lex(filtered_input &fi) {
@@ -46,11 +46,11 @@ token_list lex(filtered_input &fi) {
 				return tokens;
 
 			case '(':
-				tokens.push_back(p_token(new begin_list));
+				tokens.push_back(std::make_unique<begin_list>());
 				continue;
 
 			case ')':
-				tokens.push_back(p_token(new end_list));
+				tokens.push_back(std::make_unique<end_list>());
 				continue;
 
 			case ';':

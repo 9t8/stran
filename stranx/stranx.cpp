@@ -1,5 +1,4 @@
 // general todo
-// replace news with make_shared
 // add full define syntax
 // actual input handling
 // use boost for full numerical tower

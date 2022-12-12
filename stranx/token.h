@@ -7,16 +7,14 @@
 
 struct token;
 
-typedef std::unique_ptr<token> p_token;
-
-typedef std::deque<p_token> token_list;
+typedef std::deque<std::unique_ptr<token>> token_list;
 
 struct token : object {
 	// self-parses by default
 	virtual p_datum parse(token_list &tokens) const {
 		assert(tokens.at(0).get() == this && "first token in tokens is not current token");
 
-		p_datum p(dynamic_cast<const datum *>(tokens.front().release()));
+		p_datum p(dynamic_cast<datum *>(tokens.front().release()));
 		assert(p != nullptr && "self-parsing token that is not a datum");
 
 		tokens.pop_front();
@@ -48,7 +46,7 @@ struct dot : token, datum {
 		return ".";
 	}
 
-	p_datum eval(environment &env) const override {
+	p_datum eval(environment &env) override {
 		assert(0 && "illegal dot token");
 		throw;
 	}
@@ -61,7 +59,7 @@ struct identifier : token, datum {
 		return name;
 	}
 
-	p_datum eval(environment &env) const override {
+	p_datum eval(environment &env) override {
 		environment::iterator it(env.find(name));
 		assert(it != env.end() && "undefined identifier");
 		return it->second;

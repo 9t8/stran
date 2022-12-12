@@ -12,15 +12,15 @@ p_datum begin_list::parse(token_list &tokens) const {
 
 	if (get_next_token_type(tokens) == typeid(end_list)) {
 		tokens.pop_front();
-		return p_datum(new empty_list);
+		return std::make_shared<empty_list>();
 	}
 
-	std::shared_ptr<pair> start(new pair);
+	std::shared_ptr<pair> start(std::make_shared<pair>());
 	start->car = tokens.front()->parse(tokens);
 
 	std::shared_ptr<pair> p(start);
 	while (get_next_token_type(tokens) != typeid(end_list)) {
-		std::shared_ptr<pair> p_new(new pair);
+		std::shared_ptr<pair> p_new(std::make_shared<pair>());
 		p_new->car = tokens.front()->parse(tokens);
 		p->cdr = p_new;
 		p = p_new;

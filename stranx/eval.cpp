@@ -9,11 +9,10 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 		{
 			"define", p_datum(new native_function(
 			[](const p_datum &args, environment &env) {
-				std::shared_ptr<const pair> args_list(dynamic_cast<const pair *>(args.get()));
+				const pair *args_list(dynamic_cast<const pair *>(args.get()));
 				assert(args_list != nullptr &&
 					   "malformed argument list (not enough arguments?)");
-				std::shared_ptr<const pair> cdr(
-					dynamic_cast<const pair *>(args_list->cdr.get()));
+				const pair *cdr(dynamic_cast<const pair *>(args_list->cdr.get()));
 				assert(cdr != nullptr && "malformed argument list (not enough arguments?)");
 				assert(dynamic_cast<const pair *>(cdr->cdr.get()) == nullptr &&
 					   "too many arguments");
@@ -25,7 +24,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 				env[dynamic_cast<const identifier &>(variable).name] = cdr->car->eval(env);
 
 
-				return p_datum(new empty_list);
+				return std::make_shared<empty_list>();
 			} // illegal read during destruction, debug w/ use_count
 			))
 		}/*, {
@@ -49,7 +48,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 					formals[i] = dynamic_cast<const identifier &>(formal).name;
 				}
 
-				return p_datum(new procedure(formals, args[1]));
+				return std::make_shared<procedure>(formals, args[1]);
 			}
 			))
 		}*/

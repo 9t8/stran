@@ -10,14 +10,13 @@
 
 struct datum;
 
-// todo: remove const from datum or set-car! won't work
-typedef std::shared_ptr<const datum> p_datum;
+typedef std::shared_ptr<datum> p_datum;
 
 typedef std::unordered_map<std::string, p_datum> environment;
 
 struct datum : object, std::enable_shared_from_this<datum> {
 	// self evaluating by default
-	virtual p_datum eval(environment &env) const {
+	virtual p_datum eval(environment &env) {
 		return shared_from_this();
 	}
 };
@@ -73,7 +72,7 @@ struct empty_list : datum {
 		return "()";
 	}
 
-	p_datum eval(environment &env) const override {
+	p_datum eval(environment &env) override {
 		assert(0 && "attempted to evaluate empty list");
 		throw;
 	}
@@ -82,11 +81,11 @@ struct empty_list : datum {
 struct pair : datum {
 	static bool stringify_into_lists;
 
-	pair() : car(new empty_list) , cdr(new empty_list) {}
+	pair() : car(std::make_shared<empty_list>()) , cdr(std::make_shared<empty_list>()) {}
 
 	operator std::string() const override;
 
-	p_datum eval(environment &env) const override {
+	p_datum eval(environment &env) override {
 		return dynamic_cast<const function &>(*car->eval(env)).call(cdr, env);
 	}
 
