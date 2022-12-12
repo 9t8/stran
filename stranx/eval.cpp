@@ -25,7 +25,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 
 
 				return std::make_shared<empty_list>();
-			} // illegal read during destruction, debug w/ use_count
+			}
 			))
 		}/*, {
 			"lambda", p_datum(new native_function(
