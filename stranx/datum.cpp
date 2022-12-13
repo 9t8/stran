@@ -9,26 +9,26 @@ p_datum procedure::call(const p_datum &args, environment &env) const {
 	return body->eval(new_env);
 }
 
-p_datum next_arg(const pair *&curr_arg, environment &env) {
-	assert(curr_arg != nullptr && "malformed argument list (not enough arguments?)");
-
-	p_datum result(curr_arg->car->eval(env));
-	curr_arg = dynamic_cast<const pair *>(curr_arg->cdr.get());
-	return result;
-}
-
 environment procedure::create_new_env(const p_datum &args, environment &env) const {
-	environment new_env(env);
-
 	const pair *curr_arg(dynamic_cast<const pair *>(args.get()));
 
+	auto next_arg([&] {
+		assert(curr_arg != nullptr && "malformed argument list (not enough arguments?)");
+
+		p_datum result(curr_arg->car->eval(env));
+		curr_arg = dynamic_cast<const pair *>(curr_arg->cdr.get());
+		return result;
+	});
+
+	environment new_env(env);
+
 	for (size_t i(0); i < formals.size() - 1; ++i) {
-		new_env[formals[i]] = next_arg(curr_arg, env);
+		new_env[formals[i]] = next_arg();
 	}
 
 	if (!variadic) {
 		if (!formals.empty()) {
-			new_env[formals.back()] = next_arg(curr_arg, env);
+			new_env[formals.back()] = next_arg();
 		}
 		assert(curr_arg == nullptr && "too many arguments");
 
@@ -43,10 +43,11 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 	// sussy stuff here: check for leaks
 	std::shared_ptr<pair> tail(std::make_shared<pair>());
 	std::cerr << "\t" << tail.use_count() << "\n";
-	tail->car = next_arg(curr_arg, env);
+	tail->car = next_arg();
 	while (curr_arg != nullptr) {
 		std::shared_ptr<pair> new_tail(std::make_shared<pair>());
-		new_tail->car = next_arg(curr_arg, env);
+		new_tail->car = next_arg
+						();
 		tail->cdr = new_tail;
 		tail = new_tail;
 		new_tail = std::make_shared<pair>();
