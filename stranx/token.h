@@ -65,7 +65,7 @@ struct identifier : token, datum {
 		return it->second;
 	}
 
-	std::string name;
+	const std::string name;
 };
 
 struct decimal : token, datum {
@@ -75,7 +75,7 @@ struct decimal : token, datum {
 		return std::to_string(val);
 	}
 
-	double val;
+	const double val;
 };
 
 #endif

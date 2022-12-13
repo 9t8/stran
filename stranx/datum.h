@@ -64,7 +64,7 @@ template <class lambda_type> struct native_function : function {
 	}
 
 private:
-	lambda_type lambda;
+	const lambda_type lambda;
 };
 
 struct empty_list : datum {
@@ -85,12 +85,12 @@ struct pair : datum {
 
 	operator std::string() const override;
 
-	p_datum eval(environment &env) override {
+	p_datum eval(environment &env) override { // issue here
 		p_datum func_datum(car->eval(env));
 		const function *func(dynamic_cast<const function *>(func_datum.get()));
 		assert(func != nullptr && "attemped to call an uncallable object");
 		
-		return func->call(cdr, env); // issue here
+		return func->call(cdr, env);
 	}
 
 	p_datum car, cdr;
