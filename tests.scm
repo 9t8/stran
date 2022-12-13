@@ -6,6 +6,13 @@
 a
 b
 
+; lambdas
+(lambda (x) x)
+((lambda (x) x) 4)
+(define a (lambda (x) x))
+(a 1)
+(a 2)
+
 ; true/false
 (define if (lambda (c t f) (c t f)))
 (define t (lambda (l r) l))

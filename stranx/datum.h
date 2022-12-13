@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <iostream>
+
 struct datum;
 
 typedef std::shared_ptr<datum> p_datum;
@@ -86,7 +88,11 @@ struct pair : datum {
 	operator std::string() const override;
 
 	p_datum eval(environment &env) override {
-		return dynamic_cast<const function &>(*car->eval(env)).call(cdr, env);
+		p_datum func(dynamic_cast<const function *>(car->eval(env)));
+		std::cerr << typeid(*func).name() << "\n" << typeid(function).name() << "\n";
+		assert(typeid(*func) == typeid(function) && "attemped to call an uncallable object");
+		
+		return dynamic_cast<const function &>(*func).call(cdr, env); // issue here
 	}
 
 	p_datum car, cdr;
