@@ -12,6 +12,10 @@ b
 (define a (lambda (x) x))
 (a 1)
 (a 2)
+((lambda () 2))
+(define b (lambda () 2))
+b
+(b)
 
 ; true/false
 (define if (lambda (c t f) (c t f)))

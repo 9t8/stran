@@ -1,6 +1,7 @@
 // general todo
+// properly parse dots
 // lambda varargs
-// add full define syntax
+// full define syntax
 // actual input handling
 // use boost for full numerical tower
 // call/cc via syntax_tree bullshittery?
