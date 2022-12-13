@@ -8,8 +8,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include <iostream>
-
 struct datum;
 
 typedef std::shared_ptr<datum> p_datum;
@@ -42,14 +40,14 @@ struct procedure : function {
 	p_datum call(const p_datum &args, environment &env) const override;
 
 protected:
-	std::vector<std::string> formals;
+	const std::vector<std::string> formals;
 
 private:
 	environment create_new_env(const p_datum &args, environment &env) const;
 
-	p_datum body;
+	const p_datum body;
 
-	bool variadic;
+	const bool variadic;
 };
 
 template <class lambda_type> struct native_function : function {
@@ -89,7 +87,6 @@ struct pair : datum {
 
 	p_datum eval(environment &env) override {
 		p_datum func_datum(car->eval(env));
-		std::cerr << "\t" << typeid(*func_datum).name() << "\n";
 		const function *func(dynamic_cast<const function *>(func_datum.get()));
 		assert(func != nullptr && "attemped to call an uncallable object");
 		

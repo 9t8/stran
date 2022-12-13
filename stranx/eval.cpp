@@ -33,6 +33,10 @@ environment create_env() {
 			   "malformed argument list (not enough arguments?)");
 		const pair &args_list(dynamic_cast<const pair &>(*args));
 
+		assert(typeid(*args_list.cdr) == typeid(pair) &&
+			   "malformed argument list (not enough arguments?)");
+		const pair &cdr(dynamic_cast<const pair &>(*args_list.cdr));
+
 		const pair *curr_formal(dynamic_cast<const pair *>(args_list.car.get()));
 
 		std::vector<std::string> formals;
@@ -43,7 +47,7 @@ environment create_env() {
 			formals.push_back(dynamic_cast<const identifier &>(*curr_formal->car).name);
 			curr_formal = dynamic_cast<const pair *>(curr_formal->cdr.get());
 		}
-		return std::make_shared<procedure>(formals, args_list.cdr, false);
+		return std::make_shared<procedure>(formals, cdr.car, false);
 	}
 	);
 
