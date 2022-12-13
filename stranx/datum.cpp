@@ -2,6 +2,8 @@
 
 #include <sstream>
 
+#include <iostream>
+
 p_datum procedure::call(const p_datum &args, environment &env) const {
 	environment new_env(create_new_env(args, env));
 	return body->eval(new_env);
@@ -14,6 +16,8 @@ p_datum eval_arg(const pair *&curr_arg, environment &env) {
 }
 
 environment procedure::create_new_env(const p_datum &args, environment &env) const {
+	// proofread this method
+	
 	environment new_env(env);
 
 	const pair *curr_arg(dynamic_cast<const pair *>(args.get()));

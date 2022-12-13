@@ -7,17 +7,21 @@
 environment create_env() {
 	auto define(
 	[](const p_datum &args, environment &env) {
-		assert(typeid(*args) == typeid(pair) &&
+		const datum &temp(*args);
+		assert(typeid(temp) == typeid(pair) &&
 			   "malformed argument list (not enough arguments?)");
-		const pair &args_list(dynamic_cast<const pair &>(*args));
+		const pair &args_list(dynamic_cast<const pair &>(temp));
 
-		assert(typeid(*args_list.cdr) == typeid(pair) &&
+		const datum &temp1(*args_list.cdr);
+		assert(typeid(temp1) == typeid(pair) &&
 			   "malformed argument list (not enough arguments?)");
-		const pair &cdr(dynamic_cast<const pair &>(*args_list.cdr));
+		const pair &cdr(dynamic_cast<const pair &>(temp1));
 
-		assert(typeid(*cdr.cdr) == typeid(empty_list) && "too many arguments");
+		const datum &cddr(*cdr.cdr);
+		assert(typeid(cddr) == typeid(empty_list) && "too many arguments");
 
-		assert(typeid(*args_list.car) == typeid(identifier) &&
+		const datum &temp3(*args_list.car);
+		assert(typeid(temp3) == typeid(identifier) &&
 			   "first argument must be an identifier");
 		const identifier &variable(dynamic_cast<const identifier &>(*args_list.car));
 
@@ -29,22 +33,25 @@ environment create_env() {
 
 	auto lambda(
 	[](const p_datum &args, environment &env) {
-		assert(typeid(*args) == typeid(pair) &&
+		const datum &temp(*args);
+		assert(typeid(temp) == typeid(pair) &&
 			   "malformed argument list (not enough arguments?)");
-		const pair &args_list(dynamic_cast<const pair &>(*args));
+		const pair &args_list(dynamic_cast<const pair &>(temp));
 
-		assert(typeid(*args_list.cdr) == typeid(pair) &&
+		const datum &temp1(*args_list.cdr);
+		assert(typeid(temp1) == typeid(pair) &&
 			   "malformed argument list (not enough arguments?)");
-		const pair &cdr(dynamic_cast<const pair &>(*args_list.cdr));
+		const pair &cdr(dynamic_cast<const pair &>(temp1));
 
 		const pair *curr_formal(dynamic_cast<const pair *>(args_list.car.get()));
 
 		std::vector<std::string> formals;
 		while (curr_formal != nullptr) {
-			assert(typeid(*curr_formal->car) == typeid(identifier) &&
+			const datum &formal_iden(*curr_formal->car);
+			assert(typeid(formal_iden) == typeid(identifier) &&
 				   "all formals must be identifiers (variadics are not supported)");
 
-			formals.push_back(dynamic_cast<const identifier &>(*curr_formal->car).name);
+			formals.push_back(dynamic_cast<const identifier &>(formal_iden).name);
 			curr_formal = dynamic_cast<const pair *>(curr_formal->cdr.get());
 		}
 		return std::make_shared<procedure>(formals, cdr.car, false);
