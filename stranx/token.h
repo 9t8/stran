@@ -15,7 +15,7 @@ struct token : object {
 		assert(tokens.at(0).get() == this && "first token in tokens is not current token");
 
 		p_datum p(dynamic_cast<datum *>(tokens.front().release()));
-		assert(p != nullptr && "self-parsing token that is not a datum");
+		assert(p != nullptr && "tried to parse token that is not a datum");
 
 		tokens.pop_front();
 		return p;
@@ -41,14 +41,9 @@ struct end_list : token {
 	}
 };
 
-struct dot : token, datum {
+struct dot : token {
 	operator std::string() const override {
 		return ".";
-	}
-
-	p_datum eval(environment &env) override {
-		assert(0 && "illegal dot token");
-		throw;
 	}
 };
 
