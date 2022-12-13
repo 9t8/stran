@@ -89,8 +89,8 @@ struct pair : datum {
 
 	p_datum eval(environment &env) override {
 		p_datum func_datum(car->eval(env));
+		std::cerr << "\t" << typeid(*func_datum).name() << "\n";
 		const function *func(dynamic_cast<const function *>(func_datum.get()));
-		std::cerr << typeid(*func).name() << "\n" << typeid(function).name() << "\n";
 		assert(func != nullptr && "attemped to call an uncallable object");
 		
 		return func->call(cdr, env); // issue here

@@ -40,7 +40,7 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 
 	std::shared_ptr<pair> tail(std::make_shared<pair>());
 	p_datum pack(tail);
-	std::cerr << "\t" << tail.use_count () << "\n";
+	std::cerr << "\t" << tail.use_count() << "\n";
 	tail->car = eval_arg(curr_arg, env);
 	while (curr_arg != nullptr) {
 		std::shared_ptr<pair> new_tail(std::make_shared<pair>());
