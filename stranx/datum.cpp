@@ -50,8 +50,7 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 	tail->car = next_arg();
 	while (curr_arg != nullptr) {
 		std::shared_ptr<pair> new_tail(std::make_shared<pair>());
-		new_tail->car = next_arg
-						();
+		new_tail->car = next_arg();
 		tail->cdr = new_tail;
 		tail = new_tail;
 		new_tail = std::make_shared<pair>();
