@@ -88,11 +88,12 @@ struct pair : datum {
 	operator std::string() const override;
 
 	p_datum eval(environment &env) override {
-		p_datum func(dynamic_cast<const function *>(car->eval(env)));
+		p_datum func_datum(car->eval(env));
+		const function *func(dynamic_cast<const function *>(func_datum.get()));
 		std::cerr << typeid(*func).name() << "\n" << typeid(function).name() << "\n";
-		assert(typeid(*func) == typeid(function) && "attemped to call an uncallable object");
+		assert(func != nullptr && "attemped to call an uncallable object");
 		
-		return dynamic_cast<const function &>(*func).call(cdr, env); // issue here
+		return func->call(cdr, env); // issue here
 	}
 
 	p_datum car, cdr;
