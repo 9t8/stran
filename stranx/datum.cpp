@@ -10,7 +10,15 @@ p_datum procedure::call(const p_datum &args, environment &env) const {
 }
 
 environment procedure::create_new_env(const p_datum &args, environment &env) const {
+	environment new_env(env);
+
 	const pair *curr_arg(dynamic_cast<const pair *>(args.get()));
+
+	if (formals.empty()) {
+		assert(curr_arg == nullptr && "too many arguments");
+
+		return new_env;
+	}
 
 	auto next_arg([&] {
 		assert(curr_arg != nullptr && "malformed argument list (not enough arguments?)");
@@ -20,16 +28,12 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 		return result;
 	});
 
-	environment new_env(env);
-
 	for (size_t i(0); i < formals.size() - 1; ++i) {
 		new_env[formals[i]] = next_arg();
 	}
 
 	if (!variadic) {
-		if (!formals.empty()) {
-			new_env[formals.back()] = next_arg();
-		}
+		new_env[formals.back()] = next_arg();
 		assert(curr_arg == nullptr && "too many arguments");
 
 		return new_env;
