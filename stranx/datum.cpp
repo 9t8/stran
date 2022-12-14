@@ -2,8 +2,6 @@
 
 #include <sstream>
 
-#include <iostream>
-
 p_datum procedure::call(const p_datum &args, environment &env) const {
 	environment new_env(create_new_env(args, env));
 	return body->eval(new_env);
@@ -44,9 +42,8 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 		return new_env;
 	}
 
-	// sussy stuff here: check for leaks
+	// sussy stuff here: check for leaks here first
 	std::shared_ptr<pair> tail(std::make_shared<pair>(next_arg()));
-	std::cerr << "\t" << tail.use_count() << "\n";
 	while (curr_arg != nullptr) {
 		std::shared_ptr<pair> new_tail(std::make_shared<pair>(next_arg()));
 		tail->cdr = new_tail;
