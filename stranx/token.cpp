@@ -21,6 +21,11 @@ p_datum begin_list::parse(token_list &tokens) const {
 	std::shared_ptr<pair> p(start);
 	while (get_next_token_type() != typeid(end_list)) {
 		if (get_next_token_type() == typeid(dot)) {
+			tokens.pop_front();
+			p->cdr = tokens.front()->parse(tokens);
+			assert(get_next_token_type() == typeid(end_list) &&
+				   "malformed improper list (misplaced dot token)");
+			break;
 		}
 		std::shared_ptr<pair> p_new(std::make_shared<pair>());
 		p_new->car = tokens.front()->parse(tokens);

@@ -1,5 +1,4 @@
 // general todo
-// properly parse dots
 // lambda varargs
 // full define syntax
 // actual input handling
