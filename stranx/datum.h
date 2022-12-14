@@ -25,6 +25,20 @@ struct function : datum {
 	virtual p_datum call(const p_datum &args, environment &env) const = 0;
 };
 
+inline p_datum find(const std::string &name, const environment &env) {
+	environment::const_iterator it(env.find(name));
+	assert(it != env.end() && "undefined identifier");
+
+	return it->second;
+}
+
+inline p_datum call(const p_datum &func, const p_datum &args, environment &env) {
+	assert(dynamic_cast<const function *>(func.get()) != nullptr &&
+		   "attemped to call an uncallable object");
+
+	return dynamic_cast<const function &>(*func).call(args, env);
+}
+
 struct procedure : function {
 	procedure(const std::vector<std::string> &fs, const p_datum &b, const bool &v)
 			: formals(fs), body(b), variadic(v) {
@@ -81,16 +95,13 @@ struct empty_list : datum {
 struct pair : datum {
 	static bool stringify_into_lists;
 
-	pair() : car(std::make_shared<empty_list>()) , cdr(std::make_shared<empty_list>()) {}
+	pair(const p_datum &a, const p_datum &b = std::make_shared<empty_list>())
+			: car(a) , cdr(b) {}
 
 	operator std::string() const override;
 
 	p_datum eval(environment &env) override {
-		p_datum func(car->eval(env));
-		assert(dynamic_cast<const function *>(func.get()) != nullptr &&
-			   "attemped to call an uncallable object");
-
-		return dynamic_cast<const function &>(*func).call(cdr, env);
+		return call(car->eval(env), cdr, env);
 	}
 
 	p_datum car, cdr;

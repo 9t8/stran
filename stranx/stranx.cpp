@@ -1,6 +1,5 @@
 // general todo
 // lambda varargs
-// full define syntax
 // actual input handling
 // use boost for full numerical tower
 // call/cc via syntax_tree bullshittery?

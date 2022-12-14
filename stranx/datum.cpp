@@ -45,15 +45,12 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 	}
 
 	// sussy stuff here: check for leaks
-	std::shared_ptr<pair> tail(std::make_shared<pair>());
+	std::shared_ptr<pair> tail(std::make_shared<pair>(next_arg()));
 	std::cerr << "\t" << tail.use_count() << "\n";
-	tail->car = next_arg();
 	while (curr_arg != nullptr) {
-		std::shared_ptr<pair> new_tail(std::make_shared<pair>());
-		new_tail->car = next_arg();
+		std::shared_ptr<pair> new_tail(std::make_shared<pair>(next_arg()));
 		tail->cdr = new_tail;
 		tail = new_tail;
-		new_tail = std::make_shared<pair>();
 	}
 	new_env[formals.back()] = tail;
 	return new_env;

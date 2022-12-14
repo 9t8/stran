@@ -17,15 +17,28 @@ environment create_env() {
 			   "malformed argument list (not enough arguments?)");
 		const pair &cdr(dynamic_cast<const pair &>(temp1));
 
-		const datum &cddr(*cdr.cdr);
-		assert(typeid(cddr) == typeid(empty_list) && "too many arguments");
+		const datum &car(*args_list.car);
 
-		const datum &temp3(*args_list.car);
-		assert(typeid(temp3) == typeid(identifier) &&
-			   "first argument must be an identifier");
-		const identifier &variable(dynamic_cast<const identifier &>(*args_list.car));
+		if (typeid(car) == typeid(identifier)) {
+			const datum &cddr(*cdr.cdr);
+			assert(typeid(cddr) == typeid(empty_list) && "too many arguments");
 
-		env[variable.name] = cdr.car->eval(env);
+			env[dynamic_cast<const identifier &>(*args_list.car).name] = cdr.car->eval(env);
+		} else {
+			assert(typeid(car) == typeid(pair) && "first argument must be identifier or list");
+
+			const pair &formals(dynamic_cast<const pair &>(*args_list.car));
+
+			std::shared_ptr<pair> lambda_args(std::make_shared<pair>(
+						formals.cdr, args_list.cdr));
+
+			const datum &caar(*formals.car);
+			assert(typeid(caar) == typeid(identifier) &&
+				   "procedure name must be an identifier");
+
+			env[dynamic_cast<const identifier &>(*formals.car).name] =
+				call(find("lambda", env), lambda_args, env);
+		}
 
 		return std::make_shared<empty_list>();
 	}

@@ -13,7 +13,7 @@ b
 (a 1)
 (a 2)
 ((lambda () 2))
-(define b (lambda () 2))
+(define (b) 2)
 b
 (b)
 
@@ -25,8 +25,8 @@ b
 (if f 1 0)
 
 ; swapped names to check for mangling
-(define if (lambda (c f t) (c f t)))
-(define t (lambda (l r) l))
-(define f (lambda (l r) r))
+(define (if c f t) (c f t))
+(define (t l r) l)
+(define (f l r) r)
 (if t 1 0)
 (if f 1 0)

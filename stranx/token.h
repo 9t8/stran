@@ -55,9 +55,7 @@ struct identifier : token, datum {
 	}
 
 	p_datum eval(environment &env) override {
-		environment::iterator it(env.find(name));
-		assert(it != env.end() && "undefined identifier");
-		return it->second;
+		return find(name, env);
 	}
 
 	const std::string name;
