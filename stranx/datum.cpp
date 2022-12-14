@@ -18,7 +18,7 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 		return new_env;
 	}
 
-	auto next_arg([&] {
+	auto eval_next_arg([&] {
 		assert(curr_arg != nullptr && "malformed argument list (not enough arguments?)");
 
 		p_datum result(curr_arg->car->eval(env));
@@ -27,11 +27,11 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 	});
 
 	for (size_t i(0); i < formals.size() - 1; ++i) {
-		new_env[formals[i]] = next_arg();
+		new_env[formals[i]] = eval_next_arg();
 	}
 
 	if (!variadic) {
-		new_env[formals.back()] = next_arg();
+		new_env[formals.back()] = eval_next_arg();
 		assert(curr_arg == nullptr && "too many arguments");
 
 		return new_env;
@@ -43,9 +43,9 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 	}
 
 	// sussy stuff here: check for leaks here first
-	std::shared_ptr<pair> tail(std::make_shared<pair>(next_arg()));
+	std::shared_ptr<pair> tail(std::make_shared<pair>(eval_next_arg()));
 	while (curr_arg != nullptr) {
-		std::shared_ptr<pair> new_tail(std::make_shared<pair>(next_arg()));
+		std::shared_ptr<pair> new_tail(std::make_shared<pair>(eval_next_arg()));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}

@@ -45,6 +45,11 @@ struct dot : token {
 	operator std::string() const override {
 		return ".";
 	}
+
+	p_datum parse(token_list &tokens) const override {
+		assert(0 && "unexpected dot token");
+		throw;
+	}
 };
 
 struct identifier : token, datum {
