@@ -52,7 +52,26 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 
 bool pair::stringify_into_lists(true);
 
-// todo: write iteratively, use ostringstream
 pair::operator std::string() const {
-	return "(" + static_cast<std::string>(*car) + " . " + static_cast<std::string>(*cdr) + ")";
+	if (!stringify_into_lists) {
+		return "(" + static_cast<std::string>(*car) + " . " + static_cast<std::string>(*cdr)
+			   + ")";
+	}
+
+	std::ostringstream oss;
+	p_datum p_last(cdr);
+	const pair *curr_pair(this);
+
+	oss << "(" << *next(curr_pair);
+	while (curr_pair != nullptr) {
+		p_last = curr_pair->cdr;
+		oss << " " << *next(curr_pair);
+	}
+	const datum &last(*p_last);
+	if (typeid(last) != typeid(empty_list)) {
+		oss << " . " << last;
+	}
+	oss << ")";
+
+	return oss.str();
 }
