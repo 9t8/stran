@@ -7,7 +7,7 @@ p_datum procedure::call(const p_datum &args, environment &env) const {
 
 	const pair *exprs(dynamic_cast<const pair *>(body.get()));
 	p_datum result(next(exprs)->eval(new_env));
-	while (exprs != nullptr) {
+	while (exprs) {
 		result = next(exprs)->eval(new_env);
 	}
 	return result;
@@ -19,7 +19,7 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 	const pair *curr_arg(dynamic_cast<const pair *>(args.get()));
 
 	if (formals.empty()) {
-		assert(curr_arg == nullptr && "too many arguments");
+		assert(!curr_arg && "too many arguments");
 
 		return new_env;
 	}
@@ -30,19 +30,19 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 
 	if (!variadic) {
 		new_env[formals.back()] = next(curr_arg)->eval(env);
-		assert(curr_arg == nullptr && "too many arguments");
+		assert(!curr_arg && "too many arguments");
 
 		return new_env;
 	}
 
-	if (curr_arg == nullptr) {
+	if (!curr_arg) {
 		new_env[formals.back()] = std::make_shared<empty_list>();
 		return new_env;
 	}
 
 	std::shared_ptr<pair> tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
 	new_env[formals.back()] = tail;
-	while (curr_arg != nullptr) {
+	while (curr_arg) {
 		std::shared_ptr<pair> new_tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
 		tail->cdr = new_tail;
 		tail = new_tail;

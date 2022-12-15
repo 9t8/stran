@@ -60,6 +60,6 @@ token_list lex(filtered_input &fi) {
 				continue;
 		}
 
-		assert(0 && "character not yet supported");
+		assert(!"character not yet supported");
 	}
 }

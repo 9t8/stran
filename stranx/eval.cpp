@@ -55,7 +55,7 @@ environment create_env() {
 
 		const identifier *variadic_iden(dynamic_cast<const identifier *>(args_list.car.get()));
 		const pair *curr_formal(dynamic_cast<const pair *>(args_list.car.get()));
-		while (curr_formal != nullptr) {
+		while (curr_formal) {
 			variadic_iden = dynamic_cast<const identifier *>(curr_formal->cdr.get());
 
 			const datum &formal_iden(*next(curr_formal));
@@ -68,10 +68,10 @@ environment create_env() {
 		const datum &body(*args_list.cdr);
 		assert(typeid(body) == typeid(pair) && "invalid procedure body");
 
-		if (variadic_iden != nullptr) {
+		if (variadic_iden) {
 			formals.push_back(variadic_iden->name);
 		}
-		return std::make_shared<procedure>(formals, args_list.cdr, variadic_iden != nullptr);
+		return std::make_shared<procedure>(formals, args_list.cdr, variadic_iden);
 	}
 	);
 

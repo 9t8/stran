@@ -28,7 +28,7 @@ struct function : datum {
 struct procedure : function {
 	procedure(const std::vector<std::string> &fs, const p_datum &b, const bool &v)
 			: formals(fs), body(b), variadic(v) {
-		assert(!(variadic && fs.empty()) && "procedure taking no arguments cannot be variadic");
+		assert(!variadic || !fs.empty() && "procedure taking no arguments cannot be variadic");
 	}
 
 	operator std::string() const override {
@@ -73,7 +73,7 @@ struct empty_list : datum {
 	}
 
 	p_datum eval(environment &env) override {
-		assert(0 && "attempted to evaluate empty list");
+		assert(!"attempted to evaluate empty list");
 		throw;
 	}
 };
@@ -86,7 +86,7 @@ inline p_datum find(const std::string &name, const environment &env) {
 }
 
 inline p_datum call(const p_datum &func, const p_datum &args, environment &env) {
-	assert(dynamic_cast<const function *>(func.get()) != nullptr &&
+	assert(dynamic_cast<const function *>(func.get()) &&
 		   "attemped to call an uncallable object");
 
 	return dynamic_cast<const function &>(*func).call(args, env);
@@ -108,7 +108,7 @@ struct pair : datum {
 };
 
 inline const p_datum &next(const pair *&exprs) {
-	assert(exprs != nullptr && "invalid expression list (not enough arguments?)");
+	assert(exprs && "invalid expression list (not enough arguments?)");
 
 	const p_datum &result(exprs->car);
 	exprs = dynamic_cast<const pair *>(exprs->cdr.get());

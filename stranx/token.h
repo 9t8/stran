@@ -15,7 +15,7 @@ struct token : object {
 		assert(tokens.at(0).get() == this && "first token in tokens is not current token");
 
 		p_datum p(dynamic_cast<datum *>(tokens.front().release()));
-		assert(p != nullptr && "tried to parse token that is not a datum");
+		assert(p && "tried to parse token that is not a datum");
 
 		tokens.pop_front();
 		return p;
@@ -36,7 +36,7 @@ struct end_list : token {
 	}
 
 	p_datum parse(token_list &tokens) const override {
-		assert(0 && "unexpected end of list token");
+		assert(!"unexpected end of list token");
 		throw;
 	}
 };
@@ -47,7 +47,7 @@ struct dot : token {
 	}
 
 	p_datum parse(token_list &tokens) const override {
-		assert(0 && "unexpected dot token");
+		assert(!"unexpected dot token");
 		throw;
 	}
 };
