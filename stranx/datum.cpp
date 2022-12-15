@@ -53,10 +53,6 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 bool pair::stringify_into_lists(true);
 
 // todo: write iteratively, use ostringstream
-std::string stringify_elements(const pair &p) {
-	return static_cast<std::string>(*p.car) + " . " + static_cast<std::string>(*p.cdr);
-}
-
 pair::operator std::string() const {
-	return "(" + stringify_elements(*this) + ")";
+	return "(" + static_cast<std::string>(*car) + " . " + static_cast<std::string>(*cdr) + ")";
 }
