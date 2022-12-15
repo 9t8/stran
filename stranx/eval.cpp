@@ -46,8 +46,6 @@ environment create_env() {
 
 	auto lambda(
 	[](const p_datum &args, environment &env) {
-		// todo: varargs
-		
 		const datum &temp(*args);
 		assert(typeid(temp) == typeid(pair) &&
 			   "malformed argument list (not enough arguments?)");
@@ -56,6 +54,7 @@ environment create_env() {
 		const pair *curr_formal(dynamic_cast<const pair *>(args_list.car.get()));
 
 		std::vector<std::string> formals;
+		// todo: varargs
 		while (curr_formal != nullptr) {
 			const datum &formal_iden(*curr_formal->car);
 			assert(typeid(formal_iden) == typeid(identifier) &&
