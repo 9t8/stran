@@ -25,6 +25,23 @@ struct function : datum {
 	virtual p_datum call(const p_datum &args, environment &env) const = 0;
 };
 
+template <class func> struct native_function : function {
+	native_function(const func &c) : call_func(c) {}
+
+	operator std::string() const override {
+		std::ostringstream oss;
+		oss << "native_function@" << this;
+		return oss.str();
+	}
+
+	p_datum call(const p_datum &args, environment &env) const override {
+		return call_func(args, env);
+	}
+
+private:
+	const func call_func;
+};
+
 struct procedure : function {
 	procedure(const std::vector<std::string> &fs, const p_datum &b, const bool &v)
 			: formals(fs), body(b), variadic(v) {
@@ -48,23 +65,6 @@ private:
 	const p_datum body;
 
 	const bool variadic;
-};
-
-template <class lambda_type> struct native_function : function {
-	native_function(const lambda_type &l) : lambda(l) {}
-
-	operator std::string() const override {
-		std::ostringstream oss;
-		oss << "native_function@" << this;
-		return oss.str();
-	}
-
-	p_datum call(const p_datum &args, environment &env) const override {
-		return lambda(args, env);
-	}
-
-private:
-	const lambda_type lambda;
 };
 
 struct empty_list : datum {
@@ -107,12 +107,6 @@ struct pair : datum {
 	p_datum car, cdr;
 };
 
-inline const p_datum &next(const pair *&exprs) {
-	assert(exprs && "invalid expression list (not enough arguments?)");
-
-	const p_datum &result(exprs->car);
-	exprs = dynamic_cast<const pair *>(exprs->cdr.get());
-	return result;
-}
+const p_datum &next(const pair *&exprs);
 
 #endif

@@ -1,18 +1,18 @@
 file
 	stranx.cpp,
-	object.h,
 	datum.h,
 	datum.cpp,
-	token.h,
-	token.cpp,
-	parse.h,
-	parse.cpp,
-	lex.h,
+	eval.h,
+	eval.cpp,
 	filtered_input.h,
 	filtered_input.cpp,
+	lex.h,
 	lex.cpp,
-	eval.h,
-	eval.cpp;
+	object.h,
+	parse.h,
+	parse.cpp,
+	token.h,
+	token.cpp;
 
 mainconfig
 	"" = "";

@@ -11,15 +11,7 @@ typedef std::deque<std::unique_ptr<token>> token_list;
 
 struct token : object {
 	// self-parses by default
-	virtual p_datum parse(token_list &tokens) const {
-		assert(tokens.at(0).get() == this && "first token in tokens is not current token");
-
-		p_datum p(dynamic_cast<datum *>(tokens.front().release()));
-		assert(p && "tried to parse token that is not a datum");
-
-		tokens.pop_front();
-		return p;
-	}
+	virtual p_datum parse(token_list &tokens) const;
 };
 
 struct begin_list : token {

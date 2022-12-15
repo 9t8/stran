@@ -75,3 +75,11 @@ pair::operator std::string() const {
 
 	return oss.str();
 }
+
+const p_datum &next(const pair *&exprs) {
+	assert(exprs && "invalid expression list (not enough arguments?)");
+
+	const p_datum &result(exprs->car);
+	exprs = dynamic_cast<const pair *>(exprs->cdr.get());
+	return result;
+}
