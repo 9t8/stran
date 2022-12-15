@@ -24,7 +24,7 @@ b
 (if t 1 0)
 (if f 1 0)
 
-; swapped names to check for mangling
+; swapped names
 (define (if c f t) (c f t))
 (define (t l r) l)
 (define (f l r) r)
