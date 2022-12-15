@@ -46,15 +46,12 @@ environment create_env() {
 
 	auto lambda(
 	[](const p_datum &args, environment &env) {
+		// todo: varargs
+		
 		const datum &temp(*args);
 		assert(typeid(temp) == typeid(pair) &&
 			   "malformed argument list (not enough arguments?)");
 		const pair &args_list(dynamic_cast<const pair &>(temp));
-
-		const datum &temp1(*args_list.cdr);
-		assert(typeid(temp1) == typeid(pair) &&
-			   "malformed argument list (not enough arguments?)");
-		const pair &cdr(dynamic_cast<const pair &>(temp1));
 
 		const pair *curr_formal(dynamic_cast<const pair *>(args_list.car.get()));
 
@@ -67,7 +64,11 @@ environment create_env() {
 			formals.push_back(dynamic_cast<const identifier &>(formal_iden).name);
 			curr_formal = dynamic_cast<const pair *>(curr_formal->cdr.get());
 		}
-		return std::make_shared<procedure>(formals, cdr.car, false);
+
+		const datum &body(*args_list.cdr);
+		assert(typeid(body) == typeid(pair) && "invalid procedure body");
+
+		return std::make_shared<procedure>(formals, args_list.cdr, false);
 	}
 	);
 

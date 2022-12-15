@@ -1,5 +1,3 @@
-// todo: lambda varargs, multiple expressions in procudure bodies
-
 #include "eval.h"
 #include "lex.h"
 #include "parse.h"

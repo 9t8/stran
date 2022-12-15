@@ -2,9 +2,23 @@
 
 #include <sstream>
 
+p_datum eval_next(const pair *&exprs, environment &env) {
+	assert(exprs != nullptr && "invalid expression list (not enough arguments?)");
+
+	p_datum result(exprs->car->eval(env));
+	exprs = dynamic_cast<const pair *>(exprs->cdr.get());
+	return result;
+}
+
 p_datum procedure::call(const p_datum &args, environment &env) const {
 	environment new_env(create_new_env(args, env));
-	return body->eval(new_env);
+	
+	const pair *exprs(dynamic_cast<const pair *>(body.get()));
+	p_datum result(eval_next(exprs, new_env));
+	while (exprs != nullptr) {
+		result = eval_next(exprs, new_env);
+	}
+	return result;
 }
 
 environment procedure::create_new_env(const p_datum &args, environment &env) const {
@@ -18,20 +32,12 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 		return new_env;
 	}
 
-	auto eval_next_arg([&] {
-		assert(curr_arg != nullptr && "malformed argument list (not enough arguments?)");
-
-		p_datum result(curr_arg->car->eval(env));
-		curr_arg = dynamic_cast<const pair *>(curr_arg->cdr.get());
-		return result;
-	});
-
 	for (size_t i(0); i < formals.size() - 1; ++i) {
-		new_env[formals[i]] = eval_next_arg();
+		new_env[formals[i]] = eval_next(curr_arg, env);
 	}
 
 	if (!variadic) {
-		new_env[formals.back()] = eval_next_arg();
+		new_env[formals.back()] = eval_next(curr_arg, env);
 		assert(curr_arg == nullptr && "too many arguments");
 
 		return new_env;
@@ -43,9 +49,9 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 	}
 
 	// sussy stuff here: check for leaks here first
-	std::shared_ptr<pair> tail(std::make_shared<pair>(eval_next_arg()));
+	std::shared_ptr<pair> tail(std::make_shared<pair>(eval_next(curr_arg, env)));
 	while (curr_arg != nullptr) {
-		std::shared_ptr<pair> new_tail(std::make_shared<pair>(eval_next_arg()));
+		std::shared_ptr<pair> new_tail(std::make_shared<pair>(eval_next(curr_arg, env)));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}
@@ -55,7 +61,7 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 
 bool pair::stringify_into_lists(true);
 
-// write iteratively, use ostringstream
+// todo: write iteratively, use ostringstream
 std::string stringify_elements(const pair &p) {
 	return static_cast<std::string>(*p.car) + " . " + static_cast<std::string>(*p.cdr);
 }

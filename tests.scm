@@ -30,3 +30,9 @@ b
 (define (f l r) r)
 (if t 1 0)
 (if f 1 0)
+
+; multi-statement procedures
+(lambda () 0 1)
+((lambda () 0 1))
+(define (f a b) a b)
+(f 0 1)
