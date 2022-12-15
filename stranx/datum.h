@@ -25,20 +25,6 @@ struct function : datum {
 	virtual p_datum call(const p_datum &args, environment &env) const = 0;
 };
 
-inline p_datum find(const std::string &name, const environment &env) {
-	environment::const_iterator it(env.find(name));
-	assert(it != env.end() && "undefined identifier");
-
-	return it->second;
-}
-
-inline p_datum call(const p_datum &func, const p_datum &args, environment &env) {
-	assert(dynamic_cast<const function *>(func.get()) != nullptr &&
-		   "attemped to call an uncallable object");
-
-	return dynamic_cast<const function &>(*func).call(args, env);
-}
-
 struct procedure : function {
 	procedure(const std::vector<std::string> &fs, const p_datum &b, const bool &v)
 			: formals(fs), body(b), variadic(v) {
@@ -92,6 +78,20 @@ struct empty_list : datum {
 	}
 };
 
+inline p_datum find(const std::string &name, const environment &env) {
+	environment::const_iterator it(env.find(name));
+	assert(it != env.end() && "undefined identifier");
+
+	return it->second;
+}
+
+inline p_datum call(const p_datum &func, const p_datum &args, environment &env) {
+	assert(dynamic_cast<const function *>(func.get()) != nullptr &&
+		   "attemped to call an uncallable object");
+
+	return dynamic_cast<const function &>(*func).call(args, env);
+}
+
 struct pair : datum {
 	static bool stringify_into_lists;
 
@@ -106,5 +106,13 @@ struct pair : datum {
 
 	p_datum car, cdr;
 };
+
+inline p_datum next(const pair *&exprs) {
+	assert(exprs != nullptr && "invalid expression list (not enough arguments?)");
+
+	p_datum result(exprs->car);
+	exprs = dynamic_cast<const pair *>(exprs->cdr.get());
+	return result;
+}
 
 #endif
