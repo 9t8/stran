@@ -18,11 +18,11 @@ int main(int argc, const char **argv) {
 
 	std::vector<p_datum> syntax_tree(parse(tokens));
 
-	std::cout << "===-- syntax tree --===" << std::endl;
+	std::cout << "\n===-- syntax tree --===" << std::endl;
 	for (size_t i(0); i < syntax_tree.size(); ++i) {
-		std::cout << *syntax_tree[i] << std::endl;
+		std::cout << "  " << *syntax_tree[i] << std::endl;
 	}
 
-	std::cout << "===-- output --===" << std::endl;
+	std::cout << "\n===-- output --===" << std::endl;
 	eval(syntax_tree, std::cout);
 }
