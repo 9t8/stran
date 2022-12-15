@@ -26,7 +26,7 @@ struct function : datum {
 };
 
 template <class func> struct native_function : function {
-	native_function(const func &c) : call_func(c) {}
+	native_function(const func &cf) : call_func(cf) {}
 
 	operator std::string() const override {
 		std::ostringstream oss;
@@ -38,6 +38,7 @@ template <class func> struct native_function : function {
 		return call_func(args, env);
 	}
 
+private:
 	const func call_func;
 };
 
