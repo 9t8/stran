@@ -15,7 +15,7 @@ typedef std::shared_ptr<datum> p_datum;
 typedef std::unordered_map<std::string, p_datum> environment;
 
 struct datum : object, std::enable_shared_from_this<datum> {
-	// self evaluating by default
+	// self-evaluating by default
 	virtual p_datum eval(environment &env) {
 		return shared_from_this();
 	}

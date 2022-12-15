@@ -51,22 +51,28 @@ environment create_env() {
 			   "malformed argument list (not enough arguments?)");
 		const pair &args_list(dynamic_cast<const pair &>(temp));
 
-		const pair *curr_formal(dynamic_cast<const pair *>(args_list.car.get()));
-
 		std::vector<std::string> formals;
-		// todo: varargs
+
+		// todo clean this shit up
+		const pair *curr_formal(dynamic_cast<const pair *>(args_list.car.get()));
+		const identifier *last_formal(dynamic_cast<const identifier *>(args_list.car.get()));
 		while (curr_formal != nullptr) {
+			last_formal = dynamic_cast<const identifier *>(curr_formal->cdr.get());
+
 			const datum &formal_iden(*next(curr_formal));
 			assert(typeid(formal_iden) == typeid(identifier) &&
 				   "all formals must be identifiers (variadics are not supported)");
 
 			formals.push_back(dynamic_cast<const identifier &>(formal_iden).name);
 		}
+		if (last_formal != nullptr) {
+			formals.push_back(last_formal->name);
+		}
 
 		const datum &body(*args_list.cdr);
 		assert(typeid(body) == typeid(pair) && "invalid procedure body");
 
-		return std::make_shared<procedure>(formals, args_list.cdr, false);
+		return std::make_shared<procedure>(formals, args_list.cdr, last_formal != nullptr);
 	}
 	);
 

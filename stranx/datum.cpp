@@ -40,14 +40,13 @@ environment procedure::create_new_env(const p_datum &args, environment &env) con
 		return new_env;
 	}
 
-	// sussy stuff here: check for leaks here first
 	std::shared_ptr<pair> tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
+	new_env[formals.back()] = tail;
 	while (curr_arg != nullptr) {
 		std::shared_ptr<pair> new_tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}
-	new_env[formals.back()] = tail;
 	return new_env;
 }
 
