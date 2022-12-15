@@ -38,7 +38,6 @@ template <class func> struct native_function : function {
 		return call_func(args, env);
 	}
 
-private:
 	const func call_func;
 };
 
