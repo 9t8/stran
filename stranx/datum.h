@@ -107,10 +107,10 @@ struct pair : datum {
 	p_datum car, cdr;
 };
 
-inline p_datum next(const pair *&exprs) {
+inline const p_datum &next(const pair *&exprs) {
 	assert(exprs != nullptr && "invalid expression list (not enough arguments?)");
 
-	p_datum result(exprs->car);
+	const p_datum &result(exprs->car);
 	exprs = dynamic_cast<const pair *>(exprs->cdr.get());
 	return result;
 }

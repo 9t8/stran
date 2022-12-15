@@ -56,12 +56,11 @@ environment create_env() {
 		std::vector<std::string> formals;
 		// todo: varargs
 		while (curr_formal != nullptr) {
-			const datum &formal_iden(*curr_formal->car);
+			const datum &formal_iden(*next(curr_formal));
 			assert(typeid(formal_iden) == typeid(identifier) &&
 				   "all formals must be identifiers (variadics are not supported)");
 
 			formals.push_back(dynamic_cast<const identifier &>(formal_iden).name);
-			curr_formal = dynamic_cast<const pair *>(curr_formal->cdr.get());
 		}
 
 		const datum &body(*args_list.cdr);
