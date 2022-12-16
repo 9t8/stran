@@ -28,7 +28,7 @@ token_list lex(filtered_input &fi) {
 
 		if (!isspace(curr_char) && curr_char != EOF && curr_char != '(' && curr_char != ')' &&
 			curr_char != '"' && curr_char != ';') {
-			curr_word += curr_char;
+			curr_word += static_cast<char>(curr_char);
 			continue;
 		}
 
@@ -60,6 +60,6 @@ token_list lex(filtered_input &fi) {
 				continue;
 		}
 
-		assert(!"character not yet supported");
+		assert(0 && "character not yet supported");
 	}
 }

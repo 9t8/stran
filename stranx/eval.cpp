@@ -45,7 +45,7 @@ environment create_env() {
 	);
 
 	auto lambda(
-	[](const p_datum &args, environment &env) {
+	[](const p_datum &args, environment &) {
 		const datum &temp(*args);
 		assert(typeid(temp) == typeid(pair) &&
 			   "malformed argument list (not enough arguments?)");

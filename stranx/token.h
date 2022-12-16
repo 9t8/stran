@@ -27,8 +27,8 @@ struct end_list : token {
 		return ")";
 	}
 
-	p_datum parse(token_list &tokens) const override {
-		assert(!"unexpected end of list token");
+	p_datum parse(token_list &) const override {
+		assert(0 && "unexpected end of list token");
 		throw;
 	}
 };
@@ -38,8 +38,8 @@ struct dot : token {
 		return ".";
 	}
 
-	p_datum parse(token_list &tokens) const override {
-		assert(!"unexpected dot token");
+	p_datum parse(token_list &) const override {
+		assert(0 && "unexpected dot token");
 		throw;
 	}
 };

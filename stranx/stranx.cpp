@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-int main(int argc, const char **argv) {
+int main(int, const char **) {
 	filtered_input fi(std::cin);
 	token_list tokens(lex(fi));
 

@@ -16,7 +16,7 @@ typedef std::unordered_map<std::string, p_datum> environment;
 
 struct datum : object, std::enable_shared_from_this<datum> {
 	// self-evaluating by default
-	virtual p_datum eval(environment &env) {
+	virtual p_datum eval(environment &) {
 		return shared_from_this();
 	}
 };
@@ -72,8 +72,8 @@ struct empty_list : datum {
 		return "()";
 	}
 
-	p_datum eval(environment &env) override {
-		assert(!"attempted to evaluate empty list");
+	p_datum eval(environment &) override {
+		assert(0 && "attempted to evaluate empty list");
 		throw;
 	}
 };
