@@ -25,9 +25,8 @@ p_datum begin_list::parse(token_list &tokens) const {
 		return std::make_shared<empty_list>();
 	}
 
-	std::shared_ptr<pair> start(std::make_shared<pair>(tokens.front()->parse(tokens)));
-
-	std::shared_ptr<pair> p(start);
+	std::shared_ptr<pair> p(std::make_shared<pair>(tokens.front()->parse(tokens)));
+	p_datum start(p);
 	while (get_next_token_type() != typeid(end_list)) {
 		if (get_next_token_type() == typeid(dot)) {
 			tokens.pop_front();
