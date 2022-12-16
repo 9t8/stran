@@ -29,15 +29,13 @@ environment create_env() {
 
 			const pair &formals(dynamic_cast<const pair &>(*args_list.car));
 
-			std::shared_ptr<pair> lambda_args(std::make_shared<pair>(
-						formals.cdr, args_list.cdr));
-
 			const datum &caar(*formals.car);
 			assert(typeid(caar) == typeid(identifier) &&
 				   "procedure name must be an identifier");
 
 			env[dynamic_cast<const identifier &>(*formals.car).name] =
-				call(find("lambda", env), lambda_args, env);
+				call(find("lambda", env), std::make_shared<pair>(formals.cdr, args_list.cdr),
+					 env);
 		}
 
 		return std::make_shared<empty_list>();
