@@ -1,9 +1,5 @@
 ; pairs test - doesn't work for some reason
-(define (cons a b)
-  (lambda (cond) (cond a b)))
+(define (f a)
+  (lambda () a))
 
-(define (car p)
-  (p (lambda (a b) a)))
-
-(define test (cons 1 2))
-(car test)
+((f 1))
