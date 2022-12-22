@@ -56,3 +56,14 @@ b
 (rest 0)
 (rest 0 1)
 (rest 0 1 2)
+
+; pairs
+(define (cons car cdr)
+  (lambda (m) (m car cdr)))
+(define (car p)
+  (p (lambda (car cdr) car)))
+(define (cdr p)
+  (p (lambda (car cdr) cdr)))
+(define p (cons 1 2))
+(car p)
+(cdr p)

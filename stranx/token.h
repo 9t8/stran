@@ -51,7 +51,7 @@ struct identifier : token, datum {
 		return name;
 	}
 
-	p_datum eval(environment &env) override {
+	p_datum eval(const p_env &env) override {
 		return find(name, env);
 	}
 

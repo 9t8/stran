@@ -4,9 +4,9 @@
 
 #include <ostream>
 
-environment create_env() {
+void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 	auto define(
-	[](const p_datum &args, environment &env) {
+	[](const p_datum &args, const p_env &env) {
 		const datum &temp(*args);
 		assert(typeid(temp) == typeid(pair) &&
 			   "malformed argument list (not enough arguments?)");
@@ -23,7 +23,7 @@ environment create_env() {
 			const datum &cddr(*cdr.cdr);
 			assert(typeid(cddr) == typeid(empty_list) && "too many arguments");
 
-			env[dynamic_cast<const identifier &>(*args_list.car).name] = cdr.car->eval(env);
+			(*env)[dynamic_cast<const identifier &>(*args_list.car).name] = cdr.car->eval(env);
 		} else {
 			assert(typeid(car) == typeid(pair) && "first argument must be identifier or list");
 
@@ -33,7 +33,7 @@ environment create_env() {
 			assert(typeid(caar) == typeid(identifier) &&
 				   "procedure name must be an identifier");
 
-			env[dynamic_cast<const identifier &>(*formals.car).name] =
+			(*env)[dynamic_cast<const identifier &>(*formals.car).name] =
 				call(find("lambda", env), std::make_shared<pair>(formals.cdr, args_list.cdr),
 					 env);
 		}
@@ -43,7 +43,7 @@ environment create_env() {
 	);
 
 	auto lambda(
-	[](const p_datum &args, environment &) {
+	[](const p_datum &args, const p_env &env) {
 		const datum &temp(*args);
 		assert(typeid(temp) == typeid(pair) &&
 			   "malformed argument list (not enough arguments?)");
@@ -69,18 +69,15 @@ environment create_env() {
 		if (variadic_iden) {
 			formals.push_back(variadic_iden->name);
 		}
-		return std::make_shared<procedure>(formals, args_list.cdr, variadic_iden);
+		return std::make_shared<procedure>(formals, variadic_iden, args_list.cdr, env);
 	}
 	);
 
-	return environment( {
+	p_env env(std::make_shared<p_env::element_type>(
+	std::initializer_list<p_env::element_type::value_type> {
 		{"define", std::make_shared<native_function<decltype(define)>>(define)},
 		{"lambda", std::make_shared<native_function<decltype(lambda)>>(lambda)}
-	});
-}
-
-void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
-	environment env(create_env());
+	}));
 
 	for (size_t i(0); i < syntax_tree.size(); ++i) {
 		os << *syntax_tree[i]->eval(env) << std::endl;

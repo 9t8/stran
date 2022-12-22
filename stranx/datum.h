@@ -12,17 +12,17 @@ struct datum;
 
 typedef std::shared_ptr<datum> p_datum;
 
-typedef std::unordered_map<std::string, p_datum> environment;
+typedef std::shared_ptr<std::unordered_map<std::string, p_datum>> p_env;
 
 struct datum : object, std::enable_shared_from_this<datum> {
 	// self-evaluating by default
-	virtual p_datum eval(environment &) {
+	virtual p_datum eval(const p_env &) {
 		return shared_from_this();
 	}
 };
 
 struct function : datum {
-	virtual p_datum call(const p_datum &args, environment &env) const = 0;
+	virtual p_datum call(const p_datum &args, const p_env &env) const = 0;
 };
 
 template <class func> struct native_function : function {
@@ -34,7 +34,7 @@ template <class func> struct native_function : function {
 		return oss.str();
 	}
 
-	p_datum call(const p_datum &args, environment &env) const override {
+	p_datum call(const p_datum &args, const p_env &env) const override {
 		return call_func(args, env);
 	}
 
@@ -43,8 +43,8 @@ private:
 };
 
 struct procedure : function {
-	procedure(const std::vector<std::string> &fs, const p_datum &b, const bool &v)
-			: formals(fs), body(b), variadic(v) {
+	procedure(const std::vector<std::string> &fs, const bool &v, const p_datum &b,
+			  const p_env &p_e) : formals(fs), variadic(v), body(b), env(p_e) {
 		assert(!variadic || !fs.empty() && "procedure taking no arguments cannot be variadic");
 	}
 
@@ -54,17 +54,18 @@ struct procedure : function {
 		return oss.str();
 	}
 
-	p_datum call(const p_datum &args, environment &env) const override;
-
-protected:
-	const std::vector<std::string> formals;
+	p_datum call(const p_datum &args, const p_env &) const override;
 
 private:
-	environment create_new_env(const p_datum &args, environment &env) const;
+	p_env create_new_env(const p_datum &args) const;
+
+	const std::vector<std::string> formals;
+
+	const bool variadic;
 
 	const p_datum body;
 
-	const bool variadic;
+	const p_env env;
 };
 
 struct empty_list : datum {
@@ -72,20 +73,20 @@ struct empty_list : datum {
 		return "()";
 	}
 
-	p_datum eval(environment &) override {
+	p_datum eval(const p_env &) override {
 		assert(0 && "attempted to evaluate empty list");
 		throw;
 	}
 };
 
-inline p_datum find(const std::string &name, const environment &env) {
-	environment::const_iterator it(env.find(name));
-	assert(it != env.end() && "undefined identifier");
+inline p_datum find(const std::string &name, const p_env &env) {
+	p_env::element_type::iterator it(env->find(name));
+	assert(it != env->end() && "undefined identifier");
 
 	return it->second;
 }
 
-inline p_datum call(const p_datum &func, const p_datum &args, environment &env) {
+inline p_datum call(const p_datum &func, const p_datum &args, const p_env &env) {
 	assert(dynamic_cast<const function *>(func.get()) &&
 		   "attemped to call an uncallable object");
 
@@ -100,7 +101,7 @@ struct pair : datum {
 
 	operator std::string() const override;
 
-	p_datum eval(environment &env) override {
+	p_datum eval(const p_env &env) override {
 		return call(car->eval(env), cdr, env);
 	}
 
