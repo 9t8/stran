@@ -1,3 +1,6 @@
+; bugged!
+((lambda (c t) (c t)) (lambda (l) l) 1)
+
 ; defines
 (define a 3)
 (define b a)

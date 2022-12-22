@@ -30,7 +30,7 @@ template <class func> struct native_function : function {
 
 	operator std::string() const override {
 		std::ostringstream oss;
-		oss << "native_function@" << this;
+		oss << "#native_function@" << this;
 		return oss.str();
 	}
 
@@ -50,7 +50,7 @@ struct procedure : function {
 
 	operator std::string() const override {
 		std::ostringstream oss;
-		oss << "procedure@" << this;
+		oss << "#procedure@" << this;
 		return oss.str();
 	}
 
@@ -79,12 +79,7 @@ struct empty_list : datum {
 	}
 };
 
-inline p_datum find(const std::string &name, const p_env &env) {
-	p_env::element_type::iterator it(env->find(name));
-	assert(it != env->end() && "undefined identifier");
-
-	return it->second;
-}
+const p_datum &find(const std::string &name, const p_env &env);
 
 inline p_datum call(const p_datum &func, const p_datum &args, const p_env &env) {
 	assert(dynamic_cast<const function *>(func.get()) &&
