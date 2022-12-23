@@ -6,8 +6,7 @@ file
 	eval.cpp,
 	lexer.h,
 	lexer.cpp,
-	object.h,
-	token.h;
+	object.h;
 
 mainconfig
 	"" = "";

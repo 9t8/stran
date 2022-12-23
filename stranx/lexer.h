@@ -1,9 +1,7 @@
 #ifndef _stranx_lexer_h_
 #define _stranx_lexer_h_
 
-#include "token.h"
-
-#include <istream>
+#include "object.h"
 
 struct lexer {
 	lexer(std::istream &i) : is(i), row(1), col(0) {}
