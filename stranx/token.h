@@ -10,7 +10,7 @@ struct token;
 typedef std::deque<std::unique_ptr<token>> token_list;
 
 struct token : object {
-	virtual p_datum parse(token_list &tokens) const = 0;
+	virtual p_datum parse(const token_list &tokens, size_t &idx) const = 0;
 };
 
 struct begin_list : token {
@@ -18,7 +18,7 @@ struct begin_list : token {
 		return "(";
 	}
 
-	p_datum parse(token_list &tokens) const override;
+	p_datum parse(const token_list &tokens, size_t &idx) const override;
 };
 
 struct end_list : token {
@@ -26,7 +26,7 @@ struct end_list : token {
 		return ")";
 	}
 
-	p_datum parse(token_list &) const override {
+	p_datum parse(const token_list &, size_t &) const override {
 		assert(0 && "unexpected end of list token");
 		throw;
 	}
@@ -37,7 +37,7 @@ struct dot : token {
 		return ".";
 	}
 
-	p_datum parse(token_list &) const override {
+	p_datum parse(const token_list &, size_t &) const override {
 		assert(0 && "unexpected dot token");
 		throw;
 	}
@@ -50,12 +50,11 @@ struct atom : token {
 		return *val;
 	}
 
-	p_datum parse(token_list &tokens) const override {
-		assert(tokens.at(0).get() == this && "first token in tokens is not current token");
+	p_datum parse(const token_list &tokens, size_t &idx) const override {
+		assert(tokens.at(idx).get() == this && "first token in tokens is not current token");
 
-		p_datum v(val);
-		tokens.pop_front();
-		return v;
+		++idx;
+		return val;
 	}
 
 private:

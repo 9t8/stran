@@ -5,8 +5,9 @@
 
 std::vector<p_datum> parse(token_list &tokens) {
 	std::vector<p_datum> syntax_tree;
-	while (!tokens.empty()) {
-		syntax_tree.push_back(tokens.front()->parse(tokens));
+	size_t idx(0);
+	while (idx < tokens.size()) {
+		syntax_tree.push_back(tokens[idx]->parse(tokens, idx));
 	}
 	return syntax_tree;
 }
