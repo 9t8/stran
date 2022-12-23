@@ -12,15 +12,8 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 		return typeid(next_token);
 	});
 
-	const std::type_info &next_token_type(get_next_token_type());
-
-	++idx;
-
-	if (next_token_type == typeid(atom)) {
-		return dynamic_cast<const atom &>(*tokens[idx - 1]).val;
-	}
-
-	if (next_token_type == typeid(begin_list)) {
+	if (get_next_token_type() == typeid(begin_list)) {
+		++idx;
 		if (get_next_token_type() == typeid(end_list)) {
 			++idx;
 			return std::make_shared<empty_list>();
@@ -30,8 +23,7 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 		p_datum start(p);
 		while (get_next_token_type() != typeid(end_list)) {
 			if (get_next_token_type() == typeid(dot)) {
-				++idx;
-				p->cdr = parse_next(tokens, idx);
+				p->cdr = parse_next(tokens, ++idx);
 				assert(get_next_token_type() == typeid(end_list) &&
 					   "malformed improper list (misplaced dot token)");
 				break;
@@ -45,8 +37,10 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 		return start;
 	}
 
-	assert(0 && "malformed token list");
-	throw;
+	p_datum p(std::dynamic_pointer_cast<datum>(tokens.at(idx++)));
+	assert(p && "malformed token list: tried to parse an unparsable token");
+
+	return p;
 }
 
 std::vector<p_datum> parse(token_list &tokens) {

@@ -5,7 +5,7 @@
 
 #include <deque>
 
-typedef std::deque<std::unique_ptr<object>> token_list;
+typedef std::deque<std::shared_ptr<object>> token_list;
 
 struct atom : object {
 	atom(const p_datum &p_d) : val(p_d) {}
