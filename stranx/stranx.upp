@@ -7,8 +7,7 @@ file
 	lexer.h,
 	lexer.cpp,
 	object.h,
-	token.h,
-	token.cpp;
+	token.h;
 
 mainconfig
 	"" = "";
