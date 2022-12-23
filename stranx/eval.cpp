@@ -1,7 +1,7 @@
 #include "eval.h"
 
 void eval(std::vector<p_datum> &tree, std::ostream &os) {
-	auto lambda(
+	static const auto lambda(
 	[](const p_datum &args, const p_env &env) {
 		const datum &temp(*args);
 		assert(typeid(temp) == typeid(pair) &&
@@ -32,7 +32,7 @@ void eval(std::vector<p_datum> &tree, std::ostream &os) {
 	}
 	);
 
-	auto define(
+	static const auto define(
 	[](const p_datum &args, const p_env &env) {
 		const datum &temp(*args);
 		assert(typeid(temp) == typeid(pair) &&
