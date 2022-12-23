@@ -1,9 +1,5 @@
 #include "eval.h"
 
-#include "token.h"
-
-#include <ostream>
-
 void eval(std::vector<p_datum> &tree, std::ostream &os) {
 	auto lambda(
 	[](const p_datum &args, const p_env &env) {

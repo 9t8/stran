@@ -3,7 +3,7 @@
 
 #include "token.h"
 
-#include <iostream>
+#include <istream>
 
 struct lexer {
 	lexer(std::istream &i) : is(i), row(1), col(0) {}

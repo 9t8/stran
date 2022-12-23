@@ -1,7 +1,6 @@
 #include "datum.h"
 
 #include <iostream>
-#include <sstream>
 
 p_datum procedure::call(const p_datum &args, const p_env &) const {
 	p_env new_env(create_new_env(args));
