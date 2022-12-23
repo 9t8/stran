@@ -8,7 +8,8 @@ p_datum begin_list::parse(const token_list &tokens, size_t &idx) const {
 	++idx;
 
 	auto get_next_token_type([&]() -> const std::type_info & {
-		assert(idx < tokens.size() && "expected a token but none found (too many opening parens?)");
+		assert(idx < tokens.size() &&
+		"expected a token but none found (too many opening parens?)");
 
 		token &next_token(*tokens[idx]);
 		return typeid(next_token);
