@@ -1,5 +1,5 @@
 #include "eval.h"
-#include "lex.h"
+#include "lexer.h"
 
 #include <iostream>
 
@@ -12,8 +12,8 @@ std::vector<p_datum> parse(token_list &tokens) {
 }
 
 int main(int, const char **) {
-	filtered_input fi(std::cin);
-	token_list tokens(lex(fi));
+	lexer l(std::cin);
+	token_list tokens(l.lex());
 
 	std::cout << "===-- tokens --===" << std::endl;
 	if (!tokens.empty()) {

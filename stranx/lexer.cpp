@@ -1,4 +1,6 @@
-#include "lex.h"
+#include "lexer.h"
+
+#include <cassert>
 
 void lex_token(token_list &tokens, std::string &s) {
 	assert(!s.empty() && "attempted to tokenize an empty string");
@@ -19,12 +21,12 @@ void lex_token(token_list &tokens, std::string &s) {
 	tokens.push_back(std::make_unique<identifier>(s));
 }
 
-token_list lex(filtered_input &fi) {
+token_list lexer::lex() {
 	token_list tokens;
 
 	std::string curr_word;
 	for (;;) {
-		int curr_char(fi.get());
+		int curr_char(get());
 
 		if (!isspace(curr_char) && curr_char != EOF && curr_char != '(' && curr_char != ')' &&
 			curr_char != '"' && curr_char != ';') {
@@ -55,11 +57,31 @@ token_list lex(filtered_input &fi) {
 
 			case ';':
 				while (curr_char != '\n' && curr_char != EOF) {
-					curr_char = fi.get();
+					curr_char = get();
 				}
 				continue;
 		}
 
 		assert(0 && "character not yet supported");
 	}
+}
+
+int lexer::get() {
+	int c(is.get());
+
+	switch (c) {
+		case '\n':
+			col = 0;
+			++row;
+		case EOF:
+			return c;
+	}
+
+	if (std::isprint(c) || c == '\t') {
+		++col;
+		return c;
+	}
+
+	std::cerr << "ERROR - unexpected character: character code " << c << "\n";
+	throw;
 }

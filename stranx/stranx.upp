@@ -4,10 +4,8 @@ file
 	datum.cpp,
 	eval.h,
 	eval.cpp,
-	filtered_input.h,
-	filtered_input.cpp,
-	lex.h,
-	lex.cpp,
+	lexer.h,
+	lexer.cpp,
 	object.h,
 	token.h,
 	token.cpp;
