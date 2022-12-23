@@ -38,7 +38,7 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 	}
 
 	p_datum p(std::dynamic_pointer_cast<datum>(tokens.at(idx++)));
-	assert(p && "malformed token list: tried to parse an unparsable token");
+	assert(p && "malformed token list (tried to parse an unparsable token)");
 
 	return p;
 }
