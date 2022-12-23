@@ -4,7 +4,7 @@
 
 #include <ostream>
 
-void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
+void eval(std::vector<p_datum> &tree, std::ostream &os) {
 	auto lambda(
 	[](const p_datum &args, const p_env &env) {
 		const datum &temp(*args);
@@ -79,7 +79,7 @@ void eval(std::vector<p_datum> &syntax_tree, std::ostream &os) {
 		{"lambda", std::make_shared<native_function<decltype(lambda)>>(lambda)}
 	}));
 
-	for (size_t i(0); i < syntax_tree.size(); ++i) {
-		os << *syntax_tree[i]->eval(env) << std::endl;
+	for (size_t i(0); i < tree.size(); ++i) {
+		os << *tree[i]->eval(env) << std::endl;
 	}
 }

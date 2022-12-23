@@ -4,12 +4,12 @@
 #include <iostream>
 
 std::vector<p_datum> parse(token_list &tokens) {
-	std::vector<p_datum> syntax_tree;
+	std::vector<p_datum> tree;
 	size_t idx(0);
 	while (idx < tokens.size()) {
-		syntax_tree.push_back(tokens[idx]->parse(tokens, idx));
+		tree.push_back(tokens[idx]->parse(tokens, idx));
 	}
-	return syntax_tree;
+	return tree;
 }
 
 int main(int, const char **) {
@@ -23,13 +23,13 @@ int main(int, const char **) {
 		std::cout << *tokens.back() << std::endl;
 	}
 
-	std::vector<p_datum> syntax_tree(parse(tokens));
+	std::vector<p_datum> tree(parse(tokens));
 
-	std::cout << "\n===-- syntax tree --===" << std::endl;
-	for (size_t i(0); i < syntax_tree.size(); ++i) {
-		std::cout << "  " << *syntax_tree[i] << std::endl;
+	std::cout << "\n===-- tree --===" << std::endl;
+	for (size_t i(0); i < tree.size(); ++i) {
+		std::cout << "  " << *tree[i] << std::endl;
 	}
 
 	std::cout << "\n===-- output --===" << std::endl;
-	eval(syntax_tree, std::cout);
+	eval(tree, std::cout);
 }
