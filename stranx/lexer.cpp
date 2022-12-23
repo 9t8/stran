@@ -2,8 +2,6 @@
 
 #include "datum.h"
 
-#include <cassert>
-
 void lex_token(token_list &tokens, std::string &s) {
 	assert(!s.empty() && "attempted to tokenize an empty string");
 
