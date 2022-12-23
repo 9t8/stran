@@ -51,9 +51,7 @@ struct identifier : token, datum {
 		return name;
 	}
 
-	p_datum eval(const p_env &env) override {
-		return find(name, env);
-	}
+	p_datum eval(const p_env &env) override;
 
 	const std::string name;
 };

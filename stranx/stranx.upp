@@ -9,8 +9,6 @@ file
 	lex.h,
 	lex.cpp,
 	object.h,
-	parse.h,
-	parse.cpp,
 	token.h,
 	token.cpp;
 

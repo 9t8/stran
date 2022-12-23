@@ -25,6 +25,13 @@ struct function : datum {
 	virtual p_datum call(const p_datum &args, const p_env &env) const = 0;
 };
 
+inline p_datum call(const p_datum &func, const p_datum &args, const p_env &env) {
+	assert(dynamic_cast<const function *>(func.get()) &&
+		   "attemped to call an uncallable object");
+
+	return dynamic_cast<const function &>(*func).call(args, env);
+}
+
 template <class func> struct native_function : function {
 	native_function(const func &cf) : call_func(cf) {}
 
@@ -78,15 +85,6 @@ struct empty_list : datum {
 		throw;
 	}
 };
-
-const p_datum &find(const std::string &name, const p_env &env);
-
-inline p_datum call(const p_datum &func, const p_datum &args, const p_env &env) {
-	assert(dynamic_cast<const function *>(func.get()) &&
-		   "attemped to call an uncallable object");
-
-	return dynamic_cast<const function &>(*func).call(args, env);
-}
 
 struct pair : datum {
 	static bool stringify_into_lists;

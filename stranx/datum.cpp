@@ -1,6 +1,5 @@
 #include "datum.h"
 
-#include <iostream>
 #include <sstream>
 
 p_datum procedure::call(const p_datum &args, const p_env &) const {
@@ -49,16 +48,6 @@ p_env procedure::create_new_env(const p_datum &args) const {
 		tail = new_tail;
 	}
 	return new_env;
-}
-
-const p_datum &find(const std::string &name, const p_env &env) {
-	p_env::element_type::iterator it(env->find(name));
-	if (it == env->end()) {
-		std::cerr << "ERROR - undefined identifier: " << name << "\n";
-		throw;
-	}
-
-	return it->second;
 }
 
 bool pair::stringify_into_lists(true);
