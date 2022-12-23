@@ -103,4 +103,27 @@ struct pair : datum {
 
 const p_datum &next(const pair *&exprs);
 
+struct identifier : datum {
+	identifier(const std::string &n) : name(n) {}
+
+	operator std::string() const override {
+		return name;
+	}
+
+	p_datum eval(const p_env &env) override;
+
+	const std::string name;
+};
+
+struct decimal : datum {
+	decimal(const double &v) : val(v) {}
+
+	operator std::string() const override {
+		return std::to_string(val);
+	}
+
+private:
+	const double val;
+};
+
 #endif

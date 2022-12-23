@@ -14,11 +14,11 @@ void lex_token(token_list &tokens, std::string &s) {
 		size_t idx(0);
 		double val(stod(s, &idx));
 		assert(idx == s.size() && "invalid character while parsing decimal");
-		tokens.push_back(std::make_unique<decimal>(val));
+		tokens.push_back(std::make_unique<atom>(std::make_shared<decimal>(val)));
 		return;
 	}
 
-	tokens.push_back(std::make_unique<identifier>(s));
+	tokens.push_back(std::make_unique<atom>(std::make_shared<identifier>(s)));
 }
 
 token_list lexer::lex() {

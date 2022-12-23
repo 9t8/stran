@@ -12,8 +12,7 @@ std::vector<p_datum> parse(token_list &tokens) {
 }
 
 int main(int, const char **) {
-	lexer l(std::cin);
-	token_list tokens(l.lex());
+	token_list tokens(lexer(std::cin).lex());
 
 	std::cout << "===-- tokens --===" << std::endl;
 	if (!tokens.empty()) {

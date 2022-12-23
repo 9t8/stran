@@ -10,8 +10,7 @@ struct token;
 typedef std::deque<std::unique_ptr<token>> token_list;
 
 struct token : object {
-	// self-parses by default
-	virtual p_datum parse(token_list &tokens) const;
+	virtual p_datum parse(token_list &tokens) const = 0;
 };
 
 struct begin_list : token {
@@ -44,26 +43,23 @@ struct dot : token {
 	}
 };
 
-struct identifier : token, datum {
-	identifier(const std::string &n) : name(n) {}
+struct atom : token {
+	atom(const p_datum &p_d) : val(p_d) {}
 
 	operator std::string() const override {
-		return name;
+		return *val;
 	}
 
-	p_datum eval(const p_env &env) override;
+	p_datum parse(token_list &tokens) const override {
+		assert(tokens.at(0).get() == this && "first token in tokens is not current token");
 
-	const std::string name;
-};
-
-struct decimal : token, datum {
-	decimal(const double &v) : val(v) {}
-
-	operator std::string() const override {
-		return std::to_string(val);
+		p_datum v(val);
+		tokens.pop_front();
+		return v;
 	}
 
-	const double val;
+private:
+	const p_datum val;
 };
 
 #endif

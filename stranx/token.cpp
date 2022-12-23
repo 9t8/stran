@@ -2,16 +2,6 @@
 
 #include <iostream>
 
-p_datum token::parse(token_list &tokens) const {
-	assert(tokens.at(0).get() == this && "first token in tokens is not current token");
-
-	p_datum p(dynamic_cast<datum *>(tokens.front().release()));
-	assert(p && "tried to parse token that is not a datum");
-
-	tokens.pop_front();
-	return p;
-}
-
 p_datum begin_list::parse(token_list &tokens) const {
 	tokens.pop_front();
 
