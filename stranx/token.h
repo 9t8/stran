@@ -7,16 +7,6 @@
 
 typedef std::deque<std::shared_ptr<object>> token_list;
 
-struct atom : object {
-	atom(const p_datum &p_d) : val(p_d) {}
-
-	operator std::string() const override {
-		return *val;
-	}
-
-	const p_datum val;
-};
-
 struct begin_list : object {
 	operator std::string() const override {
 		return "(";
