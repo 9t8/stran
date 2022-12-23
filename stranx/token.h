@@ -1,7 +1,7 @@
 #ifndef _stranx_token_h_
 #define _stranx_token_h_
 
-#include "datum.h"
+#include "object.h"
 
 #include <deque>
 

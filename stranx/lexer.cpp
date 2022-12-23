@@ -1,5 +1,7 @@
 #include "lexer.h"
 
+#include "datum.h"
+
 #include <cassert>
 
 void lex_token(token_list &tokens, std::string &s) {
