@@ -58,7 +58,7 @@ std::vector<p_datum> parse(token_list &tokens) {
 	return tree;
 }
 
-int main(int, const char **) {
+int main(int, const char *[]) {
 	token_list tokens(lexer(std::cin).lex());
 
 	std::cout << "===-- tokens --===" << std::endl;
