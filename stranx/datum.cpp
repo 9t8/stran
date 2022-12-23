@@ -1,5 +1,6 @@
 #include "datum.h"
 
+#include <iostream>
 #include <sstream>
 
 p_datum procedure::call(const p_datum &args, const p_env &) const {
@@ -82,4 +83,14 @@ const p_datum &next(const pair *&exprs) {
 	const p_datum &result(exprs->car);
 	exprs = dynamic_cast<const pair *>(exprs->cdr.get());
 	return result;
+}
+
+p_datum identifier::eval(const p_env &env) {
+	p_env::element_type::iterator it(env->find(name));
+	if (it == env->end()) {
+		std::cerr << "ERROR - undefined identifier: " << name << "\n";
+		throw;
+	}
+
+	return it->second;
 }

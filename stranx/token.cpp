@@ -1,7 +1,5 @@
 #include "token.h"
 
-#include <iostream>
-
 p_datum begin_list::parse(const token_list &tokens, size_t &idx) const {
 	assert(tokens.at(idx).get() == this && "first token in tokens is not current token");
 
@@ -37,14 +35,4 @@ p_datum begin_list::parse(const token_list &tokens, size_t &idx) const {
 	++idx;
 
 	return start;
-}
-
-p_datum identifier::eval(const p_env &env) {
-	p_env::element_type::iterator it(env->find(name));
-	if (it == env->end()) {
-		std::cerr << "ERROR - undefined identifier: " << name << "\n";
-		throw;
-	}
-
-	return it->second;
 }
