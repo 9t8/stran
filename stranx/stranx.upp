@@ -6,7 +6,10 @@ file
 	eval.cpp,
 	lexer.h,
 	lexer.cpp,
-	object.h;
+	native_function.h,
+	object.h,
+	procedure.h,
+	procedure.cpp;
 
 mainconfig
 	"" = "";

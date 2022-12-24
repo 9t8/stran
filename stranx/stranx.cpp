@@ -2,6 +2,7 @@
 #include "lexer.h"
 
 #include <iostream>
+#include <vector>
 
 p_datum parse_next(const token_list &tokens, size_t &idx) {
 	static const auto get_next_token_type([&]() -> const std::type_info & {

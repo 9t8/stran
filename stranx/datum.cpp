@@ -1,53 +1,18 @@
 #include "datum.h"
 
 #include <iostream>
+#include <sstream>
 
-p_datum procedure::call(const p_datum &args, const_p_env &) const {
-	const_p_env new_env(create_new_env(args));
-
-	p_pair exprs(body);
-	p_datum result(next(exprs)->eval(new_env));
-	while (exprs) {
-		result = next(exprs)->eval(new_env);
+const p_datum &environment::find(const std::string &name) {
+	decltype(table)::iterator it(table.find(name));
+	if (it != table.end()) {
+		return it->second;
 	}
-	return result;
-}
-
-const_p_env procedure::create_new_env(const p_datum &args) const {
-	const_p_env new_env(std::make_shared<const_p_env::element_type>(*env));
-
-	p_pair curr_arg(std::dynamic_pointer_cast<pair>(args));
-
-	if (formals.empty()) {
-		assert(!curr_arg && "too many arguments");
-
-		return new_env;
+	if (!parent) {
+		std::cerr << "ERROR - undefined identifier: " << name << "\n";
+		throw;
 	}
-
-	for (size_t i(0); i < formals.size() - 1; ++i) {
-		(*new_env)[formals[i]] = next(curr_arg)->eval(env);
-	}
-
-	if (!variadic) {
-		(*new_env)[formals.back()] = next(curr_arg)->eval(env);
-		assert(!curr_arg && "too many arguments");
-
-		return new_env;
-	}
-
-	if (!curr_arg) {
-		(*new_env)[formals.back()] = std::make_shared<empty_list>();
-		return new_env;
-	}
-
-	p_pair tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
-	(*new_env)[formals.back()] = tail;
-	while (curr_arg) {
-		p_pair new_tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
-		tail->cdr = new_tail;
-		tail = new_tail;
-	}
-	return new_env;
+	return parent->find(name);
 }
 
 bool pair::stringify_into_lists(true);
@@ -82,14 +47,4 @@ const p_datum &next(p_pair &exprs) {
 	const p_datum &result(exprs->car);
 	exprs = std::dynamic_pointer_cast<pair>(exprs->cdr);
 	return result;
-}
-
-p_datum identifier::eval(const_p_env &env) {
-	const_p_env::element_type::iterator it(env->find(name));
-	if (it == env->end()) {
-		std::cerr << "ERROR - undefined identifier: " << name << "\n";
-		throw;
-	}
-
-	return it->second;
 }

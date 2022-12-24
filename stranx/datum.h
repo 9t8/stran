@@ -4,21 +4,34 @@
 #include "object.h"
 
 #include <cassert>
-#include <sstream>
 #include <unordered_map>
-#include <vector>
 
 struct datum;
-
 typedef std::shared_ptr<datum> p_datum;
 
-typedef const std::shared_ptr<std::unordered_map<std::string, p_datum>> const_p_env;
+struct environment;
+typedef const std::shared_ptr<environment> const_p_env;
 
 struct datum : object, std::enable_shared_from_this<datum> {
 	// self-evaluating by default
 	virtual p_datum eval(const_p_env &) {
 		return shared_from_this();
 	}
+};
+
+struct environment {
+	environment(const const_p_env &p) : parent(p) {}
+
+	const p_datum &find(const std::string &name);
+
+	void define(const std::string &name, const p_datum &val) {
+		table[name] = val;
+	}
+
+private:
+	std::unordered_map<std::string, p_datum> table;
+
+	const const_p_env parent;
 };
 
 struct function : datum {
@@ -62,49 +75,6 @@ typedef std::shared_ptr<pair> p_pair;
 
 const p_datum &next(p_pair &exprs);
 
-template <class func> struct native_function : function {
-	native_function(const func &cf) : call_func(cf) {}
-
-	operator std::string() const override {
-		std::ostringstream oss;
-		oss << "#native_function@" << this;
-		return oss.str();
-	}
-
-	p_datum call(const p_datum &args, const_p_env &env) const override {
-		return call_func(args, env);
-	}
-
-private:
-	const func call_func;
-};
-
-struct procedure : function {
-	procedure(const std::vector<std::string> &fs, const bool &v, const p_pair &b,
-			  const_p_env &p_e) : formals(fs), variadic(v), body(b), env(p_e) {
-		assert(!variadic || !fs.empty() && "procedure taking no arguments cannot be variadic");
-	}
-
-	operator std::string() const override {
-		std::ostringstream oss;
-		oss << "#procedure@" << this;
-		return oss.str();
-	}
-
-	p_datum call(const p_datum &args, const_p_env &) const override;
-
-private:
-	const_p_env create_new_env(const p_datum &args) const;
-
-	const std::vector<std::string> formals;
-
-	const bool variadic;
-
-	const p_pair body;
-
-	const_p_env env;
-};
-
 struct identifier : datum {
 	identifier(const std::string &n) : name(n) {}
 
@@ -112,7 +82,9 @@ struct identifier : datum {
 		return name;
 	}
 
-	p_datum eval(const_p_env &env) override;
+	p_datum eval(const_p_env &env) override {
+		return env->find(name);
+	}
 
 	const std::string name;
 };

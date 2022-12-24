@@ -1,5 +1,8 @@
 #include "eval.h"
 
+#include "native_function.h"
+#include "procedure.h"
+
 void eval(std::vector<p_datum> &tree, std::ostream &os) {
 	static const auto lambda(
 	[](const p_datum &args, const_p_env &env) {
@@ -51,7 +54,8 @@ void eval(std::vector<p_datum> &tree, std::ostream &os) {
 			const datum &cddr(*cdr.cdr);
 			assert(typeid(cddr) == typeid(empty_list) && "too many arguments");
 
-			(*env)[dynamic_cast<const identifier &>(*args_list.car).name] = cdr.car->eval(env);
+			env->define(dynamic_cast<const identifier &>(*args_list.car).name,
+						cdr.car->eval(env));
 		} else {
 			assert(typeid(car) == typeid(pair) && "first argument must be identifier or list");
 
@@ -61,20 +65,18 @@ void eval(std::vector<p_datum> &tree, std::ostream &os) {
 			assert(typeid(caar) == typeid(identifier) &&
 				   "procedure name must be an identifier");
 
-			(*env)[dynamic_cast<const identifier &>(*formals.car).name] =
-				call(env->at("lambda"), std::make_shared<pair>(formals.cdr, args_list.cdr),
-					 env);
+			env->define(dynamic_cast<const identifier &>(*formals.car).name,
+						call(env->find("lambda"),
+							 std::make_shared<pair>(formals.cdr, args_list.cdr), env));
 		}
 
 		return std::make_shared<empty_list>();
 	}
 	);
 
-	const_p_env env(std::make_shared<const_p_env::element_type>(
-	std::initializer_list<const_p_env::element_type::value_type> {
-		{"define", std::make_shared<native_function<decltype(define)>>(define)},
-		{"lambda", std::make_shared<native_function<decltype(lambda)>>(lambda)}
-	}));
+	const_p_env env(std::make_shared<environment>(nullptr));
+	env->define("lambda", std::make_shared<native_function<decltype(lambda)>>(lambda));
+	env->define("define", std::make_shared<native_function<decltype(define)>>(define));
 
 	for (size_t i(0); i < tree.size(); ++i) {
 		os << *tree[i]->eval(env) << std::endl;
