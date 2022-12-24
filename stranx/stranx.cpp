@@ -19,7 +19,7 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 			return std::make_shared<empty_list>();
 		}
 
-		std::shared_ptr<pair> p(std::make_shared<pair>(parse_next(tokens, idx)));
+		p_pair p(std::make_shared<pair>(parse_next(tokens, idx)));
 		p_datum start(p);
 		while (get_next_token_type() != typeid(end_list)) {
 			if (get_next_token_type() == typeid(dot)) {
@@ -28,7 +28,7 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 					   "malformed improper list (misplaced dot token)");
 				break;
 			}
-			std::shared_ptr<pair> p_new(std::make_shared<pair>(parse_next(tokens, idx)));
+			p_pair p_new(std::make_shared<pair>(parse_next(tokens, idx)));
 			p->cdr = p_new;
 			p = p_new;
 		}

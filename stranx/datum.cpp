@@ -5,7 +5,7 @@
 p_datum procedure::call(const p_datum &args, const_p_env &) const {
 	const_p_env new_env(create_new_env(args));
 
-	p_const_pair exprs(body);
+	p_pair exprs(body);
 	p_datum result(next(exprs)->eval(new_env));
 	while (exprs) {
 		result = next(exprs)->eval(new_env);
@@ -16,7 +16,7 @@ p_datum procedure::call(const p_datum &args, const_p_env &) const {
 const_p_env procedure::create_new_env(const p_datum &args) const {
 	const_p_env new_env(std::make_shared<const_p_env::element_type>(*env));
 
-	p_const_pair curr_arg(std::dynamic_pointer_cast<const pair>(args));
+	p_pair curr_arg(std::dynamic_pointer_cast<pair>(args));
 
 	if (formals.empty()) {
 		assert(!curr_arg && "too many arguments");
@@ -40,10 +40,10 @@ const_p_env procedure::create_new_env(const p_datum &args) const {
 		return new_env;
 	}
 
-	std::shared_ptr<pair> tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
+	p_pair tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
 	(*new_env)[formals.back()] = tail;
 	while (curr_arg) {
-		std::shared_ptr<pair> new_tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
+		p_pair new_tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}
@@ -62,7 +62,7 @@ pair::operator std::string() const {
 	oss << "(" << *car;
 
 	p_datum p_last(cdr);
-	for (p_const_pair curr_pair(std::dynamic_pointer_cast<const pair>(cdr)); curr_pair;) {
+	for (p_pair curr_pair(std::dynamic_pointer_cast<pair>(cdr)); curr_pair;) {
 		p_last = curr_pair->cdr;
 		oss << " " << *next(curr_pair);
 	}
@@ -76,11 +76,11 @@ pair::operator std::string() const {
 	return oss.str();
 }
 
-const p_datum &next(p_const_pair &exprs) {
+const p_datum &next(p_pair &exprs) {
 	assert(exprs && "invalid expression list (not enough arguments?)");
 
 	const p_datum &result(exprs->car);
-	exprs = std::dynamic_pointer_cast<const pair>(exprs->cdr);
+	exprs = std::dynamic_pointer_cast<pair>(exprs->cdr);
 	return result;
 }
 

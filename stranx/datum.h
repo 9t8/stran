@@ -58,9 +58,9 @@ struct pair : datum {
 	p_datum car, cdr;
 };
 
-typedef std::shared_ptr<const pair> p_const_pair;
+typedef std::shared_ptr<pair> p_pair;
 
-const p_datum &next(p_const_pair &exprs);
+const p_datum &next(p_pair &exprs);
 
 template <class func> struct native_function : function {
 	native_function(const func &cf) : call_func(cf) {}
@@ -80,7 +80,7 @@ private:
 };
 
 struct procedure : function {
-	procedure(const std::vector<std::string> &fs, const bool &v, const p_const_pair &b,
+	procedure(const std::vector<std::string> &fs, const bool &v, const p_pair &b,
 			  const_p_env &p_e) : formals(fs), variadic(v), body(b), env(p_e) {
 		assert(!variadic || !fs.empty() && "procedure taking no arguments cannot be variadic");
 	}
@@ -100,7 +100,7 @@ private:
 
 	const bool variadic;
 
-	const p_const_pair body;
+	const p_pair body;
 
 	const_p_env env;
 };

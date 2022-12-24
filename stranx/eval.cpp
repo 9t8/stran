@@ -12,7 +12,7 @@ void eval(std::vector<p_datum> &tree, std::ostream &os) {
 
 		std::shared_ptr<identifier> variadic_iden(
 			std::dynamic_pointer_cast<identifier>(args_list.car));
-		p_const_pair curr_formal(std::dynamic_pointer_cast<const pair>(args_list.car));
+		p_pair curr_formal(std::dynamic_pointer_cast<pair>(args_list.car));
 		while (curr_formal) {
 			variadic_iden = std::dynamic_pointer_cast<identifier>(curr_formal->cdr);
 
@@ -26,7 +26,7 @@ void eval(std::vector<p_datum> &tree, std::ostream &os) {
 			formals.push_back(variadic_iden->name);
 		}
 
-		const p_const_pair body(std::dynamic_pointer_cast<const pair>(args_list.cdr));
+		const p_pair body(std::dynamic_pointer_cast<pair>(args_list.cdr));
 		assert(body && "invalid procedure body");
 
 		return std::make_shared<procedure>(formals, variadic_iden.get(), body, env);
