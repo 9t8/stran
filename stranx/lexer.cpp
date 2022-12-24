@@ -4,25 +4,6 @@
 
 #include <iostream>
 
-void lex_token(token_list &tokens, std::string &s) {
-	assert(!s.empty() && "attempted to tokenize an empty string");
-
-	if (s == ".") {
-		tokens.push_back(std::make_shared<dot>());
-		return;
-	}
-
-	if (isdigit(s[0]) || s[0] == '+' || s[0] == '-' || s[0] == '.') {
-		size_t idx(0);
-		double val(stod(s, &idx));
-		assert(idx == s.size() && "invalid character while parsing decimal");
-		tokens.push_back(std::make_shared<decimal>(val));
-		return;
-	}
-
-	tokens.push_back(std::make_shared<identifier>(s));
-}
-
 token_list lexer::lex() {
 	token_list tokens;
 
@@ -30,19 +11,36 @@ token_list lexer::lex() {
 	for (;;) {
 		int curr_char(get());
 
-		if (!isspace(curr_char) && curr_char != EOF && curr_char != '(' && curr_char != ')' &&
-			curr_char != '"' && curr_char != ';') {
-			curr_word += static_cast<char>(curr_char);
-			continue;
+		switch (curr_char) {
+			case EOF:
+			case '(':
+			case ')':
+			case ';':
+			case ' ':
+			case '\n':
+			case '\t':
+				break;
+
+			default:
+				curr_word += static_cast<char>(curr_char);
+				continue;
 		}
 
 		if (!curr_word.empty()) {
-			lex_token(tokens, curr_word);
+			if (curr_word == ".") {
+				tokens.push_back(std::make_shared<dot>());
+			} else
+				if (curr_word[0] == '+' || curr_word[0] == '-' || curr_word[0] == '.' ||
+					(curr_word[0] >= '0' && curr_word[0] <= '9')) {
+					size_t idx(0);
+					double val(stod(curr_word, &idx));
+					assert(idx == curr_word.size() &&
+						   "invalid character while parsing decimal");
+					tokens.push_back(std::make_shared<decimal>(val));
+				} else {
+					tokens.push_back(std::make_shared<identifier>(curr_word));
+				}
 			curr_word.clear();
-		}
-
-		if (isspace(curr_char)) {
-			continue;
 		}
 
 		switch (curr_char) {
@@ -63,27 +61,17 @@ token_list lexer::lex() {
 				}
 				continue;
 		}
-
-		assert(0 && "character not yet supported");
 	}
 }
 
 int lexer::get() {
-	int c(is.get());
-
-	switch (c) {
-		case '\n':
-			col = 0;
-			++row;
-		case EOF:
-			return c;
-	}
-
-	if (std::isprint(c) || c == '\t') {
+	if (is.peek() == '\n') {
+		col = 0;
+		++row;
+	} else {
 		++col;
-		return c;
 	}
 
-	std::cerr << "ERROR - unexpected character: character code " << c << "\n";
-	throw;
+	++col;
+	return is.get();
 }
