@@ -69,7 +69,5 @@ int lexer::get() {
 	} else {
 		++col;
 	}
-
-	++col;
 	return is.get();
 }
