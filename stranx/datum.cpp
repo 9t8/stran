@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-p_datum procedure::call(const p_datum &args, const p_env &) const {
-	p_env new_env(create_new_env(args));
+p_datum procedure::call(const p_datum &args, const_p_env &) const {
+	const_p_env new_env(create_new_env(args));
 
-	const pair *exprs(dynamic_cast<const pair *>(body.get()));
+	p_const_pair exprs(body);
 	p_datum result(next(exprs)->eval(new_env));
 	while (exprs) {
 		result = next(exprs)->eval(new_env);
@@ -13,10 +13,10 @@ p_datum procedure::call(const p_datum &args, const p_env &) const {
 	return result;
 }
 
-p_env procedure::create_new_env(const p_datum &args) const {
-	p_env new_env(std::make_shared<p_env::element_type>(*env));
+const_p_env procedure::create_new_env(const p_datum &args) const {
+	const_p_env new_env(std::make_shared<const_p_env::element_type>(*env));
 
-	const pair *curr_arg(dynamic_cast<const pair *>(args.get()));
+	p_const_pair curr_arg(std::dynamic_pointer_cast<const pair>(args));
 
 	if (formals.empty()) {
 		assert(!curr_arg && "too many arguments");
@@ -59,14 +59,14 @@ pair::operator std::string() const {
 	}
 
 	std::ostringstream oss;
-	p_datum p_last(cdr);
-	const pair *curr_pair(this);
+	oss << "(" << *car;
 
-	oss << "(" << *next(curr_pair);
-	while (curr_pair != nullptr) {
+	p_datum p_last(cdr);
+	for (p_const_pair curr_pair(std::dynamic_pointer_cast<const pair>(cdr)); curr_pair;) {
 		p_last = curr_pair->cdr;
 		oss << " " << *next(curr_pair);
 	}
+
 	const datum &last(*p_last);
 	if (typeid(last) != typeid(empty_list)) {
 		oss << " . " << last;
@@ -76,16 +76,16 @@ pair::operator std::string() const {
 	return oss.str();
 }
 
-const p_datum &next(const pair *&exprs) {
+const p_datum &next(p_const_pair &exprs) {
 	assert(exprs && "invalid expression list (not enough arguments?)");
 
 	const p_datum &result(exprs->car);
-	exprs = dynamic_cast<const pair *>(exprs->cdr.get());
+	exprs = std::dynamic_pointer_cast<const pair>(exprs->cdr);
 	return result;
 }
 
-p_datum identifier::eval(const p_env &env) {
-	p_env::element_type::iterator it(env->find(name));
+p_datum identifier::eval(const_p_env &env) {
+	const_p_env::element_type::iterator it(env->find(name));
 	if (it == env->end()) {
 		std::cerr << "ERROR - undefined identifier: " << name << "\n";
 		throw;

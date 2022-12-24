@@ -43,7 +43,7 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 	return p;
 }
 
-std::vector<p_datum> parse(token_list &tokens) {
+std::vector<p_datum> parse(const token_list &tokens) {
 	std::vector<p_datum> tree;
 	size_t idx(0);
 	while (idx < tokens.size()) {
