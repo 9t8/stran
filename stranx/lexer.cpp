@@ -2,8 +2,6 @@
 
 #include "datum.h"
 
-#include <iostream>
-
 token_list lexer::lex() {
 	token_list tokens;
 
