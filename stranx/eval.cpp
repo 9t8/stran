@@ -10,10 +10,11 @@ void eval(std::vector<p_datum> &tree, std::ostream &os) {
 
 		std::vector<std::string> formals;
 
-		const identifier *variadic_iden(dynamic_cast<const identifier *>(args_list.car.get()));
+		std::shared_ptr<identifier> variadic_iden(
+			std::dynamic_pointer_cast<identifier>(args_list.car));
 		const pair *curr_formal(dynamic_cast<const pair *>(args_list.car.get()));
 		while (curr_formal) {
-			variadic_iden = dynamic_cast<const identifier *>(curr_formal->cdr.get());
+			variadic_iden = std::dynamic_pointer_cast<identifier>(curr_formal->cdr);
 
 			const datum &formal_iden(*next(curr_formal));
 			assert(typeid(formal_iden) == typeid(identifier) &&
@@ -28,7 +29,7 @@ void eval(std::vector<p_datum> &tree, std::ostream &os) {
 		if (variadic_iden) {
 			formals.push_back(variadic_iden->name);
 		}
-		return std::make_shared<procedure>(formals, variadic_iden, args_list.cdr, env);
+		return std::make_shared<procedure>(formals, variadic_iden.get(), args_list.cdr, env);
 	}
 	);
 
