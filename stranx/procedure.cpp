@@ -12,7 +12,7 @@ p_datum procedure::call(const p_datum &args, const p_env &) const {
 }
 
 const p_env procedure::make_new_env(const p_datum &args) const {
-	// fixme should change env of procedures to new_env?
+	// fixme change env of procedures to new_env !in this method!
 	const p_env new_env(std::make_shared<environment>(env));
 
 	p_pair curr_arg(std::dynamic_pointer_cast<pair>(args));
