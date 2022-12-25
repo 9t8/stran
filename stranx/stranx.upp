@@ -4,7 +4,6 @@ file
 	datum.cpp,
 	lexer.h,
 	lexer.cpp,
-	native_function.h,
 	object.h,
 	procedure.h,
 	procedure.cpp;

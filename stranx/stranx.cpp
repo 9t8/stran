@@ -1,5 +1,4 @@
 #include "lexer.h"
-#include "native_function.h"
 #include "procedure.h"
 
 #include <iostream>
