@@ -62,7 +62,7 @@ struct pair : datum {
 		assert(dynamic_cast<const function *>(func.get()) &&
 			   "attemped to call an uncallable object");
 
-		return dynamic_cast<const function &>(*func).call(cdr, env); // fixme PROBLEM HERE!!!
+		return dynamic_cast<const function &>(*func).call(cdr, env);
 	}
 
 	p_datum car, cdr;

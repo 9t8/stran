@@ -3,6 +3,7 @@
 #include "datum.h"
 
 #include <sstream>
+#include <vector>
 
 token_list lexer::lex() {
 	token_list tokens;

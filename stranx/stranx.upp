@@ -2,8 +2,6 @@ file
 	stranx.cpp,
 	datum.h,
 	datum.cpp,
-	eval.h,
-	eval.cpp,
 	lexer.h,
 	lexer.cpp,
 	native_function.h,
