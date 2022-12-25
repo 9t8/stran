@@ -8,11 +8,10 @@
 
 struct closure : function {
 	closure(const std::vector<std::string> &fs, const bool &v, const p_pair &b,
-			  const p_env &p_e) : formals(fs), variadic(v), body(b) {
+			const p_env &p_e) : formals(fs), variadic(v), body(b) {
+		set_env(p_e);
 		assert(!variadic || !formals.empty() &&
 			   "procedure taking no arguments cannot be variadic");
-
-		set_env(p_e);
 	}
 
 	operator std::string() const override {
