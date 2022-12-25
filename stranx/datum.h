@@ -38,13 +38,6 @@ struct function : datum {
 	virtual p_datum call(const p_datum &args, const_p_env &env) const = 0;
 };
 
-inline p_datum call(const p_datum &func, const p_datum &args, const_p_env &env) {
-	assert(dynamic_cast<const function *>(func.get()) &&
-		   "attemped to call an uncallable object");
-
-	return dynamic_cast<const function &>(*func).call(args, env);
-}
-
 struct empty_list : datum {
 	operator std::string() const override {
 		return "()";
@@ -65,7 +58,11 @@ struct pair : datum {
 	operator std::string() const override;
 
 	p_datum eval(const_p_env &env) override {
-		return call(car->eval(env), cdr, env);
+		const p_datum func(car->eval(env));
+		assert(dynamic_cast<const function *>(func.get()) &&
+			   "attemped to call an uncallable object");
+
+		return dynamic_cast<const function &>(*func).call(cdr, env); // fixme PROBLEM HERE!!!
 	}
 
 	p_datum car, cdr;

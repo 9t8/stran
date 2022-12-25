@@ -65,9 +65,13 @@ void eval(std::vector<p_datum> &tree, std::ostream &os) {
 			assert(typeid(caar) == typeid(identifier) &&
 				   "procedure name must be an identifier");
 
+			const p_datum lambda(env->find("lambda"));
+			assert(dynamic_cast<const function *>(lambda.get()) &&
+				   "lambda was redefined into an uncallable object");
+
 			env->define(dynamic_cast<const identifier &>(*formals.car).name,
-						call(env->find("lambda"),
-							 std::make_shared<pair>(formals.cdr, args_list.cdr), env));
+						dynamic_cast<const function &>(*lambda)
+						.call(std::make_shared<pair>(formals.cdr, args_list.cdr), env));
 		}
 
 		return std::make_shared<empty_list>();

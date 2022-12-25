@@ -1,5 +1,5 @@
 ; bugged!
-((lambda (c t) (c t)) (lambda (l) l) 1)
+((lambda (f a) (f a)) (lambda (b) b) 420)
 
 ; defines
 (define a 3)
