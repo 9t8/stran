@@ -19,6 +19,8 @@ b
 (define (b) 2)
 b
 (b)
+(define (f a) (lambda () a))
+((f 0))
 
 ; true/false
 (define if (lambda (c t f) (c t f)))
