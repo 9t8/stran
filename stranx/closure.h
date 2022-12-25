@@ -1,13 +1,13 @@
-#ifndef _stranx_procedure_h_
-#define _stranx_procedure_h_
+#ifndef _stranx_closure_h_
+#define _stranx_closure_h_
 
 #include "datum.h"
 
 #include <sstream>
 #include <vector>
 
-struct procedure : function {
-	procedure(const std::vector<std::string> &fs, const bool &v, const p_pair &b,
+struct closure : function {
+	closure(const std::vector<std::string> &fs, const bool &v, const p_pair &b,
 			  const p_env &p_e) : formals(fs), variadic(v), body(b) {
 		assert(!variadic || !formals.empty() &&
 			   "procedure taking no arguments cannot be variadic");

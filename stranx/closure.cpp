@@ -1,6 +1,6 @@
-#include "procedure.h"
+#include "closure.h"
 
-p_datum procedure::call(const p_datum &args, const p_env &) const {
+p_datum closure::call(const p_datum &args, const p_env &) const {
 	const p_env new_env(make_new_env(args));
 
 	p_pair exprs(body);
@@ -11,8 +11,10 @@ p_datum procedure::call(const p_datum &args, const p_env &) const {
 	return result;
 }
 
-const p_env procedure::make_new_env(const p_datum &args) const {
-	// fixme change env of procedures to new_env !in this method!
+void fix_closure() {}
+
+const p_env closure::make_new_env(const p_datum &args) const {
+	// fixme change env of closures to new_env !in this method!
 	const p_env new_env(std::make_shared<environment>(env));
 
 	p_pair curr_arg(std::dynamic_pointer_cast<pair>(args));
@@ -75,7 +77,7 @@ p_datum lambda::call(const p_datum &args, const p_env &env) const {
 	const p_pair body(std::dynamic_pointer_cast<pair>(args_list.cdr));
 	assert(body && "invalid procedure body");
 
-	return std::make_shared<procedure>(formals, variadic_iden.get(), body, env);
+	return std::make_shared<closure>(formals, variadic_iden.get(), body, env);
 }
 
 p_datum define::call(const p_datum &args, const p_env &env) const {

@@ -1,12 +1,12 @@
 file
 	stranx.cpp,
+	closure.h,
+	closure.cpp,
 	datum.h,
 	datum.cpp,
 	lexer.h,
 	lexer.cpp,
-	object.h,
-	procedure.h,
-	procedure.cpp;
+	object.h;
 
 mainconfig
 	"" = "";
