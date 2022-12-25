@@ -11,12 +11,12 @@ p_datum closure::call(const p_datum &args, const p_env &) const {
 	return result;
 }
 
-void fix_closure(const p_datum &, const p_env &) {
-}
-
 const p_env closure::make_new_env(const p_datum &args) const {
 	// fixme change env of closures to new_env !in this method!
 	const p_env new_env(std::make_shared<environment>(env));
+
+	static const auto fix_closure([&](const p_datum &evaled_arg) {
+	});
 
 	p_pair curr_arg(std::dynamic_pointer_cast<pair>(args));
 
