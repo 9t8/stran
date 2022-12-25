@@ -64,7 +64,7 @@ int main(int, const char *[]) {
 		std::cout << "  " << *tree[i] << std::endl;
 	}
 
-	const_p_env env(std::make_shared<environment>(nullptr));
+	const p_env env(std::make_shared<environment>(nullptr));
 	env->define("lambda", std::make_shared<lambda>());
 	env->define("define", std::make_shared<define>());
 
