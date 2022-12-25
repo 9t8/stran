@@ -15,9 +15,9 @@ const p_env closure::make_new_env(const p_datum &args) const {
 	p_pair curr_arg(std::dynamic_pointer_cast<pair>(args));
 
 	// fixme change env of closures to new_env !in this method!
-	static const auto next_arg([&]() -> const p_datum {
-		//const p_datum evaled_arg();
-		return next(curr_arg)->eval(env);
+	const auto next_arg([&]() {
+		const p_datum evaled_arg(next(curr_arg)->eval(env));
+		return evaled_arg;
 	});
 
 	const p_env new_env(std::make_shared<environment>(env));
@@ -29,11 +29,11 @@ const p_env closure::make_new_env(const p_datum &args) const {
 	}
 
 	for (size_t i(0); i < formals.size() - 1; ++i) {
-		new_env->define(formals[i], next(curr_arg)->eval(env));
+		new_env->define(formals[i], next_arg());
 	}
 
 	if (!variadic) {
-		new_env->define(formals.back(), next(curr_arg)->eval(env));
+		new_env->define(formals.back(), next_arg());
 		assert(!curr_arg && "too many arguments");
 
 		return new_env;
@@ -44,10 +44,10 @@ const p_env closure::make_new_env(const p_datum &args) const {
 		return new_env;
 	}
 
-	p_pair tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
+	p_pair tail(std::make_shared<pair>(next_arg()));
 	new_env->define(formals.back(), tail);
 	while (curr_arg) {
-		p_pair new_tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
+		p_pair new_tail(std::make_shared<pair>(next_arg()));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}

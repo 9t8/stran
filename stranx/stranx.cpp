@@ -4,7 +4,7 @@
 #include <iostream>
 
 p_datum parse_next(const token_list &tokens, size_t &idx) {
-	static const auto get_next_token_type([&]() -> const std::type_info & {
+	const auto get_next_token_type([&]() -> const std::type_info & {
 		assert(idx < tokens.size() &&
 		"expected a token but none found (too many opening parens?)");
 
