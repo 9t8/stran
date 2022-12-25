@@ -1,7 +1,6 @@
 #ifndef _stranx_object_h_
 #define _stranx_object_h_
 
-#include <deque>
 #include <string>
 
 struct object {
@@ -14,7 +13,7 @@ struct object {
 	virtual operator std::string() const = 0;
 };
 
-typedef std::deque<std::shared_ptr<object>> token_list;
+typedef std::vector<std::shared_ptr<object>> token_list;
 
 struct begin_list : object {
 	operator std::string() const override {
