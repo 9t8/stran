@@ -46,12 +46,12 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 int main(int, const char *[]) {
 	token_list tokens(lexer(std::cin).lex());
 
-	std::cout << "===-- tokens --===" << std::endl;
+	std::cout << "===-- tokens --===\n";
 	if (!tokens.empty()) {
 		for (size_t i(0); i < tokens.size() - 1; ++i) {
-			std::cout << *tokens[i] << " " << std::flush;
+			std::cout << *tokens[i] << " ";
 		}
-		std::cout << *tokens.back() << std::endl;
+		std::cout << *tokens.back() << "\n";
 	}
 
 	std::vector<p_datum> tree;
@@ -59,16 +59,16 @@ int main(int, const char *[]) {
 		tree.push_back(parse_next(tokens, i));
 	}
 
-	std::cout << "\n===-- tree --===" << std::endl;
+	std::cout << "\n===-- tree --===\n";
 	for (size_t i(0); i < tree.size(); ++i) {
-		std::cout << "  " << *tree[i] << std::endl;
+		std::cout << "  " << *tree[i] << "\n";
 	}
+	std::cout << "\n===-- output --===" << std::endl;
 
 	const p_env env(std::make_shared<environment>(nullptr));
 	env->define("lambda", std::make_shared<lambda>());
 	env->define("define", std::make_shared<define>());
 
-	std::cout << "\n===-- output --===" << std::endl;
 	for (size_t i(0); i < tree.size(); ++i) {
 		std::cout << *tree[i]->eval(env) << std::endl;
 	}
