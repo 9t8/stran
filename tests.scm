@@ -1,9 +1,9 @@
 ; bugged
-(define (cons a b)
-  (lambda (m) (m a b)))
-(define (car p)
-  (p (lambda (x y) x)))
-(car (cons 1 2))
+(define (f a)
+  (lambda (m) (m a)))
+(define (g p)
+  (p (lambda (x) x)))
+(g (f 1))
 
 ; defines
 (define a 3)
