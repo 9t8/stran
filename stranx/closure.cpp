@@ -12,15 +12,20 @@ p_datum closure::call(const p_datum &args, const p_env &) const {
 }
 
 const p_env closure::make_new_env(const p_datum &args) const {
+	const p_env new_env(std::make_shared<environment>(env));
+
 	p_pair curr_arg(std::dynamic_pointer_cast<pair>(args));
 
-	// fixme change env of closures to new_env !in this method!
 	const auto next_arg([&]() {
 		const p_datum evaled_arg(next(curr_arg)->eval(env));
+		const std::shared_ptr<closure> new_closure(
+			std::dynamic_pointer_cast<closure>(evaled_arg));
+		if (new_closure) {
+			new_closure->set_env(new_env);
+		}
 		return evaled_arg;
-	});
-
-	const p_env new_env(std::make_shared<environment>(env));
+	}
+					   );
 
 	if (formals.empty()) {
 		assert(!curr_arg && "too many arguments");

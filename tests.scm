@@ -1,5 +1,9 @@
-; bugged!
-((lambda (f a) (f a)) (lambda (b) b) 420)
+; bugged
+(define (cons car cdr)
+  (lambda (m) (m car cdr)))
+(define (car p)
+  (p (lambda (car cdr) car)))
+(car (cons 1 2))
 
 ; defines
 (define a 3)
