@@ -21,8 +21,8 @@ const p_env closure::make_new_env(const p_datum &args) const {
 		const std::shared_ptr<closure> new_closure(
 			std::dynamic_pointer_cast<closure>(new_arg));
 		if (new_closure) {
-			// fixme
-			// print stuff: check if new_closure.env is parent of new_env (aka this.env)
+			// fixme: argument eval must happen in PAIR! not here!
+			// print stuff and check if new_closure.env is parent of new_env (aka this.env)
 			// it should be
 			// if its not, we would either have to add a check here
 			// or fix something in lambda.

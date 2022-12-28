@@ -1,4 +1,7 @@
-; bugged
+; bugged - need to make both of these work
+
+((lambda (f a) (f a)) (lambda (b) b) 420)
+
 (define (f a) (lambda (m) (m a)))
 (define (g b) (b (lambda (x) x)))
 (define y (f 1))
