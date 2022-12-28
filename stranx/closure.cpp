@@ -17,13 +17,13 @@ const p_env closure::make_new_env(const p_datum &args) const {
 	p_pair curr_arg(std::dynamic_pointer_cast<pair>(args));
 
 	const auto next_arg([&]() {
-		const p_datum evaled_arg(next(curr_arg)->eval(env));
+		const p_datum new_arg(next(curr_arg)->eval(env));
 		const std::shared_ptr<closure> new_closure(
-			std::dynamic_pointer_cast<closure>(evaled_arg));
+			std::dynamic_pointer_cast<closure>(new_arg));
 		if (new_closure) {
 			new_closure->set_env(new_env);
 		}
-		return evaled_arg;
+		return new_arg;
 	}
 					   );
 
