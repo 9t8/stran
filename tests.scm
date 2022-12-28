@@ -1,8 +1,8 @@
 ; bugged
 (define (f a) (lambda (m) (m a)))
-(define (g p) (p (lambda (x) x)))
-(define x (f 1))
-(g x)
+(define (g b) (b (lambda (x) x)))
+(define y (f 1))
+(g y)
 
 ; defines
 (define a 3)
