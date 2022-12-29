@@ -33,7 +33,7 @@ pair::operator std::string() const {
 	}
 
 	const datum &last(*p_last);
-	if (typeid(last) != typeid(empty_list)) {
+	if (typeid(last) != typeid(emptyl)) {
 		oss << " . " << last;
 	}
 	oss << ")";

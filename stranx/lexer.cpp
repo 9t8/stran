@@ -39,7 +39,7 @@ token_list lexer::lex() {
 						   "invalid character while parsing decimal");
 					tokens.push_back(std::make_shared<decimal>(val));
 				} else {
-					tokens.push_back(std::make_shared<identifier>(curr_word));
+					tokens.push_back(std::make_shared<iden>(curr_word));
 				}
 			curr_word.clear();
 		}
@@ -49,11 +49,11 @@ token_list lexer::lex() {
 				return tokens;
 
 			case '(':
-				tokens.push_back(std::make_shared<begin_list>());
+				tokens.push_back(std::make_shared<beginl>());
 				continue;
 
 			case ')':
-				tokens.push_back(std::make_shared<end_list>());
+				tokens.push_back(std::make_shared<endl>());
 				continue;
 
 			case ';':

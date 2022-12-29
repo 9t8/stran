@@ -15,13 +15,13 @@ struct object {
 
 typedef std::vector<std::shared_ptr<object>> token_list;
 
-struct begin_list : object {
+struct beginl : object {
 	operator std::string() const override {
 		return "(";
 	}
 };
 
-struct end_list : object {
+struct endl : object {
 	operator std::string() const override {
 		return ")";
 	}

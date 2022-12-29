@@ -38,7 +38,7 @@ struct function : datum {
 	virtual p_datum call(const p_datum &args, const p_env &env) const = 0;
 };
 
-struct empty_list : datum {
+struct emptyl : datum {
 	operator std::string() const override {
 		return "()";
 	}
@@ -52,7 +52,7 @@ struct empty_list : datum {
 struct pair : datum {
 	static bool stringify_into_lists;
 
-	pair(const p_datum &a, const p_datum &b = std::make_shared<empty_list>())
+	pair(const p_datum &a, const p_datum &b = std::make_shared<emptyl>())
 			: car(a) , cdr(b) {}
 
 	operator std::string() const override;
@@ -72,8 +72,8 @@ typedef std::shared_ptr<pair> p_pair;
 
 const p_datum &next(p_pair &exprs);
 
-struct identifier : datum {
-	identifier(const std::string &n) : name(n) {}
+struct iden : datum {
+	iden(const std::string &n) : name(n) {}
 
 	operator std::string() const override {
 		return name;
