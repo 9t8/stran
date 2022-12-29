@@ -1,12 +1,3 @@
-; bugged - need to make both of these work
-
-((lambda (f a) (f a)) (lambda (b) b) 420)
-
-(define (f a) (lambda (m) (m a)))
-(define (g b) (b (lambda (x) x)))
-(define y (f 1))
-(g y)
-
 ; defines
 (define a 3)
 (define b a)
@@ -27,6 +18,14 @@ b
 (b)
 (define (f a) (lambda () a))
 ((f 0))
+
+; higher-order functions
+((lambda (f a) (f a)) (lambda (b) b) 420)
+(define (f a) (lambda (m) (m a)))
+(define y (f 1))
+(y (lambda (x) x))
+(define (g b) (b (lambda (x) x)))
+(g y)
 
 ; true/false
 (define if (lambda (c t f) (c t f)))

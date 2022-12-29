@@ -8,10 +8,10 @@
 
 struct closure : function {
 	closure(const std::vector<std::string> &fs, const bool &v, const p_pair &b,
-			const p_env &p_e) : formals(fs), variadic(v), body(b) {
-		set_env(p_e);
+			const p_env &p_i) : formals(fs), variadic(v), body(b), internal_env(p_i) {
 		assert(!variadic || !formals.empty() &&
 			   "procedure taking no arguments cannot be variadic");
+		assert(internal_env && "procedure must have an environment");
 	}
 
 	operator std::string() const override {
@@ -20,16 +20,10 @@ struct closure : function {
 		return oss.str();
 	}
 
-	p_datum call(const p_datum &args, const p_env &) const override;
-
-	void set_env(const p_env &p_e) {
-		assert(p_e && "procedure must have an environment");
-
-		env = p_e;
-	}
+	p_datum call(const p_datum &args, const p_env &env) const override;
 
 private:
-	const p_env make_new_env(const p_datum &args) const;
+	const p_env make_new_env(const p_datum &args, const p_env &env) const;
 
 	const std::vector<std::string> formals;
 
@@ -37,7 +31,7 @@ private:
 
 	const p_pair body;
 
-	p_env env;
+	const p_env internal_env;
 };
 
 struct lambda : function {

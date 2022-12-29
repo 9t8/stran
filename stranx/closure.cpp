@@ -1,7 +1,7 @@
 #include "closure.h"
 
-p_datum closure::call(const p_datum &args, const p_env &) const {
-	const p_env new_env(make_new_env(args));
+p_datum closure::call(const p_datum &args, const p_env &env) const {
+	const p_env new_env(make_new_env(args, env));
 
 	p_pair exprs(body);
 	p_datum result(next(exprs)->eval(new_env));
@@ -11,26 +11,10 @@ p_datum closure::call(const p_datum &args, const p_env &) const {
 	return result;
 }
 
-const p_env closure::make_new_env(const p_datum &args) const {
-	const p_env new_env(std::make_shared<environment>(env));
-
+const p_env closure::make_new_env(const p_datum &args, const p_env &env) const {
 	p_pair curr_arg(std::dynamic_pointer_cast<pair>(args));
 
-	const auto next_arg([&]() {
-		const p_datum new_arg(next(curr_arg)->eval(env));
-		const std::shared_ptr<closure> new_closure(
-			std::dynamic_pointer_cast<closure>(new_arg));
-		if (new_closure) {
-			// fixme: argument eval must happen in PAIR! not here!
-			// print stuff and check if new_closure.env is parent of new_env (aka this.env)
-			// it should be
-			// if its not, we would either have to add a check here
-			// or fix something in lambda.
-			new_closure->set_env(new_env);
-		}
-		return new_arg;
-	}
-					   );
+	const p_env new_env(std::make_shared<environment>(internal_env));
 
 	if (formals.empty()) {
 		assert(!curr_arg && "too many arguments");
@@ -39,11 +23,11 @@ const p_env closure::make_new_env(const p_datum &args) const {
 	}
 
 	for (size_t i(0); i < formals.size() - 1; ++i) {
-		new_env->define(formals[i], next_arg());
+		new_env->define(formals[i], next(curr_arg)->eval(env));
 	}
 
 	if (!variadic) {
-		new_env->define(formals.back(), next_arg());
+		new_env->define(formals.back(), next(curr_arg)->eval(env));
 		assert(!curr_arg && "too many arguments");
 
 		return new_env;
@@ -54,10 +38,10 @@ const p_env closure::make_new_env(const p_datum &args) const {
 		return new_env;
 	}
 
-	p_pair tail(std::make_shared<pair>(next_arg()));
+	p_pair tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
 	new_env->define(formals.back(), tail);
 	while (curr_arg) {
-		p_pair new_tail(std::make_shared<pair>(next_arg()));
+		p_pair new_tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}
