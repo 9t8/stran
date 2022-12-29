@@ -103,11 +103,11 @@ sp<datum> define::call(const sp<datum> &args, const sp<context> &ctx) const {
 		assert(typeid(caar) == typeid(iden) && "procedure name must be an identifier");
 
 		const sp<datum> lambda(ctx->find("lambda"));
-		assert(dynamic_cast<const function *>(lambda.get()) &&
+		assert(dynamic_cast<const func *>(lambda.get()) &&
 			   "lambda was redefined into an uncallable token");
 
 		ctx->define(dynamic_cast<const iden &>(*formals.car).name,
-					dynamic_cast<const function &>(*lambda).call(std::make_shared<pair>(
+					dynamic_cast<const func &>(*lambda).call(std::make_shared<pair>(
 								formals.cdr, args_list.cdr), ctx));
 	}
 

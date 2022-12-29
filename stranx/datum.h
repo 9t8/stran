@@ -32,7 +32,7 @@ namespace stranx {
 		const sp<context> parent;
 	};
 
-	struct function : datum {
+	struct func : datum {
 		virtual sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const = 0;
 	};
 
@@ -56,8 +56,7 @@ namespace stranx {
 		operator std::string() const override;
 
 		sp<datum> eval(const sp<context> &ctx) override {
-			const sp<function> p_func(
-				std::dynamic_pointer_cast<function>(car->eval(ctx)));
+			const sp<func> p_func(std::dynamic_pointer_cast<func>(car->eval(ctx)));
 			assert(p_func && "attemped to call an uncallable object");
 
 			return p_func->call(cdr, ctx);

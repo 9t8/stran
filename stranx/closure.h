@@ -8,7 +8,7 @@
 
 namespace stranx {
 
-	struct closure : function {
+	struct closure : func {
 		closure(const std::vector<std::string> &fs, const bool &v, const sp<pair> &b,
 				const sp<context> &p_i) : formals(fs), variadic(v), body(b), internal_ctx(p_i) {
 			assert(!variadic || !formals.empty() &&
@@ -36,7 +36,7 @@ namespace stranx {
 		const sp<context> internal_ctx;
 	};
 
-	struct lambda : function {
+	struct lambda : func {
 		operator std::string() const override {
 			std::ostringstream oss;
 			oss << "#lambda@" << this;
@@ -46,7 +46,7 @@ namespace stranx {
 		sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const override;
 	};
 
-	struct define : function {
+	struct define : func {
 		operator std::string() const override {
 			std::ostringstream oss;
 			oss << "#define@" << this;
