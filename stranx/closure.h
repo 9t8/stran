@@ -25,8 +25,6 @@ namespace stranx {
 		sp<datum> call(const sp<datum> &args, const sp<env> &p_e) const override;
 
 	private:
-		sp<datum> eval_body(const sp<env> &eval_env) const;
-
 		const std::vector<std::string> formals;
 
 		const bool variadic;
