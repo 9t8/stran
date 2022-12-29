@@ -8,7 +8,7 @@ namespace stranx {
 	struct lexer {
 		lexer(std::istream &i) : is(i), row(1), col(0) {}
 
-		token_list lex();
+		tok_list lex();
 
 	private:
 		int get();

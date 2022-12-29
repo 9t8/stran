@@ -17,7 +17,7 @@ namespace stranx {
 		virtual operator std::string() const = 0;
 	};
 
-	typedef std::vector<sp<tok>> token_list;
+	typedef std::vector<sp<tok>> tok_list;
 
 	struct beginl : tok {
 		operator std::string() const override {

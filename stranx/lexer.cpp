@@ -7,8 +7,8 @@
 
 using namespace stranx;
 
-token_list lexer::lex() {
-	token_list tokens;
+tok_list lexer::lex() {
+	tok_list toks;
 
 	std::string curr_word;
 	for (;;) {
@@ -31,7 +31,7 @@ token_list lexer::lex() {
 
 		if (!curr_word.empty()) {
 			if (curr_word == ".") {
-				tokens.push_back(std::make_shared<dot>());
+				toks.push_back(std::make_shared<dot>());
 			} else
 				if (curr_word[0] == '+' || curr_word[0] == '-' || curr_word[0] == '.' ||
 					(curr_word[0] >= '0' && curr_word[0] <= '9')) {
@@ -39,23 +39,23 @@ token_list lexer::lex() {
 					double val(stod(curr_word, &idx));
 					assert(idx == curr_word.size() &&
 						   "invalid character while parsing decimal");
-					tokens.push_back(std::make_shared<decimal>(val));
+					toks.push_back(std::make_shared<decimal>(val));
 				} else {
-					tokens.push_back(std::make_shared<iden>(curr_word));
+					toks.push_back(std::make_shared<iden>(curr_word));
 				}
 			curr_word.clear();
 		}
 
 		switch (curr_char) {
 			case EOF:
-				return tokens;
+				return toks;
 
 			case '(':
-				tokens.push_back(std::make_shared<beginl>());
+				toks.push_back(std::make_shared<beginl>());
 				continue;
 
 			case ')':
-				tokens.push_back(std::make_shared<endl>());
+				toks.push_back(std::make_shared<endl>());
 				continue;
 
 			case ';':
