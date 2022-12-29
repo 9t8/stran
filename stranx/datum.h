@@ -8,17 +8,17 @@
 
 namespace stranx {
 
-	struct context;
+	struct env;
 
 	struct datum : token, std::enable_shared_from_this<datum> {
 		// self-evaluating by default
-		virtual sp<datum> eval(const sp<context> &) {
+		virtual sp<datum> eval(const sp<env> &) {
 			return shared_from_this();
 		}
 	};
 
-	struct context {
-		context(const sp<context> &p) : parent(p) {}
+	struct env {
+		env(const sp<env> &p) : parent(p) {}
 
 		const sp<datum> &find(const std::string &name) const;
 
@@ -29,11 +29,11 @@ namespace stranx {
 	private:
 		std::unordered_map<std::string, sp<datum>> table;
 
-		const sp<context> parent;
+		const sp<env> parent;
 	};
 
 	struct func : datum {
-		virtual sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const = 0;
+		virtual sp<datum> call(const sp<datum> &args, const sp<env> &p_e) const = 0;
 	};
 
 	struct emptyl : datum {
@@ -41,7 +41,7 @@ namespace stranx {
 			return "()";
 		}
 
-		sp<datum> eval(const sp<context> &) override {
+		sp<datum> eval(const sp<env> &) override {
 			assert(0 && "attempted to evaluate empty list");
 			throw;
 		}
@@ -55,11 +55,11 @@ namespace stranx {
 
 		operator std::string() const override;
 
-		sp<datum> eval(const sp<context> &ctx) override {
-			const sp<func> p_func(std::dynamic_pointer_cast<func>(car->eval(ctx)));
+		sp<datum> eval(const sp<env> &p_e) override {
+			const sp<func> p_func(std::dynamic_pointer_cast<func>(car->eval(p_e)));
 			assert(p_func && "attemped to call an uncallable object");
 
-			return p_func->call(cdr, ctx);
+			return p_func->call(cdr, p_e);
 		}
 
 		sp<datum> car, cdr;
@@ -74,8 +74,8 @@ namespace stranx {
 			return name;
 		}
 
-		sp<datum> eval(const sp<context> &ctx) override {
-			return ctx->find(name);
+		sp<datum> eval(const sp<env> &p_e) override {
+			return p_e->find(name);
 		}
 
 		const std::string name;

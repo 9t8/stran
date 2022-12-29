@@ -10,10 +10,10 @@ namespace stranx {
 
 	struct closure : func {
 		closure(const std::vector<std::string> &fs, const bool &v, const sp<pair> &b,
-				const sp<context> &p_i) : formals(fs), variadic(v), body(b), internal_ctx(p_i) {
+				const sp<env> &c) : formals(fs), variadic(v), body(b), context(c) {
 			assert(!(variadic && formals.empty()) &&
 				   "procedure taking no arguments cannot be variadic");
-			assert(internal_ctx && "procedure must have a context");
+			assert(context && "procedure must have a context");
 		}
 
 		operator std::string() const override {
@@ -22,10 +22,10 @@ namespace stranx {
 			return oss.str();
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const override;
+		sp<datum> call(const sp<datum> &args, const sp<env> &p_e) const override;
 
 	private:
-		sp<datum> eval_body(const sp<context> &new_ctx) const;
+		sp<datum> eval_body(const sp<env> &eval_env) const;
 
 		const std::vector<std::string> formals;
 
@@ -33,7 +33,7 @@ namespace stranx {
 
 		const sp<pair> body;
 
-		const sp<context> internal_ctx;
+		const sp<env> context;
 	};
 
 	struct lambda : func {
@@ -43,7 +43,7 @@ namespace stranx {
 			return oss.str();
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const override;
+		sp<datum> call(const sp<datum> &args, const sp<env> &p_e) const override;
 	};
 
 	struct define : func {
@@ -53,7 +53,7 @@ namespace stranx {
 			return oss.str();
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const override;
+		sp<datum> call(const sp<datum> &args, const sp<env> &p_e) const override;
 	};
 
 }
