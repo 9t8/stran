@@ -100,7 +100,7 @@ sp<datum> define::call(const sp<datum> &args, const sp<env> &curr_env) const {
 
 		const sp<datum> lambda(curr_env->find("lambda"));
 		assert(dynamic_cast<const func *>(lambda.get()) &&
-			   "lambda was redefined into an uncallable token");
+			   "lambda was redefined into an uncallable object");
 
 		curr_env->define(dynamic_cast<const iden &>(*formals.car).name,
 						 dynamic_cast<const func &>(*lambda).call(std::make_shared<pair>(
