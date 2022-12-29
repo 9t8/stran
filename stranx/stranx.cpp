@@ -49,12 +49,10 @@ int main(int, const char *[]) {
 	token_list tokens(lexer(std::cin).lex());
 
 	std::cout << "===-- tokens --===\n";
-	for (size_t i(0); i + 1 < tokens.size(); ++i) {
-		std::cout << *tokens[i] << " ";
+	for (size_t i(0); i < tokens.size(); ++i) {
+		std::cout << " " << *tokens[i];
 	}
-	if (!tokens.empty()) {
-		std::cout << *tokens.back() << "\n";
-	}
+	std::cout << "\n";
 
 	std::vector<sp<datum>> tree;
 	for (size_t i(0); i < tokens.size();) {
@@ -63,7 +61,7 @@ int main(int, const char *[]) {
 
 	std::cout << "\n===-- tree --===\n";
 	for (size_t i(0); i < tree.size(); ++i) {
-		std::cout << "  " << *tree[i] << "\n";
+		std::cout << *tree[i] << "\n";
 	}
 	std::cout << "\n===-- output --===" << std::endl;
 
