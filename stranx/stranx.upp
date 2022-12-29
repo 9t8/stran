@@ -6,7 +6,7 @@ file
 	datum.cpp,
 	lexer.h,
 	lexer.cpp,
-	object.h;
+	token.h;
 
 mainconfig
 	"" = "";

@@ -102,7 +102,7 @@ p_datum define::call(const p_datum &args, const p_env &env) const {
 
 		const p_datum lambda(env->find("lambda"));
 		assert(dynamic_cast<const function *>(lambda.get()) &&
-			   "lambda was redefined into an uncallable object");
+			   "lambda was redefined into an uncallable token");
 
 		env->define(dynamic_cast<const iden &>(*formals.car).name,
 					dynamic_cast<const function &>(*lambda).call(std::make_shared<pair>(

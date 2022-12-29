@@ -1,33 +1,33 @@
-#ifndef _stranx_object_h_
-#define _stranx_object_h_
+#ifndef _stranx_token_h_
+#define _stranx_token_h_
 
 #include <string>
 
-struct object {
-	friend std::ostream &operator<<(std::ostream &os, const object &t) {
+struct token {
+	friend std::ostream &operator<<(std::ostream &os, const token &t) {
 		return os << static_cast<std::string>(t);
 	}
 
-	virtual ~object() {}
+	virtual ~token() {}
 
 	virtual operator std::string() const = 0;
 };
 
-typedef std::vector<std::shared_ptr<object>> token_list;
+typedef std::vector<std::shared_ptr<token>> token_list;
 
-struct beginl : object {
+struct beginl : token {
 	operator std::string() const override {
 		return "(";
 	}
 };
 
-struct endl : object {
+struct endl : token {
 	operator std::string() const override {
 		return ")";
 	}
 };
 
-struct dot : object {
+struct dot : token {
 	operator std::string() const override {
 		return ".";
 	}

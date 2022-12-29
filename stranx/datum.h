@@ -1,7 +1,7 @@
 #ifndef _stranx_datum_h_
 #define _stranx_datum_h_
 
-#include "object.h"
+#include "token.h"
 
 #include <cassert>
 #include <unordered_map>
@@ -12,7 +12,7 @@ typedef std::shared_ptr<datum> p_datum;
 struct environment;
 typedef std::shared_ptr<environment> p_env;
 
-struct datum : object, std::enable_shared_from_this<datum> {
+struct datum : token, std::enable_shared_from_this<datum> {
 	// self-evaluating by default
 	virtual p_datum eval(const p_env &) {
 		return shared_from_this();
@@ -60,7 +60,7 @@ struct pair : datum {
 	p_datum eval(const p_env &env) override {
 		const p_datum func(car->eval(env));
 		assert(dynamic_cast<const function *>(func.get()) &&
-			   "attemped to call an uncallable object");
+			   "attemped to call an uncallable token");
 
 		return dynamic_cast<const function &>(*func).call(cdr, env);
 	}
