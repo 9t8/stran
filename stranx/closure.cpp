@@ -2,7 +2,7 @@
 
 using namespace stranx;
 
-sp<datum> closure::call(const sp<datum> &args, const sp<env> &p_e) const {
+sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 	const sp<env> eval_env(std::make_shared<env>(context));
 
 	const auto eval_body([&]() -> sp<datum> {
@@ -18,12 +18,12 @@ sp<datum> closure::call(const sp<datum> &args, const sp<env> &p_e) const {
 	sp<pair> curr_arg(std::dynamic_pointer_cast<pair>(args));
 
 	for (size_t i(0); i + 1 < formals.size(); ++i) {
-		eval_env->define(formals[i], next(curr_arg)->eval(p_e));
+		eval_env->define(formals[i], next(curr_arg)->eval(curr_env));
 	}
 
 	if (!variadic) {
 		if (!formals.empty()) {
-			eval_env->define(formals.back(), next(curr_arg)->eval(p_e));
+			eval_env->define(formals.back(), next(curr_arg)->eval(curr_env));
 		}
 		assert(!curr_arg && "too many arguments");
 
@@ -35,17 +35,17 @@ sp<datum> closure::call(const sp<datum> &args, const sp<env> &p_e) const {
 		return eval_body();
 	}
 
-	sp<pair> tail(std::make_shared<pair>(next(curr_arg)->eval(p_e)));
+	sp<pair> tail(std::make_shared<pair>(next(curr_arg)->eval(curr_env)));
 	eval_env->define(formals.back(), tail);
 	while (curr_arg) {
-		sp<pair> new_tail(std::make_shared<pair>(next(curr_arg)->eval(p_e)));
+		sp<pair> new_tail(std::make_shared<pair>(next(curr_arg)->eval(curr_env)));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}
 	return eval_body();
 }
 
-sp<datum> lambda::call(const sp<datum> &args, const sp<env> &p_e) const {
+sp<datum> lambda::call(const sp<datum> &args, const sp<env> &curr_env) const {
 	const datum &temp(*args);
 	assert(typeid(temp) == typeid(pair) && "malformed argument list (not enough arguments?)");
 	const pair &args_list(dynamic_cast<const pair &>(temp));
@@ -70,10 +70,10 @@ sp<datum> lambda::call(const sp<datum> &args, const sp<env> &p_e) const {
 	const sp<pair> body(std::dynamic_pointer_cast<pair>(args_list.cdr));
 	assert(body && "invalid procedure body");
 
-	return std::make_shared<closure>(formals, variadic_iden.get(), body, p_e);
+	return std::make_shared<closure>(formals, variadic_iden.get(), body, curr_env);
 }
 
-sp<datum> define::call(const sp<datum> &args, const sp<env> &p_e) const {
+sp<datum> define::call(const sp<datum> &args, const sp<env> &curr_env) const {
 	const datum &temp(*args);
 	assert(typeid(temp) == typeid(pair) && "malformed argument list (not enough arguments?)");
 	const pair &args_list(dynamic_cast<const pair &>(temp));
@@ -88,7 +88,8 @@ sp<datum> define::call(const sp<datum> &args, const sp<env> &p_e) const {
 		const datum &cddr(*cdr.cdr);
 		assert(typeid(cddr) == typeid(emptyl) && "too many arguments");
 
-		p_e->define(dynamic_cast<const iden &>(*args_list.car).name, cdr.car->eval(p_e));
+		curr_env->define(dynamic_cast<const iden &>(*args_list.car).name,
+						 cdr.car->eval(curr_env));
 	} else {
 		assert(typeid(car) == typeid(pair) && "first argument must be identifier or list");
 
@@ -97,13 +98,13 @@ sp<datum> define::call(const sp<datum> &args, const sp<env> &p_e) const {
 		const datum &caar(*formals.car);
 		assert(typeid(caar) == typeid(iden) && "procedure name must be an identifier");
 
-		const sp<datum> lambda(p_e->find("lambda"));
+		const sp<datum> lambda(curr_env->find("lambda"));
 		assert(dynamic_cast<const func *>(lambda.get()) &&
 			   "lambda was redefined into an uncallable token");
 
-		p_e->define(dynamic_cast<const iden &>(*formals.car).name,
-					dynamic_cast<const func &>(*lambda).call(std::make_shared<pair>(
-								formals.cdr, args_list.cdr), p_e));
+		curr_env->define(dynamic_cast<const iden &>(*formals.car).name,
+						 dynamic_cast<const func &>(*lambda).call(std::make_shared<pair>(
+									 formals.cdr, args_list.cdr), curr_env));
 	}
 
 	return std::make_shared<emptyl>();

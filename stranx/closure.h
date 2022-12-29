@@ -22,7 +22,7 @@ namespace stranx {
 			return oss.str();
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<env> &p_e) const override;
+		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
 
 	private:
 		const std::vector<std::string> formals;
@@ -41,7 +41,7 @@ namespace stranx {
 			return oss.str();
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<env> &p_e) const override;
+		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
 	};
 
 	struct define : func {
@@ -51,7 +51,7 @@ namespace stranx {
 			return oss.str();
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<env> &p_e) const override;
+		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
 	};
 
 }

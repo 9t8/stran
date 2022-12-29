@@ -33,7 +33,7 @@ namespace stranx {
 	};
 
 	struct func : datum {
-		virtual sp<datum> call(const sp<datum> &args, const sp<env> &p_e) const = 0;
+		virtual sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const = 0;
 	};
 
 	struct emptyl : datum {
@@ -55,11 +55,11 @@ namespace stranx {
 
 		operator std::string() const override;
 
-		sp<datum> eval(const sp<env> &p_e) override {
-			const sp<func> p_func(std::dynamic_pointer_cast<func>(car->eval(p_e)));
+		sp<datum> eval(const sp<env> &curr_env) override {
+			const sp<func> p_func(std::dynamic_pointer_cast<func>(car->eval(curr_env)));
 			assert(p_func && "attemped to call an uncallable object");
 
-			return p_func->call(cdr, p_e);
+			return p_func->call(cdr, curr_env);
 		}
 
 		sp<datum> car, cdr;
@@ -74,8 +74,8 @@ namespace stranx {
 			return name;
 		}
 
-		sp<datum> eval(const sp<env> &p_e) override {
-			return p_e->find(name);
+		sp<datum> eval(const sp<env> &curr_env) override {
+			return curr_env->find(name);
 		}
 
 		const std::string name;
