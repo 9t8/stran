@@ -36,6 +36,12 @@ namespace stranx {
 			return ".";
 		}
 	};
+	
+	struct quote_tok : token {
+		operator std::string() const override {
+			return "'";
+		}
+	};
 
 }
 
