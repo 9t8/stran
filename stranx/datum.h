@@ -58,11 +58,11 @@ struct pair : datum {
 	operator std::string() const override;
 
 	p_datum eval(const p_ctx &ctx) override {
-		const p_datum func(car->eval(ctx));
-		assert(dynamic_cast<const function *>(func.get()) &&
-			   "attemped to call an uncallable token");
+		const std::shared_ptr<function> func(
+			std::dynamic_pointer_cast<function>(car->eval(ctx)));
+		assert(func && "attemped to call an uncallable object");
 
-		return dynamic_cast<const function &>(*func).call(cdr, ctx);
+		return func->call(cdr, ctx);
 	}
 
 	p_datum car, cdr;
