@@ -3,41 +3,26 @@
 using namespace stranx;
 
 sp<datum> closure::call(const sp<datum> &args, const sp<context> &ctx) const {
-	const sp<context> new_ctx(create_new_ctx(args, ctx));
-
-	sp<pair> exprs(body);
-	sp<datum> result(next(exprs)->eval(new_ctx));
-	while (exprs) {
-		result = next(exprs)->eval(new_ctx);
-	}
-	return result;
-}
-
-const sp<context> closure::create_new_ctx(const sp<datum> &args, const sp<context> &ctx) const {
-	sp<pair> curr_arg(std::dynamic_pointer_cast<pair>(args));
-
 	const sp<context> new_ctx(std::make_shared<context>(internal_ctx));
 
-	if (formals.empty()) {
-		assert(!curr_arg && "too many arguments");
+	sp<pair> curr_arg(std::dynamic_pointer_cast<pair>(args));
 
-		return new_ctx;
-	}
-
-	for (size_t i(0); i < formals.size() - 1; ++i) {
+	for (size_t i(0); i + 1 < formals.size(); ++i) {
 		new_ctx->define(formals[i], next(curr_arg)->eval(ctx));
 	}
 
 	if (!variadic) {
-		new_ctx->define(formals.back(), next(curr_arg)->eval(ctx));
+		if (!formals.empty()) {
+			new_ctx->define(formals.back(), next(curr_arg)->eval(ctx));
+		}
 		assert(!curr_arg && "too many arguments");
 
-		return new_ctx;
+		return eval_body(new_ctx);
 	}
 
 	if (!curr_arg) {
 		new_ctx->define(formals.back(), std::make_shared<emptyl>());
-		return new_ctx;
+		return eval_body(new_ctx);
 	}
 
 	sp<pair> tail(std::make_shared<pair>(next(curr_arg)->eval(ctx)));
@@ -47,7 +32,16 @@ const sp<context> closure::create_new_ctx(const sp<datum> &args, const sp<contex
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}
-	return new_ctx;
+	return eval_body(new_ctx);
+}
+
+sp<datum> closure::eval_body(const sp<context> &new_ctx) const {
+	sp<pair> exprs(body);
+	sp<datum> result(next(exprs)->eval(new_ctx));
+	while (exprs) {
+		result = next(exprs)->eval(new_ctx);
+	}
+	return result;
 }
 
 sp<datum> lambda::call(const sp<datum> &args, const sp<context> &ctx) const {

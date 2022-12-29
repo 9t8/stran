@@ -49,10 +49,10 @@ int main(int, const char *[]) {
 	token_list tokens(lexer(std::cin).lex());
 
 	std::cout << "===-- tokens --===\n";
+	for (size_t i(0); i + 1 < tokens.size(); ++i) {
+		std::cout << *tokens[i] << " ";
+	}
 	if (!tokens.empty()) {
-		for (size_t i(0); i < tokens.size() - 1; ++i) {
-			std::cout << *tokens[i] << " ";
-		}
 		std::cout << *tokens.back() << "\n";
 	}
 

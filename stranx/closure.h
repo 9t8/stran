@@ -11,7 +11,7 @@ namespace stranx {
 	struct closure : func {
 		closure(const std::vector<std::string> &fs, const bool &v, const sp<pair> &b,
 				const sp<context> &p_i) : formals(fs), variadic(v), body(b), internal_ctx(p_i) {
-			assert(!variadic || !formals.empty() &&
+			assert(!(variadic && formals.empty()) &&
 				   "procedure taking no arguments cannot be variadic");
 			assert(internal_ctx && "procedure must have a context");
 		}
@@ -25,7 +25,7 @@ namespace stranx {
 		sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const override;
 
 	private:
-		const sp<context> create_new_ctx(const sp<datum> &args, const sp<context> &ctx) const;
+		sp<datum> eval_body(const sp<context> &new_ctx) const;
 
 		const std::vector<std::string> formals;
 
