@@ -4,6 +4,8 @@
 #include <string>
 
 namespace stranx {
+	
+	template <typename t> using sp = std::shared_ptr<t>;
 
 	struct token {
 		friend std::ostream &operator<<(std::ostream &os, const token &t) {
@@ -15,7 +17,7 @@ namespace stranx {
 		virtual operator std::string() const = 0;
 	};
 
-	typedef std::vector<std::shared_ptr<token>> token_list;
+	typedef std::vector<sp<token>> token_list;
 
 	struct beginl : token {
 		operator std::string() const override {

@@ -8,36 +8,32 @@
 
 namespace stranx {
 
-	struct datum;
-	typedef std::shared_ptr<datum> p_datum;
-
 	struct context;
-	typedef std::shared_ptr<context> p_ctx;
 
 	struct datum : token, std::enable_shared_from_this<datum> {
 		// self-evaluating by default
-		virtual p_datum eval(const p_ctx &) {
+		virtual sp<datum> eval(const sp<context> &) {
 			return shared_from_this();
 		}
 	};
 
 	struct context {
-		context(const p_ctx &p) : parent(p) {}
+		context(const sp<context> &p) : parent(p) {}
 
-		const p_datum &find(const std::string &name);
+		const sp<datum> &find(const std::string &name);
 
-		void define(const std::string &name, const p_datum &val) {
+		void define(const std::string &name, const sp<datum> &val) {
 			table[name] = val;
 		}
 
 	private:
-		std::unordered_map<std::string, p_datum> table;
+		std::unordered_map<std::string, sp<datum>> table;
 
-		const p_ctx parent;
+		const sp<context> parent;
 	};
 
 	struct function : datum {
-		virtual p_datum call(const p_datum &args, const p_ctx &ctx) const = 0;
+		virtual sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const = 0;
 	};
 
 	struct emptyl : datum {
@@ -45,7 +41,7 @@ namespace stranx {
 			return "()";
 		}
 
-		p_datum eval(const p_ctx &) override {
+		sp<datum> eval(const sp<context> &) override {
 			assert(0 && "attempted to evaluate empty list");
 			throw;
 		}
@@ -54,25 +50,23 @@ namespace stranx {
 	struct pair : datum {
 		static bool stringify_into_lists;
 
-		pair(const p_datum &a, const p_datum &b = std::make_shared<emptyl>())
+		pair(const sp<datum> &a, const sp<datum> &b = std::make_shared<emptyl>())
 				: car(a) , cdr(b) {}
 
 		operator std::string() const override;
 
-		p_datum eval(const p_ctx &ctx) override {
-			const std::shared_ptr<function> func(
+		sp<datum> eval(const sp<context> &ctx) override {
+			const sp<function> func(
 				std::dynamic_pointer_cast<function>(car->eval(ctx)));
 			assert(func && "attemped to call an uncallable object");
 
 			return func->call(cdr, ctx);
 		}
 
-		p_datum car, cdr;
+		sp<datum> car, cdr;
 	};
 
-	typedef std::shared_ptr<pair> p_pair;
-
-	const p_datum &next(p_pair &exprs);
+	const sp<datum> &next(sp<pair> &exprs);
 
 	struct iden : datum {
 		iden(const std::string &n) : name(n) {}
@@ -81,7 +75,7 @@ namespace stranx {
 			return name;
 		}
 
-		p_datum eval(const p_ctx &ctx) override {
+		sp<datum> eval(const sp<context> &ctx) override {
 			return ctx->find(name);
 		}
 

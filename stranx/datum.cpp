@@ -5,7 +5,7 @@
 
 using namespace stranx;
 
-const p_datum &context::find(const std::string &name) {
+const sp<datum> &context::find(const std::string &name) {
 	decltype(table)::iterator it(table.find(name));
 	if (it != table.end()) {
 		return it->second;
@@ -28,8 +28,8 @@ pair::operator std::string() const {
 	std::ostringstream oss;
 	oss << "(" << *car;
 
-	p_datum p_last(cdr);
-	for (p_pair curr_pair(std::dynamic_pointer_cast<pair>(cdr)); curr_pair;) {
+	sp<datum> p_last(cdr);
+	for (sp<pair> curr_pair(std::dynamic_pointer_cast<pair>(cdr)); curr_pair;) {
 		p_last = curr_pair->cdr;
 		oss << " " << *next(curr_pair);
 	}
@@ -43,10 +43,10 @@ pair::operator std::string() const {
 	return oss.str();
 }
 
-const p_datum &stranx::next(p_pair &exprs) {
+const sp<datum> &stranx::next(sp<pair> &exprs) {
 	assert(exprs && "invalid expression list (not enough arguments?)");
 
-	const p_datum &result(exprs->car);
+	const sp<datum> &result(exprs->car);
 	exprs = std::dynamic_pointer_cast<pair>(exprs->cdr);
 	return result;
 }

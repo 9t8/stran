@@ -5,7 +5,7 @@
 
 using namespace stranx;
 
-p_datum parse_next(const token_list &tokens, size_t &idx) {
+sp<datum> parse_next(const token_list &tokens, size_t &idx) {
 	const auto get_next_token_type([&]() -> const std::type_info & {
 		assert(idx < tokens.size() &&
 		"expected a token but none found (too many opening parens?)");
@@ -21,8 +21,8 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 			return std::make_shared<emptyl>();
 		}
 
-		p_pair p(std::make_shared<pair>(parse_next(tokens, idx)));
-		p_datum start(p);
+		sp<pair> p(std::make_shared<pair>(parse_next(tokens, idx)));
+		sp<datum> start(p);
 		while (get_next_token_type() != typeid(endl)) {
 			if (get_next_token_type() == typeid(dot)) {
 				p->cdr = parse_next(tokens, ++idx);
@@ -30,7 +30,7 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 					   "malformed improper list (misplaced dot token)");
 				break;
 			}
-			p_pair p_new(std::make_shared<pair>(parse_next(tokens, idx)));
+			sp<pair> p_new(std::make_shared<pair>(parse_next(tokens, idx)));
 			p->cdr = p_new;
 			p = p_new;
 		}
@@ -39,7 +39,7 @@ p_datum parse_next(const token_list &tokens, size_t &idx) {
 		return start;
 	}
 
-	p_datum p(std::dynamic_pointer_cast<datum>(tokens.at(idx++)));
+	sp<datum> p(std::dynamic_pointer_cast<datum>(tokens.at(idx++)));
 	assert(p && "malformed token list (tried to parse an unparsable token)");
 
 	return p;
@@ -56,7 +56,7 @@ int main(int, const char *[]) {
 		std::cout << *tokens.back() << "\n";
 	}
 
-	std::vector<p_datum> tree;
+	std::vector<sp<datum>> tree;
 	for (size_t i(0); i < tokens.size();) {
 		tree.push_back(parse_next(tokens, i));
 	}
@@ -67,7 +67,7 @@ int main(int, const char *[]) {
 	}
 	std::cout << "\n===-- output --===" << std::endl;
 
-	const p_ctx ctx(std::make_shared<context>(nullptr));
+	const sp<context> ctx(std::make_shared<context>(nullptr));
 	ctx->define("lambda", std::make_shared<lambda>());
 	ctx->define("define", std::make_shared<define>());
 

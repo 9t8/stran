@@ -9,8 +9,8 @@
 namespace stranx {
 
 	struct closure : function {
-		closure(const std::vector<std::string> &fs, const bool &v, const p_pair &b,
-				const p_ctx &p_i) : formals(fs), variadic(v), body(b), internal_ctx(p_i) {
+		closure(const std::vector<std::string> &fs, const bool &v, const sp<pair> &b,
+				const sp<context> &p_i) : formals(fs), variadic(v), body(b), internal_ctx(p_i) {
 			assert(!variadic || !formals.empty() &&
 				   "procedure taking no arguments cannot be variadic");
 			assert(internal_ctx && "procedure must have a context");
@@ -22,18 +22,18 @@ namespace stranx {
 			return oss.str();
 		}
 
-		p_datum call(const p_datum &args, const p_ctx &ctx) const override;
+		sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const override;
 
 	private:
-		const p_ctx make_new_ctx(const p_datum &args, const p_ctx &ctx) const;
+		const sp<context> make_new_ctx(const sp<datum> &args, const sp<context> &ctx) const;
 
 		const std::vector<std::string> formals;
 
 		const bool variadic;
 
-		const p_pair body;
+		const sp<pair> body;
 
-		const p_ctx internal_ctx;
+		const sp<context> internal_ctx;
 	};
 
 	struct lambda : function {
@@ -43,7 +43,7 @@ namespace stranx {
 			return oss.str();
 		}
 
-		p_datum call(const p_datum &args, const p_ctx &ctx) const override;
+		sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const override;
 	};
 
 	struct define : function {
@@ -53,7 +53,7 @@ namespace stranx {
 			return oss.str();
 		}
 
-		p_datum call(const p_datum &args, const p_ctx &ctx) const override;
+		sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const override;
 	};
 
 }
