@@ -1,5 +1,5 @@
-#include "lexer.h"
 #include "closure.h"
+#include "lexer.h"
 
 #include <iostream>
 
