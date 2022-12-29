@@ -20,7 +20,7 @@ namespace stranx {
 	struct context {
 		context(const sp<context> &p) : parent(p) {}
 
-		const sp<datum> &find(const std::string &name);
+		const sp<datum> &find(const std::string &name) const;
 
 		void define(const std::string &name, const sp<datum> &val) {
 			table[name] = val;

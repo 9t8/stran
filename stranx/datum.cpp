@@ -5,8 +5,8 @@
 
 using namespace stranx;
 
-const sp<datum> &context::find(const std::string &name) {
-	decltype(table)::iterator it(table.find(name));
+const sp<datum> &context::find(const std::string &name) const {
+	const decltype(table)::const_iterator it(table.find(name));
 	if (it != table.end()) {
 		return it->second;
 	}
