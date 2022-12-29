@@ -1,7 +1,7 @@
 #ifndef _stranx_datum_h_
 #define _stranx_datum_h_
 
-#include "token.h"
+#include "tok.h"
 
 #include <cassert>
 #include <unordered_map>
@@ -10,7 +10,7 @@ namespace stranx {
 
 	struct env;
 
-	struct datum : token, std::enable_shared_from_this<datum> {
+	struct datum : tok, std::enable_shared_from_this<datum> {
 		// self-evaluating by default
 		virtual sp<datum> eval(const sp<env> &) {
 			return shared_from_this();

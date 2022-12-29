@@ -10,7 +10,7 @@ sp<datum> parse_next(const token_list &tokens, size_t &idx) {
 		assert(idx < tokens.size() &&
 		"expected a token but none found (too many opening parens?)");
 
-		token &next_token(*tokens[idx]);
+		tok &next_token(*tokens[idx]);
 		return typeid(next_token);
 	});
 

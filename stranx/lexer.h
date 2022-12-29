@@ -1,7 +1,7 @@
 #ifndef _stranx_lexer_h_
 #define _stranx_lexer_h_
 
-#include "token.h"
+#include "tok.h"
 
 namespace stranx {
 
