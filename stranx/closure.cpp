@@ -3,7 +3,7 @@
 using namespace stranx;
 
 sp<datum> closure::call(const sp<datum> &args, const sp<context> &ctx) const {
-	const sp<context> new_ctx(make_new_ctx(args, ctx));
+	const sp<context> new_ctx(create_new_ctx(args, ctx));
 
 	sp<pair> exprs(body);
 	sp<datum> result(next(exprs)->eval(new_ctx));
@@ -13,7 +13,7 @@ sp<datum> closure::call(const sp<datum> &args, const sp<context> &ctx) const {
 	return result;
 }
 
-const sp<context> closure::make_new_ctx(const sp<datum> &args, const sp<context> &ctx) const {
+const sp<context> closure::create_new_ctx(const sp<datum> &args, const sp<context> &ctx) const {
 	sp<pair> curr_arg(std::dynamic_pointer_cast<pair>(args));
 
 	const sp<context> new_ctx(std::make_shared<context>(internal_ctx));

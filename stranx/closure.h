@@ -25,7 +25,7 @@ namespace stranx {
 		sp<datum> call(const sp<datum> &args, const sp<context> &ctx) const override;
 
 	private:
-		const sp<context> make_new_ctx(const sp<datum> &args, const sp<context> &ctx) const;
+		const sp<context> create_new_ctx(const sp<datum> &args, const sp<context> &ctx) const;
 
 		const std::vector<std::string> formals;
 
