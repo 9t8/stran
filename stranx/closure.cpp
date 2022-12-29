@@ -1,54 +1,54 @@
 #include "closure.h"
 
-p_datum closure::call(const p_datum &args, const p_env &env) const {
-	const p_env new_env(make_new_env(args, env));
+p_datum closure::call(const p_datum &args, const p_ctx &ctx) const {
+	const p_ctx new_ctx(make_new_ctx(args, ctx));
 
 	p_pair exprs(body);
-	p_datum result(next(exprs)->eval(new_env));
+	p_datum result(next(exprs)->eval(new_ctx));
 	while (exprs) {
-		result = next(exprs)->eval(new_env);
+		result = next(exprs)->eval(new_ctx);
 	}
 	return result;
 }
 
-const p_env closure::make_new_env(const p_datum &args, const p_env &env) const {
+const p_ctx closure::make_new_ctx(const p_datum &args, const p_ctx &ctx) const {
 	p_pair curr_arg(std::dynamic_pointer_cast<pair>(args));
 
-	const p_env new_env(std::make_shared<environment>(internal_env));
+	const p_ctx new_ctx(std::make_shared<context>(internal_ctx));
 
 	if (formals.empty()) {
 		assert(!curr_arg && "too many arguments");
 
-		return new_env;
+		return new_ctx;
 	}
 
 	for (size_t i(0); i < formals.size() - 1; ++i) {
-		new_env->define(formals[i], next(curr_arg)->eval(env));
+		new_ctx->define(formals[i], next(curr_arg)->eval(ctx));
 	}
 
 	if (!variadic) {
-		new_env->define(formals.back(), next(curr_arg)->eval(env));
+		new_ctx->define(formals.back(), next(curr_arg)->eval(ctx));
 		assert(!curr_arg && "too many arguments");
 
-		return new_env;
+		return new_ctx;
 	}
 
 	if (!curr_arg) {
-		new_env->define(formals.back(), std::make_shared<emptyl>());
-		return new_env;
+		new_ctx->define(formals.back(), std::make_shared<emptyl>());
+		return new_ctx;
 	}
 
-	p_pair tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
-	new_env->define(formals.back(), tail);
+	p_pair tail(std::make_shared<pair>(next(curr_arg)->eval(ctx)));
+	new_ctx->define(formals.back(), tail);
 	while (curr_arg) {
-		p_pair new_tail(std::make_shared<pair>(next(curr_arg)->eval(env)));
+		p_pair new_tail(std::make_shared<pair>(next(curr_arg)->eval(ctx)));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}
-	return new_env;
+	return new_ctx;
 }
 
-p_datum lambda::call(const p_datum &args, const p_env &env) const {
+p_datum lambda::call(const p_datum &args, const p_ctx &ctx) const {
 	const datum &temp(*args);
 	assert(typeid(temp) == typeid(pair) && "malformed argument list (not enough arguments?)");
 	const pair &args_list(dynamic_cast<const pair &>(temp));
@@ -73,10 +73,10 @@ p_datum lambda::call(const p_datum &args, const p_env &env) const {
 	const p_pair body(std::dynamic_pointer_cast<pair>(args_list.cdr));
 	assert(body && "invalid procedure body");
 
-	return std::make_shared<closure>(formals, variadic_iden.get(), body, env);
+	return std::make_shared<closure>(formals, variadic_iden.get(), body, ctx);
 }
 
-p_datum define::call(const p_datum &args, const p_env &env) const {
+p_datum define::call(const p_datum &args, const p_ctx &ctx) const {
 	const datum &temp(*args);
 	assert(typeid(temp) == typeid(pair) && "malformed argument list (not enough arguments?)");
 	const pair &args_list(dynamic_cast<const pair &>(temp));
@@ -91,7 +91,7 @@ p_datum define::call(const p_datum &args, const p_env &env) const {
 		const datum &cddr(*cdr.cdr);
 		assert(typeid(cddr) == typeid(emptyl) && "too many arguments");
 
-		env->define(dynamic_cast<const iden &>(*args_list.car).name, cdr.car->eval(env));
+		ctx->define(dynamic_cast<const iden &>(*args_list.car).name, cdr.car->eval(ctx));
 	} else {
 		assert(typeid(car) == typeid(pair) && "first argument must be identifier or list");
 
@@ -100,13 +100,13 @@ p_datum define::call(const p_datum &args, const p_env &env) const {
 		const datum &caar(*formals.car);
 		assert(typeid(caar) == typeid(iden) && "procedure name must be an identifier");
 
-		const p_datum lambda(env->find("lambda"));
+		const p_datum lambda(ctx->find("lambda"));
 		assert(dynamic_cast<const function *>(lambda.get()) &&
 			   "lambda was redefined into an uncallable token");
 
-		env->define(dynamic_cast<const iden &>(*formals.car).name,
+		ctx->define(dynamic_cast<const iden &>(*formals.car).name,
 					dynamic_cast<const function &>(*lambda).call(std::make_shared<pair>(
-								formals.cdr, args_list.cdr), env));
+								formals.cdr, args_list.cdr), ctx));
 	}
 
 	return std::make_shared<emptyl>();

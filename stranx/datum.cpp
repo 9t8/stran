@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-const p_datum &environment::find(const std::string &name) {
+const p_datum &context::find(const std::string &name) {
 	decltype(table)::iterator it(table.find(name));
 	if (it != table.end()) {
 		return it->second;

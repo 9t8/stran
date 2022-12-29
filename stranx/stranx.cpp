@@ -65,11 +65,11 @@ int main(int, const char *[]) {
 	}
 	std::cout << "\n===-- output --===" << std::endl;
 
-	const p_env env(std::make_shared<environment>(nullptr));
-	env->define("lambda", std::make_shared<lambda>());
-	env->define("define", std::make_shared<define>());
+	const p_ctx ctx(std::make_shared<context>(nullptr));
+	ctx->define("lambda", std::make_shared<lambda>());
+	ctx->define("define", std::make_shared<define>());
 
 	for (size_t i(0); i < tree.size(); ++i) {
-		std::cout << *tree[i]->eval(env) << std::endl;
+		std::cout << *tree[i]->eval(ctx) << std::endl;
 	}
 }

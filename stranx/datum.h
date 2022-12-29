@@ -9,18 +9,18 @@
 struct datum;
 typedef std::shared_ptr<datum> p_datum;
 
-struct environment;
-typedef std::shared_ptr<environment> p_env;
+struct context;
+typedef std::shared_ptr<context> p_ctx;
 
 struct datum : token, std::enable_shared_from_this<datum> {
 	// self-evaluating by default
-	virtual p_datum eval(const p_env &) {
+	virtual p_datum eval(const p_ctx &) {
 		return shared_from_this();
 	}
 };
 
-struct environment {
-	environment(const p_env &p) : parent(p) {}
+struct context {
+	context(const p_ctx &p) : parent(p) {}
 
 	const p_datum &find(const std::string &name);
 
@@ -31,11 +31,11 @@ struct environment {
 private:
 	std::unordered_map<std::string, p_datum> table;
 
-	const p_env parent;
+	const p_ctx parent;
 };
 
 struct function : datum {
-	virtual p_datum call(const p_datum &args, const p_env &env) const = 0;
+	virtual p_datum call(const p_datum &args, const p_ctx &ctx) const = 0;
 };
 
 struct emptyl : datum {
@@ -43,7 +43,7 @@ struct emptyl : datum {
 		return "()";
 	}
 
-	p_datum eval(const p_env &) override {
+	p_datum eval(const p_ctx &) override {
 		assert(0 && "attempted to evaluate empty list");
 		throw;
 	}
@@ -57,12 +57,12 @@ struct pair : datum {
 
 	operator std::string() const override;
 
-	p_datum eval(const p_env &env) override {
-		const p_datum func(car->eval(env));
+	p_datum eval(const p_ctx &ctx) override {
+		const p_datum func(car->eval(ctx));
 		assert(dynamic_cast<const function *>(func.get()) &&
 			   "attemped to call an uncallable token");
 
-		return dynamic_cast<const function &>(*func).call(cdr, env);
+		return dynamic_cast<const function &>(*func).call(cdr, ctx);
 	}
 
 	p_datum car, cdr;
@@ -79,8 +79,8 @@ struct iden : datum {
 		return name;
 	}
 
-	p_datum eval(const p_env &env) override {
-		return env->find(name);
+	p_datum eval(const p_ctx &ctx) override {
+		return ctx->find(name);
 	}
 
 	const std::string name;
