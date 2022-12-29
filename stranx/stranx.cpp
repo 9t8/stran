@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+using namespace stranx;
+
 p_datum parse_next(const token_list &tokens, size_t &idx) {
 	const auto get_next_token_type([&]() -> const std::type_info & {
 		assert(idx < tokens.size() &&

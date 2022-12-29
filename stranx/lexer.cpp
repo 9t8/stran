@@ -5,6 +5,8 @@
 #include <sstream>
 #include <vector>
 
+using namespace stranx;
+
 token_list lexer::lex() {
 	token_list tokens;
 

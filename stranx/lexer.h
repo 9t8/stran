@@ -3,19 +3,23 @@
 
 #include "token.h"
 
-struct lexer {
-	lexer(std::istream &i) : is(i), row(1), col(0) {}
+namespace stranx {
 
-	token_list lex();
+	struct lexer {
+		lexer(std::istream &i) : is(i), row(1), col(0) {}
 
-private:
-	int get();
+		token_list lex();
 
-	std::istream &is;
+	private:
+		int get();
 
-	size_t row;
+		std::istream &is;
 
-	size_t col;
-};
+		size_t row;
+
+		size_t col;
+	};
+
+}
 
 #endif

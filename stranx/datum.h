@@ -6,95 +6,99 @@
 #include <cassert>
 #include <unordered_map>
 
-struct datum;
-typedef std::shared_ptr<datum> p_datum;
+namespace stranx {
 
-struct context;
-typedef std::shared_ptr<context> p_ctx;
+	struct datum;
+	typedef std::shared_ptr<datum> p_datum;
 
-struct datum : token, std::enable_shared_from_this<datum> {
-	// self-evaluating by default
-	virtual p_datum eval(const p_ctx &) {
-		return shared_from_this();
-	}
-};
+	struct context;
+	typedef std::shared_ptr<context> p_ctx;
 
-struct context {
-	context(const p_ctx &p) : parent(p) {}
+	struct datum : token, std::enable_shared_from_this<datum> {
+		// self-evaluating by default
+		virtual p_datum eval(const p_ctx &) {
+			return shared_from_this();
+		}
+	};
 
-	const p_datum &find(const std::string &name);
+	struct context {
+		context(const p_ctx &p) : parent(p) {}
 
-	void define(const std::string &name, const p_datum &val) {
-		table[name] = val;
-	}
+		const p_datum &find(const std::string &name);
 
-private:
-	std::unordered_map<std::string, p_datum> table;
+		void define(const std::string &name, const p_datum &val) {
+			table[name] = val;
+		}
 
-	const p_ctx parent;
-};
+	private:
+		std::unordered_map<std::string, p_datum> table;
 
-struct function : datum {
-	virtual p_datum call(const p_datum &args, const p_ctx &ctx) const = 0;
-};
+		const p_ctx parent;
+	};
 
-struct emptyl : datum {
-	operator std::string() const override {
-		return "()";
-	}
+	struct function : datum {
+		virtual p_datum call(const p_datum &args, const p_ctx &ctx) const = 0;
+	};
 
-	p_datum eval(const p_ctx &) override {
-		assert(0 && "attempted to evaluate empty list");
-		throw;
-	}
-};
+	struct emptyl : datum {
+		operator std::string() const override {
+			return "()";
+		}
 
-struct pair : datum {
-	static bool stringify_into_lists;
+		p_datum eval(const p_ctx &) override {
+			assert(0 && "attempted to evaluate empty list");
+			throw;
+		}
+	};
 
-	pair(const p_datum &a, const p_datum &b = std::make_shared<emptyl>())
-			: car(a) , cdr(b) {}
+	struct pair : datum {
+		static bool stringify_into_lists;
 
-	operator std::string() const override;
+		pair(const p_datum &a, const p_datum &b = std::make_shared<emptyl>())
+				: car(a) , cdr(b) {}
 
-	p_datum eval(const p_ctx &ctx) override {
-		const std::shared_ptr<function> func(
-			std::dynamic_pointer_cast<function>(car->eval(ctx)));
-		assert(func && "attemped to call an uncallable object");
+		operator std::string() const override;
 
-		return func->call(cdr, ctx);
-	}
+		p_datum eval(const p_ctx &ctx) override {
+			const std::shared_ptr<function> func(
+				std::dynamic_pointer_cast<function>(car->eval(ctx)));
+			assert(func && "attemped to call an uncallable object");
 
-	p_datum car, cdr;
-};
+			return func->call(cdr, ctx);
+		}
 
-typedef std::shared_ptr<pair> p_pair;
+		p_datum car, cdr;
+	};
 
-const p_datum &next(p_pair &exprs);
+	typedef std::shared_ptr<pair> p_pair;
 
-struct iden : datum {
-	iden(const std::string &n) : name(n) {}
+	const p_datum &next(p_pair &exprs);
 
-	operator std::string() const override {
-		return name;
-	}
+	struct iden : datum {
+		iden(const std::string &n) : name(n) {}
 
-	p_datum eval(const p_ctx &ctx) override {
-		return ctx->find(name);
-	}
+		operator std::string() const override {
+			return name;
+		}
 
-	const std::string name;
-};
+		p_datum eval(const p_ctx &ctx) override {
+			return ctx->find(name);
+		}
 
-struct decimal : datum {
-	decimal(const double &v) : val(v) {}
+		const std::string name;
+	};
 
-	operator std::string() const override {
-		return std::to_string(val);
-	}
+	struct decimal : datum {
+		decimal(const double &v) : val(v) {}
 
-private:
-	const double val;
-};
+		operator std::string() const override {
+			return std::to_string(val);
+		}
+
+	private:
+		const double val;
+	};
+
+}
 
 #endif

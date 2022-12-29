@@ -6,52 +6,56 @@
 #include <sstream>
 #include <vector>
 
-struct closure : function {
-	closure(const std::vector<std::string> &fs, const bool &v, const p_pair &b,
-			const p_ctx &p_i) : formals(fs), variadic(v), body(b), internal_ctx(p_i) {
-		assert(!variadic || !formals.empty() &&
-			   "procedure taking no arguments cannot be variadic");
-		assert(internal_ctx && "procedure must have a context");
-	}
+namespace stranx {
 
-	operator std::string() const override {
-		std::ostringstream oss;
-		oss << "#procedure@" << this;
-		return oss.str();
-	}
+	struct closure : function {
+		closure(const std::vector<std::string> &fs, const bool &v, const p_pair &b,
+				const p_ctx &p_i) : formals(fs), variadic(v), body(b), internal_ctx(p_i) {
+			assert(!variadic || !formals.empty() &&
+				   "procedure taking no arguments cannot be variadic");
+			assert(internal_ctx && "procedure must have a context");
+		}
 
-	p_datum call(const p_datum &args, const p_ctx &ctx) const override;
+		operator std::string() const override {
+			std::ostringstream oss;
+			oss << "#procedure@" << this;
+			return oss.str();
+		}
 
-private:
-	const p_ctx make_new_ctx(const p_datum &args, const p_ctx &ctx) const;
+		p_datum call(const p_datum &args, const p_ctx &ctx) const override;
 
-	const std::vector<std::string> formals;
+	private:
+		const p_ctx make_new_ctx(const p_datum &args, const p_ctx &ctx) const;
 
-	const bool variadic;
+		const std::vector<std::string> formals;
 
-	const p_pair body;
+		const bool variadic;
 
-	const p_ctx internal_ctx;
-};
+		const p_pair body;
 
-struct lambda : function {
-	operator std::string() const override {
-		std::ostringstream oss;
-		oss << "#lambda@" << this;
-		return oss.str();
-	}
+		const p_ctx internal_ctx;
+	};
 
-	p_datum call(const p_datum &args, const p_ctx &ctx) const override;
-};
+	struct lambda : function {
+		operator std::string() const override {
+			std::ostringstream oss;
+			oss << "#lambda@" << this;
+			return oss.str();
+		}
 
-struct define : function {
-	operator std::string() const override {
-		std::ostringstream oss;
-		oss << "#define@" << this;
-		return oss.str();
-	}
+		p_datum call(const p_datum &args, const p_ctx &ctx) const override;
+	};
 
-	p_datum call(const p_datum &args, const p_ctx &ctx) const override;
-};
+	struct define : function {
+		operator std::string() const override {
+			std::ostringstream oss;
+			oss << "#define@" << this;
+			return oss.str();
+		}
+
+		p_datum call(const p_datum &args, const p_ctx &ctx) const override;
+	};
+
+}
 
 #endif

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 
+using namespace stranx;
+
 const p_datum &context::find(const std::string &name) {
 	decltype(table)::iterator it(table.find(name));
 	if (it != table.end()) {
@@ -41,7 +43,7 @@ pair::operator std::string() const {
 	return oss.str();
 }
 
-const p_datum &next(p_pair &exprs) {
+const p_datum &stranx::next(p_pair &exprs) {
 	assert(exprs && "invalid expression list (not enough arguments?)");
 
 	const p_datum &result(exprs->car);

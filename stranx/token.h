@@ -3,34 +3,38 @@
 
 #include <string>
 
-struct token {
-	friend std::ostream &operator<<(std::ostream &os, const token &t) {
-		return os << static_cast<std::string>(t);
-	}
+namespace stranx {
 
-	virtual ~token() {}
+	struct token {
+		friend std::ostream &operator<<(std::ostream &os, const token &t) {
+			return os << static_cast<std::string>(t);
+		}
 
-	virtual operator std::string() const = 0;
-};
+		virtual ~token() {}
 
-typedef std::vector<std::shared_ptr<token>> token_list;
+		virtual operator std::string() const = 0;
+	};
 
-struct beginl : token {
-	operator std::string() const override {
-		return "(";
-	}
-};
+	typedef std::vector<std::shared_ptr<token>> token_list;
 
-struct endl : token {
-	operator std::string() const override {
-		return ")";
-	}
-};
+	struct beginl : token {
+		operator std::string() const override {
+			return "(";
+		}
+	};
 
-struct dot : token {
-	operator std::string() const override {
-		return ".";
-	}
-};
+	struct endl : token {
+		operator std::string() const override {
+			return ")";
+		}
+	};
+
+	struct dot : token {
+		operator std::string() const override {
+			return ".";
+		}
+	};
+
+}
 
 #endif

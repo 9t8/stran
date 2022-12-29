@@ -1,5 +1,7 @@
 #include "closure.h"
 
+using namespace stranx;
+
 p_datum closure::call(const p_datum &args, const p_ctx &ctx) const {
 	const p_ctx new_ctx(make_new_ctx(args, ctx));
 
