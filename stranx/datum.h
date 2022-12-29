@@ -56,11 +56,11 @@ namespace stranx {
 		operator std::string() const override;
 
 		sp<datum> eval(const sp<context> &ctx) override {
-			const sp<function> func(
+			const sp<function> p_func(
 				std::dynamic_pointer_cast<function>(car->eval(ctx)));
-			assert(func && "attemped to call an uncallable object");
+			assert(p_func && "attemped to call an uncallable object");
 
-			return func->call(cdr, ctx);
+			return p_func->call(cdr, ctx);
 		}
 
 		sp<datum> car, cdr;
