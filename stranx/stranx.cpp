@@ -76,7 +76,7 @@ static sp<datum> lambda(const sp<datum> &args, const sp<env> &curr_env) {
 	return std::make_shared<closure>(formals, variadic_iden.get(), body, curr_env);
 }
 
-sp<datum> define(const sp<datum> &args, const sp<env> &curr_env) {
+static sp<datum> define(const sp<datum> &args, const sp<env> &curr_env) {
 	const datum &temp(*args);
 	assert(typeid(temp) == typeid(pair) && "malformed argument list (not enough arguments?)");
 	const pair &args_list(dynamic_cast<const pair &>(temp));
