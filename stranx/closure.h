@@ -34,24 +34,22 @@ namespace stranx {
 		const sp<env> context;
 	};
 
-	struct lambda : func {
+	struct native_func : func {
+		native_func(sp<datum> (*const p_f)(const sp<datum> &args, const sp<env> &curr_env))
+				: p_func(p_f) {}
+
 		operator std::string() const override {
 			std::ostringstream oss;
-			oss << "#lambda@" << this;
+			oss << "#native_function@" << this;
 			return oss.str();
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
-	};
-
-	struct define : func {
-		operator std::string() const override {
-			std::ostringstream oss;
-			oss << "#define@" << this;
-			return oss.str();
+		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override {
+			return p_func(args, curr_env);
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
+	private:
+		sp<datum> (*const p_func)(const sp<datum> &args, const sp<env> &curr_env);
 	};
 
 }
