@@ -6,7 +6,7 @@
 using namespace stranx;
 
 static sp<datum> parse_next(const tok_list &toks, size_t &idx) {
-	const auto get_next_tok_type([&]() -> const std::type_info & {
+	const auto peek_next_type([&]() -> const std::type_info & {
 		assert(idx < toks.size() &&
 		"expected a token but none found (too many opening parens?)");
 
@@ -14,19 +14,19 @@ static sp<datum> parse_next(const tok_list &toks, size_t &idx) {
 		return typeid(next_tok);
 	});
 
-	if (get_next_tok_type() == typeid(beginl)) {
+	if (peek_next_type() == typeid(beginl)) {
 		++idx;
-		if (get_next_tok_type() == typeid(endl)) {
+		if (peek_next_type() == typeid(endl)) {
 			++idx;
 			return std::make_shared<emptyl>();
 		}
 
 		sp<pair> p(std::make_shared<pair>(parse_next(toks, idx)));
 		sp<datum> start(p);
-		while (get_next_tok_type() != typeid(endl)) {
-			if (get_next_tok_type() == typeid(dot)) {
+		while (peek_next_type() != typeid(endl)) {
+			if (peek_next_type() == typeid(dot)) {
 				p->cdr = parse_next(toks, ++idx);
-				assert(get_next_tok_type() == typeid(endl) &&
+				assert(peek_next_type() == typeid(endl) &&
 					   "malformed improper list (misplaced dot token)");
 				break;
 			}
