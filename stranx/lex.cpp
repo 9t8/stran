@@ -1,18 +1,18 @@
-#include "lexer.h"
+#include "lex.h"
 
 #include "datum.h"
 
-#include <sstream>
+#include <istream>
 #include <vector>
 
 using namespace stranx;
 
-tok_list lexer::lex() {
+tok_list stranx::lex(std::istream &is) {
 	tok_list toks;
 
 	std::string curr_word;
 	for (;;) {
-		int curr_char(get());
+		int curr_char(is.get());
 
 		switch (curr_char) {
 			case ' ':
@@ -61,7 +61,7 @@ tok_list lexer::lex() {
 
 			case ';':
 				while (curr_char != '\n' && curr_char != EOF) {
-					curr_char = get();
+					curr_char = is.get();
 				}
 				break;
 
@@ -70,14 +70,4 @@ tok_list lexer::lex() {
 				break;
 		}
 	}
-}
-
-int lexer::get() {
-	if (is.peek() == '\n') {
-		col = 0;
-		++row;
-	} else {
-		++col;
-	}
-	return is.get();
 }

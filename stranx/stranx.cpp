@@ -1,5 +1,5 @@
 #include "func.h"
-#include "lexer.h"
+#include "lex.h"
 
 #include <iostream>
 
@@ -8,7 +8,7 @@ using namespace stranx;
 static sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
 	const auto peek_next_type([&]() -> const std::type_info & {
 		assert(idx < toks.size() &&
-		"expected a token but none found (too many opening parens?)");
+		"expected more tokens but none found");
 
 		tok &next_tok(*toks[idx]);
 		return typeid(next_tok);
@@ -124,7 +124,7 @@ static sp<datum> quote_func(const sp<datum> &args, const sp<env> &) {
 }
 
 int main(int, const char *[]) {
-	tok_list toks(lexer(std::cin).lex());
+	tok_list toks(lex(std::cin));
 
 	std::cout << "===-- toks --===\n";
 	for (size_t i(0); i < toks.size(); ++i) {
