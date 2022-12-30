@@ -1,6 +1,3 @@
-; standard procedures
-(define (list . l) l)
-
 ; defines
 (define a 3)
 (define b a)
@@ -44,11 +41,25 @@ b
 (if t 1 0)
 (if f 1 0)
 
+; pairs
+(define (cons car cdr)
+  (lambda (m) (m car cdr)))
+(define (car p)
+  (p (lambda (car cdr) car)))
+(define (cdr p)
+  (p (lambda (car cdr) cdr)))
+(define p (cons 1 2))
+(car p)
+(cdr p)
+
 ; multi-statement procedures
 (lambda () 0 1)
 ((lambda () 0 1))
 (define (f a b) a b)
 (f 0 1)
+
+; standard procedures
+(define (list . l) l)
 
 ; variadics
 (lambda l l)
@@ -68,17 +79,6 @@ b
 (rest 0)
 (rest 0 1)
 (rest 0 1 2)
-
-; pairs
-(define (cons car cdr)
-  (lambda (m) (m car cdr)))
-(define (car p)
-  (p (lambda (car cdr) car)))
-(define (cdr p)
-  (p (lambda (car cdr) cdr)))
-(define p (cons 1 2))
-(car p)
-(cdr p)
 
 ; quotes
 1
