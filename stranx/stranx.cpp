@@ -26,8 +26,7 @@ static sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
 		while (peek_next_type() != typeid(endl)) {
 			if (peek_next_type() == typeid(dot)) {
 				p->cdr = parse_datum(toks, ++idx);
-				assert(peek_next_type() == typeid(endl) &&
-					   "malformed improper list (misplaced dot token)");
+				assert(peek_next_type() == typeid(endl) && "misplaced dot token");
 				break;
 			}
 			sp<pair> p_new(std::make_shared<pair>(parse_datum(toks, idx)));
@@ -43,14 +42,14 @@ static sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
 	}
 
 	sp<datum> p(std::dynamic_pointer_cast<datum>(toks.at(idx++)));
-	assert(p && "malformed token list (tried to parse an unparsable token)");
+	assert(p && "tried to parse an unparsable token");
 
 	return p;
 }
 
 static sp<datum> lambda(const sp<datum> &args, const sp<env> &curr_env) {
 	const datum &temp(*args);
-	assert(typeid(temp) == typeid(pair) && "malformed argument list (not enough arguments?)");
+	assert(typeid(temp) == typeid(pair) && "not enough arguments");
 	const pair &args_list(dynamic_cast<const pair &>(temp));
 
 	std::vector<std::string> formals;
@@ -78,11 +77,11 @@ static sp<datum> lambda(const sp<datum> &args, const sp<env> &curr_env) {
 
 static sp<datum> define(const sp<datum> &args, const sp<env> &curr_env) {
 	const datum &temp(*args);
-	assert(typeid(temp) == typeid(pair) && "malformed argument list (not enough arguments?)");
+	assert(typeid(temp) == typeid(pair) && "not enough arguments");
 	const pair &args_list(dynamic_cast<const pair &>(temp));
 
 	const datum &temp1(*args_list.cdr);
-	assert(typeid(temp1) == typeid(pair) && "malformed argument list (not enough arguments?)");
+	assert(typeid(temp1) == typeid(pair) && "not enough arguments");
 	const pair &cdr(dynamic_cast<const pair &>(temp1));
 
 	const datum &car(*args_list.car);
@@ -113,6 +112,17 @@ static sp<datum> define(const sp<datum> &args, const sp<env> &curr_env) {
 	return std::make_shared<emptyl>();
 }
 
+static sp<datum> quote_func(const sp<datum> &args, const sp<env> &) {
+	const datum &temp(*args);
+	assert(typeid(temp) == typeid(pair) && "not enough arguments");
+	const pair &args_list(dynamic_cast<const pair &>(temp));
+
+	const datum &cdr(*args_list.cdr);
+	assert(typeid(cdr) == typeid(emptyl) && "too many arguments");
+
+	return args_list.car;
+}
+
 int main(int, const char *[]) {
 	tok_list toks(lexer(std::cin).lex());
 
@@ -136,6 +146,7 @@ int main(int, const char *[]) {
 	const sp<env> top_level(std::make_shared<env>(nullptr));
 	top_level->define("lambda", std::make_shared<native_func>(lambda));
 	top_level->define("define", std::make_shared<native_func>(define));
+	top_level->define("quote", std::make_shared<native_func>(quote_func));
 
 	for (size_t i(0); i < tree.size(); ++i) {
 		std::cout << *tree[i]->eval(top_level) << std::endl;
