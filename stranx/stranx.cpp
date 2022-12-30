@@ -27,7 +27,7 @@ static sp<datum> parse_next(const tok_list &toks, size_t &idx) {
 			if (get_next_tok_type() == typeid(dot)) {
 				p->cdr = parse_next(toks, ++idx);
 				assert(get_next_tok_type() == typeid(endl) &&
-					   "malformed improper list (misplaced dot tok)");
+					   "malformed improper list (misplaced dot token)");
 				break;
 			}
 			sp<pair> p_new(std::make_shared<pair>(parse_next(toks, idx)));
@@ -40,7 +40,7 @@ static sp<datum> parse_next(const tok_list &toks, size_t &idx) {
 	}
 
 	sp<datum> p(std::dynamic_pointer_cast<datum>(toks.at(idx++)));
-	assert(p && "malformed token list (tried to parse an unparsable tok)");
+	assert(p && "malformed token list (tried to parse an unparsable token)");
 
 	return p;
 }
