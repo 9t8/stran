@@ -15,13 +15,14 @@ tok_list lexer::lex() {
 		int curr_char(get());
 
 		switch (curr_char) {
+			case ' ':
+			case '\n':
+			case '\t':
 			case EOF:
 			case '(':
 			case ')':
 			case ';':
-			case ' ':
-			case '\n':
-			case '\t':
+			case '\'':
 				break;
 
 			default:
@@ -52,17 +53,17 @@ tok_list lexer::lex() {
 
 			case '(':
 				toks.push_back(std::make_shared<beginl>());
-				continue;
+				break;
 
 			case ')':
 				toks.push_back(std::make_shared<endl>());
-				continue;
+				break;
 
 			case ';':
 				while (curr_char != '\n' && curr_char != EOF) {
 					curr_char = get();
 				}
-				continue;
+				break;
 		}
 	}
 }
