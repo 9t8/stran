@@ -4,6 +4,8 @@ file
 	closure.cpp,
 	datum.h,
 	datum.cpp,
+	func.h,
+	func.cpp,
 	lexer.h,
 	lexer.cpp,
 	tok.h;

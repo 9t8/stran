@@ -1,7 +1,7 @@
 #ifndef _stranx_closure_h_
 #define _stranx_closure_h_
 
-#include "datum.h"
+#include "func.h"
 
 #include <sstream>
 #include <vector>
