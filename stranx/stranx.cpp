@@ -38,6 +38,9 @@ static sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
 
 		return start;
 	}
+	if (peek_next_type() == typeid(quote_tok)) {
+		return std::make_shared<quote>(parse_datum(toks, ++idx));
+	}
 
 	sp<datum> p(std::dynamic_pointer_cast<datum>(toks.at(idx++)));
 	assert(p && "malformed token list (tried to parse an unparsable token)");
