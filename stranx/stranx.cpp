@@ -1,4 +1,4 @@
-#include "closure.h"
+#include "func.h"
 #include "lexer.h"
 
 #include <iostream>

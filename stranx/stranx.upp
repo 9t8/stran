@@ -1,7 +1,5 @@
 file
 	stranx.cpp,
-	closure.h,
-	closure.cpp,
 	datum.h,
 	datum.cpp,
 	func.h,
