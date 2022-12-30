@@ -4,7 +4,7 @@
 #include <string>
 
 namespace stranx {
-	
+
 	template <typename t> using sp = std::shared_ptr<t>;
 
 	struct tok {
@@ -36,7 +36,7 @@ namespace stranx {
 			return ".";
 		}
 	};
-	
+
 	struct quote_tok : tok {
 		operator std::string() const override {
 			return "'";
