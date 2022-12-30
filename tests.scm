@@ -82,17 +82,17 @@ b
 
 ; quotes
 1
-'1
+' 1
 (quote 1)
 'a
 (quote a)
-'(1 2 3)
+' (1 2 3)
 (quote (1 2 3))
 (list 1 2 3)
 ((lambda (a) a) '(1 2 3))
 ((lambda (a) a) (quote (1 2 3)))
 ((lambda (a) a) (list 1 2 3))
-(define x '(1 . 2))
+(define x ' (1 . 2))
 x
 (define y (quote (1 . 2)))
 y
