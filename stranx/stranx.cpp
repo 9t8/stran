@@ -5,7 +5,7 @@
 
 using namespace stranx;
 
-static sp<datum> parse_next(const tok_list &toks, size_t &idx) {
+static sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
 	const auto peek_next_type([&]() -> const std::type_info & {
 		assert(idx < toks.size() &&
 		"expected a token but none found (too many opening parens?)");
@@ -21,16 +21,16 @@ static sp<datum> parse_next(const tok_list &toks, size_t &idx) {
 			return std::make_shared<emptyl>();
 		}
 
-		sp<pair> p(std::make_shared<pair>(parse_next(toks, idx)));
+		sp<pair> p(std::make_shared<pair>(parse_datum(toks, idx)));
 		sp<datum> start(p);
 		while (peek_next_type() != typeid(endl)) {
 			if (peek_next_type() == typeid(dot)) {
-				p->cdr = parse_next(toks, ++idx);
+				p->cdr = parse_datum(toks, ++idx);
 				assert(peek_next_type() == typeid(endl) &&
 					   "malformed improper list (misplaced dot token)");
 				break;
 			}
-			sp<pair> p_new(std::make_shared<pair>(parse_next(toks, idx)));
+			sp<pair> p_new(std::make_shared<pair>(parse_datum(toks, idx)));
 			p->cdr = p_new;
 			p = p_new;
 		}
@@ -56,7 +56,7 @@ int main(int, const char *[]) {
 
 	std::vector<sp<datum>> tree;
 	for (size_t i(0); i < toks.size();) {
-		tree.push_back(parse_next(toks, i));
+		tree.push_back(parse_datum(toks, i));
 	}
 
 	std::cout << "\n===-- tree --===\n";
