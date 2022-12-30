@@ -36,6 +36,21 @@ namespace stranx {
 		virtual sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const = 0;
 	};
 
+	struct quote : datum {
+		quote(const sp<datum> &c) : contents(c) {}
+
+		operator std::string() const override {
+			return "'" + static_cast<std::string>(*contents);
+		}
+
+		sp<datum> eval(const sp<env> &) override {
+			return contents;
+		}
+
+	private:
+		sp<datum> contents;
+	};
+
 	struct emptyl : datum {
 		operator std::string() const override {
 			return "()";
