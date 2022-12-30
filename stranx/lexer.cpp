@@ -22,6 +22,7 @@ tok_list lexer::lex() {
 			case '(':
 			case ')':
 			case ';':
+			case '\'':
 				break;
 
 			default:
@@ -62,6 +63,10 @@ tok_list lexer::lex() {
 				while (curr_char != '\n' && curr_char != EOF) {
 					curr_char = get();
 				}
+				break;
+
+			case '\'':
+				toks.push_back(std::make_shared<quote_tok>());
 				break;
 		}
 	}

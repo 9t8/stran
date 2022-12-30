@@ -1,3 +1,6 @@
+; standard procedures
+(define (list . l) l)
+
 ; defines
 (define a 3)
 (define b a)
@@ -53,7 +56,6 @@ b
 ((lambda l l) 0)
 ((lambda l l) 0 1)
 ((lambda l l) 0 1 2)
-(define (list . l) l)
 (list)
 (list 0)
 (list 0 1)
@@ -77,3 +79,14 @@ b
 (define p (cons 1 2))
 (car p)
 (cdr p)
+
+; quotes
+1
+'1
+'a
+'(1 2 3)
+(list 1 2 3)
+((lambda (a) a) '(1 2 3))
+((lambda (a) a) (list 1 2 3))
+(define x '(1 . 2))
+x
