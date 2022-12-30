@@ -22,7 +22,6 @@ tok_list lexer::lex() {
 			case '(':
 			case ')':
 			case ';':
-			case '\'':
 				break;
 
 			default:
