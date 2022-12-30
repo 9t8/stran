@@ -7,8 +7,7 @@ using namespace stranx;
 
 static sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
 	const auto peek_next_type([&]() -> const std::type_info & {
-		assert(idx < toks.size() &&
-		"expected more tokens but none found");
+		assert(idx < toks.size() && "expected more tokens but none found");
 
 		tok &next_tok(*toks[idx]);
 		return typeid(next_tok);
