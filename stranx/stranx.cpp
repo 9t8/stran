@@ -5,7 +5,7 @@
 
 using namespace stranx;
 
-sp<datum> parse_next(const tok_list &toks, size_t &idx) {
+static sp<datum> parse_next(const tok_list &toks, size_t &idx) {
 	const auto get_next_tok_type([&]() -> const std::type_info & {
 		assert(idx < toks.size() &&
 		"expected a token but none found (too many opening parens?)");
