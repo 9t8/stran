@@ -72,8 +72,8 @@ namespace stranx {
 		const std::string name;
 	};
 
-	struct decimal : datum {
-		decimal(const double &v) : val(v) {}
+	struct inexact : datum {
+		inexact(const double &v) : val(v) {}
 
 		operator std::string() const override {
 			return std::to_string(val);
