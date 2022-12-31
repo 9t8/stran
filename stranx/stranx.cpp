@@ -125,7 +125,7 @@ static sp<datum> quote_func(const sp<datum> &args, const sp<env> &) {
 int main(int, const char *[]) {
 	tok_list toks(lex(std::cin));
 
-	std::cout << "===-- toks --===\n";
+	std::cout << "===-- tokens --===\n";
 	for (size_t i(0); i < toks.size(); ++i) {
 		std::cout << " " << *toks[i];
 	}
