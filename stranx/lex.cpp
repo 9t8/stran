@@ -38,8 +38,7 @@ tok_list stranx::lex(std::istream &is) {
 					(curr_word[0] >= '0' && curr_word[0] <= '9')) {
 					size_t idx(0);
 					double val(stod(curr_word, &idx));
-					assert(idx == curr_word.size() &&
-						   "invalid character while parsing number");
+					assert(idx == curr_word.size() && "invalid character while parsing number");
 					toks.push_back(std::make_shared<inexact>(val));
 				} else {
 					toks.push_back(std::make_shared<iden>(curr_word));
