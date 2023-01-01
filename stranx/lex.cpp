@@ -34,14 +34,15 @@ tok_list stranx::lex(std::istream &is) {
 			if (curr_word == ".") {
 				toks.push_back(std::make_shared<dot>());
 			} else
-				if (curr_word[0] == '+' || curr_word[0] == '-' || curr_word[0] == '.' ||
-					(curr_word[0] >= '0' && curr_word[0] <= '9')) {
+				if ((curr_word[0] != '+' && curr_word[0] != '-' && curr_word[0] != '.' &&
+					 (curr_word[0] < '0' || curr_word[0] > '9')) ||
+					curr_word == "+" || curr_word == "-") {
+					toks.push_back(std::make_shared<iden>(curr_word));
+				} else {
 					size_t idx(0);
 					double val(stod(curr_word, &idx));
 					assert(idx == curr_word.size() && "invalid character while parsing number");
 					toks.push_back(std::make_shared<inexact>(val));
-				} else {
-					toks.push_back(std::make_shared<iden>(curr_word));
 				}
 			curr_word.clear();
 		}
