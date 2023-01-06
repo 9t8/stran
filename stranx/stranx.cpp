@@ -52,13 +52,15 @@ static sp<datum> lambda(const pair &args_list, const sp<env> &curr_env) {
 	sp<iden> variadic_iden(std::dynamic_pointer_cast<iden>(args_list.car));
 	sp<pair> curr_formal(std::dynamic_pointer_cast<pair>(args_list.car));
 	while (curr_formal) {
-		variadic_iden = std::dynamic_pointer_cast<iden>(curr_formal->cdr);
-
-		const datum &next_formal(*next(curr_formal));
+		const datum &next_formal(*curr_formal->car);
 		assert(typeid(next_formal) == typeid(iden) &&
 			   "all formals must be identifiers (variadics are not supported)");
 
 		formals.push_back(dynamic_cast<const iden &>(next_formal).name);
+
+		variadic_iden = std::dynamic_pointer_cast<iden>(curr_formal->cdr);
+		curr_formal = std::dynamic_pointer_cast<pair>(curr_formal->cdr);
+
 	}
 	if (variadic_iden) {
 		formals.push_back(variadic_iden->name);
