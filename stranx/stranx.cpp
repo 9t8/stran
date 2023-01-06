@@ -18,7 +18,6 @@ static sp<datum> lambda(const pair &args_list, const sp<env> &curr_env) {
 
 		variadic_iden = std::dynamic_pointer_cast<iden>(curr_formal->cdr);
 		curr_formal = std::dynamic_pointer_cast<pair>(curr_formal->cdr);
-
 	}
 	if (variadic_iden) {
 		formals.push_back(variadic_iden->name);
