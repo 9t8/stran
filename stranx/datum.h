@@ -38,8 +38,8 @@ namespace stranx {
 		}
 	};
 
-	struct quote : datum {
-		quote(const sp<datum> &c) : contents(c) {}
+	struct quote_datum : datum {
+		quote_datum(const sp<datum> &c) : contents(c) {}
 
 	private:
 		operator std::string() const override {

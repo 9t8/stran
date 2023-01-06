@@ -66,7 +66,7 @@ tok_list stranx::lex(std::istream &is) {
 				break;
 
 			case '\'':
-				toks.push_back(std::make_shared<quote_tok>());
+				toks.push_back(std::make_shared<apos>());
 				break;
 		}
 	}
@@ -103,8 +103,8 @@ sp<datum> stranx::parse_datum(const tok_list &toks, size_t &idx) {
 
 		return start;
 	}
-	if (peek_next_type() == typeid(quote_tok)) {
-		return std::make_shared<quote>(parse_datum(toks, ++idx));
+	if (peek_next_type() == typeid(apos)) {
+		return std::make_shared<quote_datum>(parse_datum(toks, ++idx));
 	}
 
 	sp<datum> p(std::dynamic_pointer_cast<datum>(toks.at(idx++)));

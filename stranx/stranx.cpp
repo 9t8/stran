@@ -54,7 +54,7 @@ static sp<datum> define(const pair &args_list, const sp<env> &curr_env) {
 	return nullptr;
 }
 
-static sp<datum> quote_func(const pair &args_list, const sp<env> &) {
+static sp<datum> quote(const pair &args_list, const sp<env> &) {
 	assert(!args_list.cdr && "too many arguments");
 
 	return args_list.car;
@@ -83,7 +83,7 @@ int main(int, const char *[]) {
 	const sp<env> top_level(std::make_shared<env>(nullptr));
 	top_level->define("lambda", std::make_shared<native_func>(lambda));
 	top_level->define("define", std::make_shared<native_func>(define));
-	top_level->define("quote", std::make_shared<native_func>(quote_func));
+	top_level->define("quote", std::make_shared<native_func>(quote));
 
 	for (size_t i(0); i < tree.size(); ++i) {
 		std::cout << to_string(eval(tree[i], top_level)) << std::endl;

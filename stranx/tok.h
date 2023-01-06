@@ -41,7 +41,7 @@ namespace stranx {
 		}
 	};
 
-	struct quote_tok : tok {
+	struct apos : tok {
 	private:
 		operator std::string() const override {
 			return "'";
