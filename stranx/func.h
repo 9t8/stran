@@ -20,14 +20,15 @@ namespace stranx {
 
 		operator std::string() const override;
 
+		sp<datum> car, cdr;
+
+	private:
 		sp<datum> eval(const sp<env> &curr_env) override {
-			const sp<func> p_func(std::dynamic_pointer_cast<func>(car->eval(curr_env)));
+			const sp<func> p_func(std::dynamic_pointer_cast<func>(safe_eval(car, curr_env)));
 			assert(p_func && "attemped to call an uncallable object");
 
 			return p_func->call(cdr, curr_env);
 		}
-
-		sp<datum> car, cdr;
 	};
 
 	const sp<datum> &next(sp<pair> &exprs);
