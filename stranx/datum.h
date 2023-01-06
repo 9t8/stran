@@ -8,20 +8,7 @@
 
 namespace stranx {
 
-	struct env;
-
-	struct datum : tok, std::enable_shared_from_this<datum> {
-		friend sp<datum> eval(const sp<datum> &p_d, const sp<env> &curr_env) {
-			assert(p_d && "attempted to evaluate empty list");
-			return p_d->internal_eval(curr_env);
-		}
-
-	private:
-		// self-evaluating by default
-		virtual sp<datum> internal_eval(const sp<env> &) {
-			return shared_from_this();
-		}
-	};
+	struct datum;
 
 	struct env {
 		env(const sp<env> &p) : parent(p) {}
@@ -36,6 +23,19 @@ namespace stranx {
 		std::unordered_map<std::string, sp<datum>> table;
 
 		const sp<env> parent;
+	};
+
+	struct datum : tok, std::enable_shared_from_this<datum> {
+		friend sp<datum> eval(const sp<datum> &p_d, const sp<env> &curr_env) {
+			assert(p_d && "attempted to evaluate empty list");
+			return p_d->internal_eval(curr_env);
+		}
+
+	private:
+		// self-evaluating by default
+		virtual sp<datum> internal_eval(const sp<env> &) {
+			return shared_from_this();
+		}
 	};
 
 	struct quote : datum {

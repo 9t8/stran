@@ -110,7 +110,7 @@ int main(int, const char *[]) {
 
 	std::cout << "===-- tokens --===\n";
 	for (size_t i(0); i < toks.size(); ++i) {
-		std::cout << " " << *toks[i];
+		std::cout << " " << to_string(toks[i]);
 	}
 	std::cout << "\n";
 
@@ -121,7 +121,7 @@ int main(int, const char *[]) {
 
 	std::cout << "\n===-- tree --===\n";
 	for (size_t i(0); i < tree.size(); ++i) {
-		std::cout << *tree[i] << "\n";
+		std::cout << to_string(tree[i]) << "\n";
 	}
 	std::cout << "\n===-- output --===" << std::endl;
 
