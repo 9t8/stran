@@ -84,6 +84,10 @@ b
 1
 ' 1
 (quote 1)
+'()
+(quote ())
+'(())
+(quote (()))
 'a
 (quote a)
 ' (1 2 3)
