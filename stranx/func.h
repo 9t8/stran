@@ -50,6 +50,7 @@ namespace stranx {
 				const sp<env> &c) : formals(fs), variadic(v), body(b), context(c) {
 			assert(!(variadic && formals.empty()) &&
 				   "procedure taking no arguments cannot be variadic");
+			assert(body && "procedure body cannot be empty");
 			assert(context && "procedure must have a context");
 		}
 

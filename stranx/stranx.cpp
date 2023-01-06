@@ -66,10 +66,8 @@ static sp<datum> lambda(const pair &args_list, const sp<env> &curr_env) {
 		formals.push_back(variadic_iden->name);
 	}
 
-	const sp<pair> body(std::dynamic_pointer_cast<pair>(args_list.cdr));
-	assert(body && "invalid procedure body");
-
-	return std::make_shared<closure>(formals, static_cast<bool>(variadic_iden), body, curr_env);
+	return std::make_shared<closure>(formals, static_cast<bool>(variadic_iden),
+			std::dynamic_pointer_cast<pair>(args_list.cdr), curr_env);
 }
 
 static sp<datum> define(const pair &args_list, const sp<env> &curr_env) {

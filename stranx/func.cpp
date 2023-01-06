@@ -28,36 +28,38 @@ sp<datum> native_func::call(const sp<datum> &args, const sp<env> &curr_env) cons
 	return p_func(dynamic_cast<const pair &>(*args), curr_env);
 }
 
-const sp<datum> &next(sp<pair> &exprs) {
-	assert(exprs && "invalid expression list (not enough arguments?)");
-
-	const sp<datum> &result(exprs->car);
-	exprs = std::dynamic_pointer_cast<pair>(exprs->cdr);
-	return result;
-}
-
 sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 	const sp<env> eval_env(std::make_shared<env>(context));
 
 	const auto eval_body([&]() -> sp<datum> {
+		sp<datum> result;
 		sp<pair> exprs(body);
-		sp<datum> result(eval(next(exprs), eval_env));
 		while (exprs) {
-			result = eval(next(exprs), eval_env)
+			result = eval(exprs->car, eval_env)
 					 ;
+			exprs = std::dynamic_pointer_cast<pair>(exprs->cdr);
 		}
 		return result;
 	});
 
 	sp<pair> curr_arg(std::dynamic_pointer_cast<pair>(args));
 
+	const auto eval_next([&]() -> sp<datum> {
+		assert(curr_arg && "invalid expression list (not enough arguments?)");
+
+		const sp<datum> result(eval(curr_arg->car, curr_env));
+		curr_arg = std::dynamic_pointer_cast<pair>(curr_arg->cdr);
+
+		return result;
+	});
+
 	for (size_t i(0); i + 1 < formals.size(); ++i) {
-		eval_env->define(formals[i], eval(next(curr_arg), curr_env));
+		eval_env->define(formals[i], eval_next());
 	}
 
 	if (!variadic) {
 		if (!formals.empty()) {
-			eval_env->define(formals.back(), eval(next(curr_arg), curr_env));
+			eval_env->define(formals.back(), eval_next());
 		}
 		assert(!curr_arg && "too many arguments");
 
@@ -69,10 +71,10 @@ sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 		return eval_body();
 	}
 
-	sp<pair> tail(std::make_shared<pair>(eval(next(curr_arg), curr_env)));
+	sp<pair> tail(std::make_shared<pair>(eval_next()));
 	eval_env->define(formals.back(), tail);
 	while (curr_arg) {
-		sp<pair> new_tail(std::make_shared<pair>(eval(next(curr_arg), curr_env)));
+		sp<pair> new_tail(std::make_shared<pair>(eval_next()));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}
