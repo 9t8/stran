@@ -1,7 +1,7 @@
 #ifndef _stranx_parse_h_
 #define _stranx_parse_h_
 
-#include "func.h"
+#include "pair.h"
 
 namespace stranx {
 

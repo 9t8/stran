@@ -2,8 +2,8 @@ file
 	stranx.cpp,
 	datum.h,
 	datum.cpp,
-	func.h,
-	func.cpp,
+	pair.h,
+	pair.cpp,
 	parse.h,
 	parse.cpp,
 	tok.h;

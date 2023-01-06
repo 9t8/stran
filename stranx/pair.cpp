@@ -1,4 +1,4 @@
-#include "func.h"
+#include "pair.h"
 
 using namespace stranx;
 

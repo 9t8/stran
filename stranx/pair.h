@@ -1,5 +1,5 @@
-#ifndef _stranx_func_h_
-#define _stranx_func_h_
+#ifndef _stranx_pair_h_
+#define _stranx_pair_h_
 
 #include "datum.h"
 
