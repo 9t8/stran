@@ -1,50 +1,8 @@
-#include "func.h"
 #include "lex.h"
 
 #include <iostream>
 
 using namespace stranx;
-
-static sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
-	const auto peek_next_type([&]() -> const std::type_info & {
-		assert(idx < toks.size() && "expected more tokens but none found");
-
-		tok &next_tok(*toks[idx]);
-		return typeid(next_tok);
-	});
-
-	if (peek_next_type() == typeid(beginl)) {
-		++idx;
-		if (peek_next_type() == typeid(endl)) {
-			++idx;
-			return nullptr;
-		}
-
-		sp<pair> p(std::make_shared<pair>(parse_datum(toks, idx)));
-		sp<datum> start(p);
-		while (peek_next_type() != typeid(endl)) {
-			if (peek_next_type() == typeid(dot)) {
-				p->cdr = parse_datum(toks, ++idx);
-				assert(peek_next_type() == typeid(endl) && "misplaced dot token");
-				break;
-			}
-			sp<pair> p_new(std::make_shared<pair>(parse_datum(toks, idx)));
-			p->cdr = p_new;
-			p = p_new;
-		}
-		++idx;
-
-		return start;
-	}
-	if (peek_next_type() == typeid(quote_tok)) {
-		return std::make_shared<quote>(parse_datum(toks, ++idx));
-	}
-
-	sp<datum> p(std::dynamic_pointer_cast<datum>(toks.at(idx++)));
-	assert(p && "tried to parse an unparsable token");
-
-	return p;
-}
 
 static sp<datum> lambda(const pair &args_list, const sp<env> &curr_env) {
 	std::vector<std::string> formals;
