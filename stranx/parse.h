@@ -1,5 +1,5 @@
-#ifndef _stranx_lex_h_
-#define _stranx_lex_h_
+#ifndef _stranx_parse_h_
+#define _stranx_parse_h_
 
 #include "func.h"
 

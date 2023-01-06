@@ -4,8 +4,8 @@ file
 	datum.cpp,
 	func.h,
 	func.cpp,
-	lex.h,
-	lex.cpp,
+	parse.h,
+	parse.cpp,
 	tok.h;
 
 mainconfig
