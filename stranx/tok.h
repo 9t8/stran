@@ -8,14 +8,14 @@ namespace stranx {
 	template <typename t> using sp = std::shared_ptr<t>;
 
 	struct tok {
-		friend std::ostream &operator<<(std::ostream &os, const tok &t) {
-			return os << static_cast<std::string>(t);
-		}
-
 		virtual ~tok() {}
 
 		virtual operator std::string() const = 0;
 	};
+
+	inline std::ostream &operator<<(std::ostream &os, const tok &t) {
+		return os << static_cast<std::string>(t);
+	}
 
 	typedef std::vector<sp<tok>> tok_list;
 

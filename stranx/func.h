@@ -13,9 +13,7 @@ namespace stranx {
 	};
 
 	struct pair : datum {
-		static bool stringify_into_lists;
-
-		pair(const sp<datum> &a, const sp<datum> &b = std::make_shared<emptyl>())
+		pair(const sp<datum> &a, const sp<datum> &b = nullptr)
 				: car(a) , cdr(b) {}
 
 		operator std::string() const override;

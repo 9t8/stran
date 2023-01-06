@@ -38,18 +38,6 @@ namespace stranx {
 		const sp<env> parent;
 	};
 
-	struct emptyl : datum {
-		operator std::string() const override {
-			return "()";
-		}
-
-	private:
-		sp<datum> internal_eval(const sp<env> &) override {
-			assert(0 && "attempted to evaluate empty list");
-			throw;
-		}
-	};
-
 	struct quote : datum {
 		quote(const sp<datum> &c) : contents(c) {}
 

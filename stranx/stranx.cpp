@@ -17,7 +17,7 @@ static sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
 		++idx;
 		if (peek_next_type() == typeid(endl)) {
 			++idx;
-			return std::make_shared<emptyl>();
+			return nullptr;
 		}
 
 		sp<pair> p(std::make_shared<pair>(parse_datum(toks, idx)));
@@ -47,9 +47,10 @@ static sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
 }
 
 static sp<datum> lambda(const sp<datum> &args, const sp<env> &curr_env) {
+	assert(args && "not enough arguments");
 	const datum &temp(*args);
-	assert(typeid(temp) == typeid(pair) && "not enough arguments");
-	const pair &args_list(dynamic_cast<const pair &>(temp));
+	assert(typeid(temp) == typeid(pair) && "malformed argument list");
+	const pair &args_list(dynamic_cast<const pair &>(*args));
 
 	std::vector<std::string> formals;
 
@@ -58,11 +59,11 @@ static sp<datum> lambda(const sp<datum> &args, const sp<env> &curr_env) {
 	while (curr_formal) {
 		variadic_iden = std::dynamic_pointer_cast<iden>(curr_formal->cdr);
 
-		const datum &formal_iden(*next(curr_formal));
-		assert(typeid(formal_iden) == typeid(iden) &&
+		const datum &next_formal(*next(curr_formal));
+		assert(typeid(next_formal) == typeid(iden) &&
 			   "all formals must be identifiers (variadics are not supported)");
 
-		formals.push_back(dynamic_cast<const iden &>(formal_iden).name);
+		formals.push_back(dynamic_cast<const iden &>(next_formal).name);
 	}
 	if (variadic_iden) {
 		formals.push_back(variadic_iden->name);
@@ -71,13 +72,14 @@ static sp<datum> lambda(const sp<datum> &args, const sp<env> &curr_env) {
 	const sp<pair> body(std::dynamic_pointer_cast<pair>(args_list.cdr));
 	assert(body && "invalid procedure body");
 
-	return std::make_shared<closure>(formals, variadic_iden.get(), body, curr_env);
+	return std::make_shared<closure>(formals, static_cast<bool>(variadic_iden), body, curr_env);
 }
 
 static sp<datum> define(const sp<datum> &args, const sp<env> &curr_env) {
+	assert(args && "not enough arguments");
 	const datum &temp(*args);
-	assert(typeid(temp) == typeid(pair) && "not enough arguments");
-	const pair &args_list(dynamic_cast<const pair &>(temp));
+	assert(typeid(temp) == typeid(pair) && "malformed argument list");
+	const pair &args_list(dynamic_cast<const pair &>(*args));
 
 	const datum &temp1(*args_list.cdr);
 	assert(typeid(temp1) == typeid(pair) && "not enough arguments");
@@ -86,8 +88,7 @@ static sp<datum> define(const sp<datum> &args, const sp<env> &curr_env) {
 	const datum &car(*args_list.car);
 
 	if (typeid(car) == typeid(iden)) {
-		const datum &cddr(*cdr.cdr);
-		assert(typeid(cddr) == typeid(emptyl) && "too many arguments");
+		assert(!cdr.cdr && "too many arguments");
 
 		curr_env->define(dynamic_cast<const iden &>(*args_list.car).name,
 						 eval(cdr.car, curr_env));
@@ -99,25 +100,20 @@ static sp<datum> define(const sp<datum> &args, const sp<env> &curr_env) {
 		const datum &caar(*formals.car);
 		assert(typeid(caar) == typeid(iden) && "procedure name must be an identifier");
 
-		const sp<datum> lambda(curr_env->find("lambda"));
-		assert(dynamic_cast<const func *>(lambda.get()) &&
-			   "lambda was redefined into an uncallable object");
-
 		curr_env->define(dynamic_cast<const iden &>(*formals.car).name,
-						 dynamic_cast<const func &>(*lambda).call(std::make_shared<pair>(
-									 formals.cdr, args_list.cdr), curr_env));
+						 lambda(std::make_shared<pair>(formals.cdr, args_list.cdr), curr_env));
 	}
 
-	return std::make_shared<emptyl>();
+	return nullptr;
 }
 
 static sp<datum> quote_func(const sp<datum> &args, const sp<env> &) {
+	assert(args && "not enough arguments");
 	const datum &temp(*args);
-	assert(typeid(temp) == typeid(pair) && "not enough arguments");
-	const pair &args_list(dynamic_cast<const pair &>(temp));
+	assert(typeid(temp) == typeid(pair) && "malformed argument list");
+	const pair &args_list(dynamic_cast<const pair &>(*args));
 
-	const datum &cdr(*args_list.cdr);
-	assert(typeid(cdr) == typeid(emptyl) && "too many arguments");
+	assert(!args_list.cdr && "too many arguments");
 
 	return args_list.car;
 }
@@ -148,6 +144,11 @@ int main(int, const char *[]) {
 	top_level->define("quote", std::make_shared<native_func>(quote_func));
 
 	for (size_t i(0); i < tree.size(); ++i) {
-		std::cout << *eval(tree[i], top_level) << std::endl;
+		sp<datum> result(eval(tree[i], top_level));
+		if (result) {
+			std::cout << *result << std::endl;
+		} else {
+			std::cout << "()" << std::endl;
+		}
 	}
 }

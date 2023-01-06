@@ -2,30 +2,33 @@
 
 using namespace stranx;
 
-bool pair::stringify_into_lists(true);
-
 pair::operator std::string() const {
-	if (!stringify_into_lists) {
-		return "(" + static_cast<std::string>(*car) + " . " + static_cast<std::string>(*cdr)
-			   + ")";
-	}
-
 	std::ostringstream oss;
-	oss << "(" << *car;
 
-	sp<datum> p_last(cdr);
-	for (sp<pair> curr_pair(std::dynamic_pointer_cast<pair>(cdr)); curr_pair;) {
-		p_last = curr_pair->cdr;
-		oss << " " << *next(curr_pair);
+	if (car) {
+		oss << *car;
+	} else {
+		oss << "()";
 	}
 
-	const datum &last(*p_last);
-	if (typeid(last) != typeid(emptyl)) {
-		oss << " . " << last;
-	}
-	oss << ")";
+	sp<datum> p_tail(cdr);
+	for (sp<pair> curr_pair(std::dynamic_pointer_cast<pair>(p_tail)); curr_pair;) {
+		p_tail = curr_pair->cdr;
 
-	return oss.str();
+		oss << " ";
+		if (curr_pair->car) {
+			oss << *curr_pair->car;
+		} else {
+			oss << "()";
+		}
+		curr_pair = std::dynamic_pointer_cast<pair>(p_tail);
+	}
+
+	if (p_tail) {
+		oss << " . " << *p_tail;
+	}
+
+	return "(" + oss.str() + ")";
 }
 
 const sp<datum> &stranx::next(sp<pair> &exprs) {
@@ -65,7 +68,7 @@ sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 	}
 
 	if (!curr_arg) {
-		eval_env->define(formals.back(), std::make_shared<emptyl>());
+		eval_env->define(formals.back(), nullptr);
 		return eval_body();
 	}
 
