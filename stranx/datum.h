@@ -41,11 +41,11 @@ namespace stranx {
 	struct quote : datum {
 		quote(const sp<datum> &c) : contents(c) {}
 
+	private:
 		operator std::string() const override {
-			return "'" + static_cast<std::string>(*contents);
+			return "'" + to_string(contents);
 		}
 
-	private:
 		sp<datum> internal_eval(const sp<env> &) override {
 			return contents;
 		}
@@ -56,13 +56,13 @@ namespace stranx {
 	struct iden : datum {
 		iden(const std::string &n) : name(n) {}
 
+		const std::string name;
+
+	private:
 		operator std::string() const override {
 			return name;
 		}
 
-		const std::string name;
-
-	private:
 		sp<datum> internal_eval(const sp<env> &curr_env) override {
 			return curr_env->find(name);
 		}
@@ -71,11 +71,11 @@ namespace stranx {
 	struct inexact : datum {
 		inexact(const double &v) : val(v) {}
 
+	private:
 		operator std::string() const override {
 			return std::to_string(val);
 		}
 
-	private:
 		const double val;
 	};
 

@@ -16,11 +16,11 @@ namespace stranx {
 		pair(const sp<datum> &a, const sp<datum> &b = nullptr)
 				: car(a) , cdr(b) {}
 
-		operator std::string() const override;
-
 		sp<datum> car, cdr;
 
 	private:
+		operator std::string() const override;
+
 		sp<datum> internal_eval(const sp<env> &curr_env) override {
 			const sp<func> p_func(std::dynamic_pointer_cast<func>(eval(car, curr_env)));
 			assert(p_func && "attemped to call an uncallable object");
@@ -35,15 +35,15 @@ namespace stranx {
 		native_func(sp<datum> (*const p_f)(const pair &args_list, const sp<env> &curr_env))
 				: p_func(p_f) {}
 
+		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
+
+	private:
 		operator std::string() const override {
 			std::ostringstream oss;
 			oss << "#native_function@" << this;
 			return oss.str();
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
-
-	private:
 		sp<datum> (*const p_func)(const pair &args_list, const sp<env> &curr_env);
 	};
 
@@ -55,15 +55,15 @@ namespace stranx {
 			assert(context && "procedure must have a context");
 		}
 
+		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
+
+	private:
 		operator std::string() const override {
 			std::ostringstream oss;
 			oss << "#procedure@" << this;
 			return oss.str();
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
-
-	private:
 		const std::vector<std::string> formals;
 
 		const bool variadic;
