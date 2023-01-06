@@ -29,8 +29,6 @@ namespace stranx {
 		}
 	};
 
-	const sp<datum> &next(sp<pair> &exprs);
-
 	struct native_func : func {
 		native_func(sp<datum> (*const p_f)(const pair &args_list, const sp<env> &curr_env))
 				: p_func(p_f) {}

@@ -19,14 +19,6 @@ pair::operator std::string() const {
 	return result + ")";
 }
 
-const sp<datum> &stranx::next(sp<pair> &exprs) {
-	assert(exprs && "invalid expression list (not enough arguments?)");
-
-	const sp<datum> &result(exprs->car);
-	exprs = std::dynamic_pointer_cast<pair>(exprs->cdr);
-	return result;
-}
-
 sp<datum> native_func::call(const sp<datum> &args, const sp<env> &curr_env) const {
 	assert(args && "no nullary native functions because i am lazy");
 
@@ -34,6 +26,14 @@ sp<datum> native_func::call(const sp<datum> &args, const sp<env> &curr_env) cons
 	assert(typeid(temp) == typeid(pair) && "malformed argument list");
 
 	return p_func(dynamic_cast<const pair &>(*args), curr_env);
+}
+
+const sp<datum> &next(sp<pair> &exprs) {
+	assert(exprs && "invalid expression list (not enough arguments?)");
+
+	const sp<datum> &result(exprs->car);
+	exprs = std::dynamic_pointer_cast<pair>(exprs->cdr);
+	return result;
 }
 
 sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
