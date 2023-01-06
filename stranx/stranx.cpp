@@ -131,11 +131,6 @@ int main(int, const char *[]) {
 	top_level->define("quote", std::make_shared<native_func>(quote_func));
 
 	for (size_t i(0); i < tree.size(); ++i) {
-		sp<datum> result(eval(tree[i], top_level));
-		if (result) {
-			std::cout << *result << std::endl;
-		} else {
-			std::cout << "()" << std::endl;
-		}
+		std::cout << to_string(eval(tree[i], top_level)) << std::endl;
 	}
 }

@@ -3,32 +3,20 @@
 using namespace stranx;
 
 pair::operator std::string() const {
-	std::ostringstream oss;
-
-	if (car) {
-		oss << *car;
-	} else {
-		oss << "()";
-	}
+	std::string result("(" + to_string(car));
 
 	sp<datum> p_tail(cdr);
 	for (sp<pair> curr_pair(std::dynamic_pointer_cast<pair>(p_tail)); curr_pair;) {
 		p_tail = curr_pair->cdr;
 
-		oss << " ";
-		if (curr_pair->car) {
-			oss << *curr_pair->car;
-		} else {
-			oss << "()";
-		}
+		result += " " + to_string(curr_pair->car);
 		curr_pair = std::dynamic_pointer_cast<pair>(p_tail);
 	}
-
 	if (p_tail) {
-		oss << " . " << *p_tail;
+		result += " . " + to_string(p_tail);
 	}
 
-	return "(" + oss.str() + ")";
+	return result + ")";
 }
 
 const sp<datum> &stranx::next(sp<pair> &exprs) {

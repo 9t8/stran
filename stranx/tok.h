@@ -12,6 +12,10 @@ namespace stranx {
 
 		virtual operator std::string() const = 0;
 	};
+	
+	inline std::string to_string(const sp<tok> &p_t) {
+		return p_t ? static_cast<std::string>(*p_t) : "()";
+	}
 
 	inline std::ostream &operator<<(std::ostream &os, const tok &t) {
 		return os << static_cast<std::string>(t);
