@@ -27,7 +27,7 @@ b
 (define (g b) (b (lambda (x) x)))
 (g y)
 
-; standard procedures
+; standard procedure
 (define (list . l) l)
 
 ; variadics
@@ -48,6 +48,13 @@ b
 (rest 0)
 (rest 0 1)
 (rest 0 1 2)
+
+; multi-statement procedures
+(lambda () 0 1)
+((lambda () 0 1))
+(define (f a b) a b)
+(f 'one 'two)
+((lambda a a a a a) 'one 'two)
 
 ; quotes
 1
@@ -94,9 +101,3 @@ y
 (define p (cons 'car 'cdr))
 (car p)
 (cdr p)
-
-; multi-statement procedures
-(lambda () 0 1)
-((lambda () 0 1))
-(define (f a b) a b)
-(f 'one 'two)
