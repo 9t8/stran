@@ -90,7 +90,7 @@ static sp<datum> define(const sp<datum> &args, const sp<env> &curr_env) {
 		assert(typeid(cddr) == typeid(emptyl) && "too many arguments");
 
 		curr_env->define(dynamic_cast<const iden &>(*args_list.car).name,
-						 safe_eval(cdr.car, curr_env));
+						 eval(cdr.car, curr_env));
 	} else {
 		assert(typeid(car) == typeid(pair) && "first argument must be identifier or list");
 
@@ -148,6 +148,6 @@ int main(int, const char *[]) {
 	top_level->define("quote", std::make_shared<native_func>(quote_func));
 
 	for (size_t i(0); i < tree.size(); ++i) {
-		std::cout << *safe_eval(tree[i], top_level) << std::endl;
+		std::cout << *eval(tree[i], top_level) << std::endl;
 	}
 }

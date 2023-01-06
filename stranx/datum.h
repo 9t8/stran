@@ -11,14 +11,14 @@ namespace stranx {
 	struct env;
 
 	struct datum : tok, std::enable_shared_from_this<datum> {
-		friend sp<datum> safe_eval(const sp<datum> &p_d, const sp<env> &curr_env) {
+		friend sp<datum> eval(const sp<datum> &p_d, const sp<env> &curr_env) {
 			assert(p_d && "attempted to evaluate empty list");
-			return p_d->eval(curr_env);
+			return p_d->internal_eval(curr_env);
 		}
 
 	private:
 		// self-evaluating by default
-		virtual sp<datum> eval(const sp<env> &) {
+		virtual sp<datum> internal_eval(const sp<env> &) {
 			return shared_from_this();
 		}
 	};
@@ -44,7 +44,7 @@ namespace stranx {
 		}
 
 	private:
-		sp<datum> eval(const sp<env> &) override {
+		sp<datum> internal_eval(const sp<env> &) override {
 			assert(0 && "attempted to evaluate empty list");
 			throw;
 		}
@@ -58,7 +58,7 @@ namespace stranx {
 		}
 
 	private:
-		sp<datum> eval(const sp<env> &) override {
+		sp<datum> internal_eval(const sp<env> &) override {
 			return contents;
 		}
 
@@ -75,7 +75,7 @@ namespace stranx {
 		const std::string name;
 
 	private:
-		sp<datum> eval(const sp<env> &curr_env) override {
+		sp<datum> internal_eval(const sp<env> &curr_env) override {
 			return curr_env->find(name);
 		}
 	};

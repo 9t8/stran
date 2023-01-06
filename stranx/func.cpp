@@ -41,9 +41,9 @@ sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 
 	const auto eval_body([&]() -> sp<datum> {
 		sp<pair> exprs(body);
-		sp<datum> result(safe_eval(next(exprs), eval_env));
+		sp<datum> result(eval(next(exprs), eval_env));
 		while (exprs) {
-			result = safe_eval(next(exprs), eval_env)
+			result = eval(next(exprs), eval_env)
 					 ;
 		}
 		return result;
@@ -52,12 +52,12 @@ sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 	sp<pair> curr_arg(std::dynamic_pointer_cast<pair>(args));
 
 	for (size_t i(0); i + 1 < formals.size(); ++i) {
-		eval_env->define(formals[i], safe_eval(next(curr_arg), curr_env));
+		eval_env->define(formals[i], eval(next(curr_arg), curr_env));
 	}
 
 	if (!variadic) {
 		if (!formals.empty()) {
-			eval_env->define(formals.back(), safe_eval(next(curr_arg), curr_env));
+			eval_env->define(formals.back(), eval(next(curr_arg), curr_env));
 		}
 		assert(!curr_arg && "too many arguments");
 
@@ -69,10 +69,10 @@ sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 		return eval_body();
 	}
 
-	sp<pair> tail(std::make_shared<pair>(safe_eval(next(curr_arg), curr_env)));
+	sp<pair> tail(std::make_shared<pair>(eval(next(curr_arg), curr_env)));
 	eval_env->define(formals.back(), tail);
 	while (curr_arg) {
-		sp<pair> new_tail(std::make_shared<pair>(safe_eval(next(curr_arg), curr_env)));
+		sp<pair> new_tail(std::make_shared<pair>(eval(next(curr_arg), curr_env)));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}
