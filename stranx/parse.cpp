@@ -100,7 +100,6 @@ sp<datum> stranx::parse_datum(const tok_list &toks, size_t &idx) {
 			p = p_new;
 		}
 		++idx;
-
 		return start;
 	}
 	if (peek_next_type() == typeid(apos)) {
