@@ -39,6 +39,15 @@ const sp<datum> &stranx::next(sp<pair> &exprs) {
 	return result;
 }
 
+sp<datum> native_func::call(const sp<datum> &args, const sp<env> &curr_env) const {
+	assert(args && "no nullary native functions because i am lazy");
+
+	const datum &temp(*args);
+	assert(typeid(temp) == typeid(pair) && "malformed argument list");
+
+	return p_func(dynamic_cast<const pair &>(*args), curr_env);
+}
+
 sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 	const sp<env> eval_env(std::make_shared<env>(context));
 

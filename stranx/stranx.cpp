@@ -46,12 +46,7 @@ static sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
 	return p;
 }
 
-static sp<datum> lambda(const sp<datum> &args, const sp<env> &curr_env) {
-	assert(args && "not enough arguments");
-	const datum &temp(*args);
-	assert(typeid(temp) == typeid(pair) && "malformed argument list");
-	const pair &args_list(dynamic_cast<const pair &>(*args));
-
+static sp<datum> lambda(const pair &args_list, const sp<env> &curr_env) {
 	std::vector<std::string> formals;
 
 	sp<iden> variadic_iden(std::dynamic_pointer_cast<iden>(args_list.car));
@@ -75,15 +70,10 @@ static sp<datum> lambda(const sp<datum> &args, const sp<env> &curr_env) {
 	return std::make_shared<closure>(formals, static_cast<bool>(variadic_iden), body, curr_env);
 }
 
-static sp<datum> define(const sp<datum> &args, const sp<env> &curr_env) {
-	assert(args && "not enough arguments");
-	const datum &temp(*args);
-	assert(typeid(temp) == typeid(pair) && "malformed argument list");
-	const pair &args_list(dynamic_cast<const pair &>(*args));
-
-	const datum &temp1(*args_list.cdr);
-	assert(typeid(temp1) == typeid(pair) && "not enough arguments");
-	const pair &cdr(dynamic_cast<const pair &>(temp1));
+static sp<datum> define(const pair &args_list, const sp<env> &curr_env) {
+	const datum &temp(*args_list.cdr);
+	assert(typeid(temp) == typeid(pair) && "not enough arguments");
+	const pair &cdr(dynamic_cast<const pair &>(*args_list.cdr));
 
 	const datum &car(*args_list.car);
 
@@ -101,18 +91,13 @@ static sp<datum> define(const sp<datum> &args, const sp<env> &curr_env) {
 		assert(typeid(caar) == typeid(iden) && "procedure name must be an identifier");
 
 		curr_env->define(dynamic_cast<const iden &>(*formals.car).name,
-						 lambda(std::make_shared<pair>(formals.cdr, args_list.cdr), curr_env));
+						 lambda( {formals.cdr, args_list.cdr}, curr_env));
 	}
 
 	return nullptr;
 }
 
-static sp<datum> quote_func(const sp<datum> &args, const sp<env> &) {
-	assert(args && "not enough arguments");
-	const datum &temp(*args);
-	assert(typeid(temp) == typeid(pair) && "malformed argument list");
-	const pair &args_list(dynamic_cast<const pair &>(*args));
-
+static sp<datum> quote_func(const pair &args_list, const sp<env> &) {
 	assert(!args_list.cdr && "too many arguments");
 
 	return args_list.car;

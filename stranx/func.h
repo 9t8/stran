@@ -32,7 +32,7 @@ namespace stranx {
 	const sp<datum> &next(sp<pair> &exprs);
 
 	struct native_func : func {
-		native_func(sp<datum> (*const p_f)(const sp<datum> &args, const sp<env> &curr_env))
+		native_func(sp<datum> (*const p_f)(const pair &args_list, const sp<env> &curr_env))
 				: p_func(p_f) {}
 
 		operator std::string() const override {
@@ -41,12 +41,10 @@ namespace stranx {
 			return oss.str();
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override {
-			return p_func(args, curr_env);
-		}
+		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
 
 	private:
-		sp<datum> (*const p_func)(const sp<datum> &args, const sp<env> &curr_env);
+		sp<datum> (*const p_func)(const pair &args_list, const sp<env> &curr_env);
 	};
 
 	struct closure : func {
