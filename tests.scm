@@ -27,37 +27,6 @@ b
 (define (g b) (b (lambda (x) x)))
 (g y)
 
-; true/false
-(define if (lambda (c t f) (c t f)))
-(define t (lambda (l r) l))
-(define f (lambda (l r) r))
-(if t 1 0)
-(if f 1 0)
-
-; swapped names
-(define (if c f t) (c f t))
-(define (t l r) l)
-(define (f l r) r)
-(if t 1 0)
-(if f 1 0)
-
-; pairs
-(define (cons car cdr)
-  (lambda (m) (m car cdr)))
-(define (car p)
-  (p (lambda (car cdr) car)))
-(define (cdr p)
-  (p (lambda (car cdr) cdr)))
-(define p (cons 1 2))
-(car p)
-(cdr p)
-
-; multi-statement procedures
-(lambda () 0 1)
-((lambda () 0 1))
-(define (f a b) a b)
-(f 0 1)
-
 ; standard procedures
 (define (list . l) l)
 
@@ -100,3 +69,34 @@ b
 x
 (define y (quote (1 . 2)))
 y
+
+; true/false
+(define if (lambda (c t f) (c t f)))
+(define t (lambda (l r) l))
+(define f (lambda (l r) r))
+(if t 'a 'b)
+(if f 'c 'd)
+
+; swapped names
+(define (if c f t) (c f t))
+(define (t l r) l)
+(define (f l r) r)
+(if t 'a 'b)
+(if f 'c 'd)
+
+; pairs
+(define (cons car cdr)
+  (lambda (m) (m car cdr)))
+(define (car p)
+  (p (lambda (car cdr) car)))
+(define (cdr p)
+  (p (lambda (car cdr) cdr)))
+(define p (cons 'car 'cdr))
+(car p)
+(cdr p)
+
+; multi-statement procedures
+(lambda () 0 1)
+((lambda () 0 1))
+(define (f a b) a b)
+(f 'one 'two)
