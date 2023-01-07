@@ -38,21 +38,6 @@ namespace stranx {
 		}
 	};
 
-	struct quote_datum : datum {
-		quote_datum(const sp<datum> &c) : contents(c) {}
-
-	private:
-		operator std::string() const override {
-			return "'" + to_string(contents);
-		}
-
-		sp<datum> internal_eval(const sp<env> &) override {
-			return contents;
-		}
-
-		sp<datum> contents;
-	};
-
 	struct iden : datum {
 		iden(const std::string &n) : name(n) {}
 
