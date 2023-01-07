@@ -27,15 +27,13 @@ b
 (define (g b) (b (lambda (x) x)))
 (g y)
 
-; standard procedure
-(define (list . l) l)
-
 ; variadics
 (lambda l l)
 ((lambda l l))
 ((lambda l l) 0)
 ((lambda l l) 0 1)
 ((lambda l l) 0 1 2)
+(define (list . l) l)
 (list)
 (list 0)
 (list 0 1)
@@ -68,10 +66,8 @@ b
 (quote a)
 ' (1 2 3)
 (quote (1 2 3))
-(list 1 2 3)
 ((lambda (a) a) '(1 2 3))
 ((lambda (a) a) (quote (1 2 3)))
-((lambda (a) a) (list 1 2 3))
 (define x ' (1 . 2))
 x
 (define y (quote (1 . 2)))
