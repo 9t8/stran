@@ -1,10 +1,10 @@
 #ifndef _stranx_datum_h_
 #define _stranx_datum_h_
 
-#include "tok.h"
-
 #include <cassert>
 #include <unordered_map>
+
+#include "tok.h"
 
 namespace stranx {
 

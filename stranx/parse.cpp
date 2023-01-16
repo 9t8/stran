@@ -1,9 +1,9 @@
 #include "parse.h"
 
-#include "datum.h"
-
 #include <istream>
 #include <vector>
+
+#include "datum.h"
 
 using namespace stranx;
 

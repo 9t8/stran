@@ -1,6 +1,6 @@
-#include "parse.h"
-
 #include <iostream>
+
+#include "parse.h"
 
 using namespace stranx;
 
