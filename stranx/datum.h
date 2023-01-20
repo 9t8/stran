@@ -54,7 +54,7 @@ namespace stranx {
 	};
 
 	struct inexact : datum {
-		inexact(const double &v) : val(v) {}
+		inexact(const double v) : val(v) {}
 
 	private:
 		operator std::string() const override {

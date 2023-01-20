@@ -46,7 +46,7 @@ namespace stranx {
 	};
 
 	struct closure : func {
-		closure(const std::vector<std::string> &fs, const bool &v, const sp<pair> &b,
+		closure(const std::vector<std::string> &fs, const bool v, const sp<pair> &b,
 				const sp<env> &c) : formals(fs), variadic(v), body(b), context(c) {
 			assert(!(variadic && formals.empty()) &&
 				   "procedure taking no arguments cannot be variadic");
