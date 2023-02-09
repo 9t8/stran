@@ -11,7 +11,7 @@ const sp<datum> &env::find(const std::string &name) const {
 	}
 	if (!parent) {
 		std::cerr << "ERROR - undefined identifier: " << name << "\n";
-		throw;
+		assert(0);
 	}
 	return parent->find(name);
 }
