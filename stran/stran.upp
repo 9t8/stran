@@ -1,5 +1,5 @@
 file
-	stranx.cpp,
+	stran.cpp,
 	datum.h,
 	datum.cpp,
 	pair.h,
@@ -10,4 +10,3 @@ file
 
 mainconfig
 	"" = "";
-
