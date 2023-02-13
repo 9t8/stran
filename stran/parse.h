@@ -1,9 +1,9 @@
-#ifndef _stranx_parse_h_
-#define _stranx_parse_h_
+#ifndef _stran_parse_h_
+#define _stran_parse_h_
 
 #include "pair.h"
 
-namespace stranx {
+namespace stran {
 
 	tok_list lex(std::istream &is);
 

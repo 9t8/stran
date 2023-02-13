@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using namespace stranx;
+using namespace stran;
 
 const sp<datum> &env::find(const std::string &name) const {
 	const decltype(table)::const_iterator it(table.find(name));

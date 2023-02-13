@@ -5,9 +5,9 @@
 
 #include "datum.h"
 
-using namespace stranx;
+using namespace stran;
 
-tok_list stranx::lex(std::istream &is) {
+tok_list stran::lex(std::istream &is) {
 	tok_list toks;
 
 	std::string curr_word;
@@ -72,7 +72,7 @@ tok_list stranx::lex(std::istream &is) {
 	}
 }
 
-sp<datum> stranx::parse_datum(const tok_list &toks, size_t &idx) {
+sp<datum> stran::parse_datum(const tok_list &toks, size_t &idx) {
 	const auto peek_next_type([&]() -> const std::type_info & {
 		assert(idx < toks.size() && "expected more tokens but none found");
 

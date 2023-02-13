@@ -1,6 +1,6 @@
 #include "pair.h"
 
-using namespace stranx;
+using namespace stran;
 
 pair::operator std::string() const {
 	std::string result("(" + to_string(car));

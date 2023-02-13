@@ -2,7 +2,7 @@
 
 #include "parse.h"
 
-using namespace stranx;
+using namespace stran;
 
 static sp<datum> lambda(const pair &args_list, const sp<env> &curr_env) {
 	std::vector<std::string> formals;

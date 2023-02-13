@@ -1,9 +1,9 @@
-#ifndef _stranx_tok_h_
-#define _stranx_tok_h_
+#ifndef _stran_tok_h_
+#define _stran_tok_h_
 
 #include <string>
 
-namespace stranx {
+namespace stran {
 
 	template <typename t> using sp = std::shared_ptr<t>;
 

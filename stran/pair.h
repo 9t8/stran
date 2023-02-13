@@ -1,12 +1,12 @@
-#ifndef _stranx_pair_h_
-#define _stranx_pair_h_
+#ifndef _stran_pair_h_
+#define _stran_pair_h_
 
 #include <sstream>
 #include <vector>
 
 #include "datum.h"
 
-namespace stranx {
+namespace stran {
 
 	struct func : datum {
 		virtual sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const = 0;

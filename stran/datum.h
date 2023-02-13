@@ -1,12 +1,12 @@
-#ifndef _stranx_datum_h_
-#define _stranx_datum_h_
+#ifndef _stran_datum_h_
+#define _stran_datum_h_
 
 #include <cassert>
 #include <unordered_map>
 
 #include "tok.h"
 
-namespace stranx {
+namespace stran {
 
 	struct datum;
 
