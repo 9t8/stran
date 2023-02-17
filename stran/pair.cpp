@@ -19,7 +19,7 @@ pair::operator std::string() const {
 	return result + ")";
 }
 
-sp<datum> native_func::call(const sp<datum> &args, const sp<env> &curr_env) const {
+sp<datum> native_func::call(sp<datum> args, const sp<env> &curr_env) const {
 	assert(args && "no nullary native functions because i am lazy");
 
 	const datum &temp(*args);
@@ -38,7 +38,7 @@ sp<datum> next(sp<datum> &args) {
 	return curr_pair->car;
 }
 
-sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
+sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
 	const sp<env> eval_env(std::make_shared<env>(context));
 
 	const auto eval_body([&]() -> sp<datum> {
@@ -52,10 +52,8 @@ sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 		return result;
 	});
 
-	sp<datum> curr_arg(args);
-
 	const auto eval_next([&]() -> sp<datum> {
-		return eval(next(curr_arg), curr_env);
+		return eval(next(args), curr_env);
 	});
 
 	for (size_t i(0); i + 1 < formals.size(); ++i) {
@@ -66,19 +64,19 @@ sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 		if (!formals.empty()) {
 			eval_env->define(formals.back(), eval_next());
 		}
-		assert(!curr_arg && "too many arguments");
+		assert(!args && "too many arguments");
 
 		return eval_body();
 	}
 
-	if (!curr_arg) {
+	if (!args) {
 		eval_env->define(formals.back(), nullptr);
 		return eval_body();
 	}
 
 	sp<pair> tail(std::make_shared<pair>(eval_next()));
 	eval_env->define(formals.back(), tail);
-	while (curr_arg) {
+	while (args) {
 		sp<pair> new_tail(std::make_shared<pair>(eval_next()));
 		tail->cdr = new_tail;
 		tail = new_tail;

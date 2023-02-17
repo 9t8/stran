@@ -9,7 +9,7 @@
 namespace stran {
 
 	struct func : datum {
-		virtual sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const = 0;
+		virtual sp<datum> call(sp<datum> args, const sp<env> &curr_env) const = 0;
 	};
 
 	struct pair : datum {
@@ -33,7 +33,7 @@ namespace stran {
 		native_func(sp<datum> (*const p_f)(const pair &args_list, const sp<env> &curr_env))
 				: p_func(p_f) {}
 
-		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
+		sp<datum> call(sp<datum> args, const sp<env> &curr_env) const override;
 
 	private:
 		operator std::string() const override {
@@ -54,7 +54,7 @@ namespace stran {
 			assert(context && "procedure must have a context");
 		}
 
-		sp<datum> call(const sp<datum> &args, const sp<env> &curr_env) const override;
+		sp<datum> call(sp<datum> args, const sp<env> &curr_env) const override;
 
 	private:
 		operator std::string() const override {
