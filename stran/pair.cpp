@@ -28,6 +28,16 @@ sp<datum> native_func::call(const sp<datum> &args, const sp<env> &curr_env) cons
 	return p_func(dynamic_cast<const pair &>(*args), curr_env);
 }
 
+sp<datum> next(sp<datum> &args) {
+	assert(args && "not enough arguments");
+
+	const sp<pair> curr_pair(std::dynamic_pointer_cast<pair>(args));
+	assert(curr_pair && "improper expression list");
+
+	args = curr_pair->cdr;
+	return curr_pair->car;
+}
+
 sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 	const sp<env> eval_env(std::make_shared<env>(context));
 
@@ -42,15 +52,10 @@ sp<datum> closure::call(const sp<datum> &args, const sp<env> &curr_env) const {
 		return result;
 	});
 
-	sp<pair> curr_arg(std::dynamic_pointer_cast<pair>(args));
+	sp<datum> curr_arg(args);
 
 	const auto eval_next([&]() -> sp<datum> {
-		assert(curr_arg && "invalid expression list (not enough arguments?)");
-
-		const sp<datum> result(eval(curr_arg->car, curr_env));
-		curr_arg = std::dynamic_pointer_cast<pair>(curr_arg->cdr);
-
-		return result;
+		return eval(next(curr_arg), curr_env);
 	});
 
 	for (size_t i(0); i + 1 < formals.size(); ++i) {
