@@ -2,6 +2,16 @@
 
 using namespace stran;
 
+sp<datum> stran::next(sp<datum> &args) {
+	assert(args && "not enough arguments");
+
+	const sp<pair> curr_pair(std::dynamic_pointer_cast<pair>(args));
+	assert(curr_pair && "improper expression list");
+
+	args = curr_pair->cdr;
+	return curr_pair->car;
+}
+
 pair::operator std::string() const {
 	std::string result("(" + to_string(car));
 
@@ -26,16 +36,6 @@ sp<datum> native_func::call(sp<datum> args, const sp<env> &curr_env) const {
 	assert(typeid(temp) == typeid(pair) && "malformed argument list");
 
 	return p_func(dynamic_cast<const pair &>(*args), curr_env);
-}
-
-sp<datum> next(sp<datum> &args) {
-	assert(args && "not enough arguments");
-
-	const sp<pair> curr_pair(std::dynamic_pointer_cast<pair>(args));
-	assert(curr_pair && "improper expression list");
-
-	args = curr_pair->cdr;
-	return curr_pair->car;
 }
 
 sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {

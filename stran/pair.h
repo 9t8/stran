@@ -8,6 +8,8 @@
 
 namespace stran {
 
+	sp<datum> next(sp<datum> &args);
+
 	struct func : datum {
 		virtual sp<datum> call(sp<datum> args, const sp<env> &curr_env) const = 0;
 	};
