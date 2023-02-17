@@ -4,60 +4,63 @@
 
 using namespace stran;
 
-static sp<datum> lambda(const pair &args_list, const sp<env> &curr_env) {
+static sp<datum> lambda(sp<datum> &args, const sp<env> &curr_env) {
 	std::vector<std::string> formals;
 
-	sp<iden> variadic_iden(std::dynamic_pointer_cast<iden>(args_list.car));
-	sp<pair> curr_formal(std::dynamic_pointer_cast<pair>(args_list.car));
-	while (curr_formal) {
-		const datum &next_formal(*curr_formal->car);
+	sp<datum> p_formal(next(args));
+	while (p_formal) {
+		datum &formal(*p_formal);
+		if (typeid(formal) == typeid(iden)) {
+			formals.push_back(dynamic_cast<const iden &>(formal).name);
+			return std::make_shared<closure>(formals, true,
+					std::dynamic_pointer_cast<pair>(args), curr_env);
+		}
+
+		const sp<datum> p_next_formal(next(p_formal));
+		assert(p_next_formal && "formals must not be nil");
+
+		const datum &next_formal(*p_next_formal);
 		assert(typeid(next_formal) == typeid(iden) &&
 			   "all formals must be identifiers (variadics are not supported)");
 
 		formals.push_back(dynamic_cast<const iden &>(next_formal).name);
-
-		variadic_iden = std::dynamic_pointer_cast<iden>(curr_formal->cdr);
-		curr_formal = std::dynamic_pointer_cast<pair>(curr_formal->cdr);
-	}
-	if (variadic_iden) {
-		formals.push_back(variadic_iden->name);
 	}
 
-	return std::make_shared<closure>(formals, static_cast<bool>(variadic_iden),
-			std::dynamic_pointer_cast<pair>(args_list.cdr), curr_env);
+	return std::make_shared<closure>(formals, false, std::dynamic_pointer_cast<pair>(args),
+			curr_env);
 }
 
-static sp<datum> define(const pair &args_list, const sp<env> &curr_env) {
-	const datum &temp(*args_list.cdr);
-	assert(typeid(temp) == typeid(pair) && "not enough arguments");
-	const pair &cdr(dynamic_cast<const pair &>(*args_list.cdr));
+static sp<datum> define(sp<datum> &args, const sp<env> &curr_env) {
+	sp<datum> p_car(next(args));
+	assert(p_car && "first arg of define must not be nil");
 
-	const datum &car(*args_list.car);
-
+	const datum &car(*p_car);
 	if (typeid(car) == typeid(iden)) {
-		assert(!cdr.cdr && "too many arguments");
+		curr_env->define(dynamic_cast<const iden &>(car).name, eval(next(args), curr_env)); // is eval(next()) a pattern???
+		assert(!args && "arg list too long or malformed");
 
-		curr_env->define(dynamic_cast<const iden &>(*args_list.car).name,
-						 eval(cdr.car, curr_env));
-	} else {
-		assert(typeid(car) == typeid(pair) && "first argument must be identifier or list");
-
-		const pair &formals(dynamic_cast<const pair &>(*args_list.car));
-
-		const datum &caar(*formals.car);
-		assert(typeid(caar) == typeid(iden) && "procedure name must be an identifier");
-
-		curr_env->define(dynamic_cast<const iden &>(*formals.car).name,
-						 lambda( {formals.cdr, args_list.cdr}, curr_env));
+		return nullptr;
 	}
+
+	assert(typeid(car) == typeid(pair) && "first arg must be identifier or list");
+
+	const sp<datum> p_caar(next(p_car));
+	assert(p_caar && "procedure name must not be nil");
+	const datum &caar(*p_caar);
+	assert(typeid(caar) == typeid(iden) && "procedure name must be an identifier");
+
+	sp<datum> p_formals(std::make_shared<pair>(p_car, args));
+	curr_env->define(dynamic_cast<const iden &>(caar).name,
+					 lambda(p_formals, curr_env));
 
 	return nullptr;
 }
 
-static sp<datum> quote(const pair &args_list, const sp<env> &) {
-	assert(!args_list.cdr && "too many arguments");
+static sp<datum> quote(sp<datum> &args, const sp<env> &) {
+	const sp<datum> contents(next(args));
+	assert(!args && "too many args");
 
-	return args_list.car;
+	return contents;
 }
 
 int main(int, const char *[]) {

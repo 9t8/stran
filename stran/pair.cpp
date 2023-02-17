@@ -3,7 +3,7 @@
 using namespace stran;
 
 sp<datum> stran::next(sp<datum> &args) {
-	assert(args && "not enough arguments");
+	assert(args && "not enough args");
 
 	const sp<pair> curr_pair(std::dynamic_pointer_cast<pair>(args));
 	assert(curr_pair && "improper expression list");
@@ -27,15 +27,6 @@ pair::operator std::string() const {
 	}
 
 	return result + ")";
-}
-
-sp<datum> native_func::call(sp<datum> args, const sp<env> &curr_env) const {
-	assert(args && "no nullary native functions because i am lazy");
-
-	const datum &temp(*args);
-	assert(typeid(temp) == typeid(pair) && "malformed argument list");
-
-	return p_func(dynamic_cast<const pair &>(*args), curr_env);
 }
 
 sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
@@ -64,7 +55,7 @@ sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
 		if (!formals.empty()) {
 			eval_env->define(formals.back(), eval_next());
 		}
-		assert(!args && "too many arguments");
+		assert(!args && "too many args");
 
 		return eval_body();
 	}

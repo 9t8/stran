@@ -32,10 +32,12 @@ namespace stran {
 	};
 
 	struct native_func : func {
-		native_func(sp<datum> (*const p_f)(const pair &args_list, const sp<env> &curr_env))
+		native_func(sp<datum> (*const p_f)(sp<datum> &args, const sp<env> &curr_env))
 				: p_func(p_f) {}
 
-		sp<datum> call(sp<datum> args, const sp<env> &curr_env) const override;
+		sp<datum> call(sp<datum> args, const sp<env> &curr_env) const override {
+			return p_func(args, curr_env);
+		}
 
 	private:
 		operator std::string() const override {
@@ -44,14 +46,14 @@ namespace stran {
 			return oss.str();
 		}
 
-		sp<datum> (*const p_func)(const pair &args_list, const sp<env> &curr_env);
+		sp<datum> (*const p_func)(sp<datum> &args, const sp<env> &curr_env);
 	};
 
 	struct closure : func {
 		closure(const std::vector<std::string> &fs, const bool v, const sp<pair> &b,
 				const sp<env> &c) : formals(fs), variadic(v), body(b), context(c) {
 			assert(!(variadic && formals.empty()) &&
-				   "procedure taking no arguments cannot be variadic");
+				   "nullary procedure cannot be variadic");
 			assert(body && "procedure body cannot be empty");
 			assert(context && "procedure must have a context");
 		}

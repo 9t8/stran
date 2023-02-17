@@ -27,7 +27,7 @@ namespace stran {
 
 	struct datum : tok, std::enable_shared_from_this<datum> {
 		friend sp<datum> eval(const sp<datum> &p_d, const sp<env> &curr_env) {
-			assert(p_d && "attempted to evaluate empty list");
+			assert(p_d && "attempted to evaluate nil");
 			return p_d->internal_eval(curr_env);
 		}
 
