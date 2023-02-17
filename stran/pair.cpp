@@ -43,17 +43,13 @@ sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
 		return result;
 	});
 
-	const auto eval_next([&]() -> sp<datum> {
-		return eval(next(args), curr_env);
-	});
-
 	for (size_t i(0); i + 1 < formals.size(); ++i) {
-		eval_env->define(formals[i], eval_next());
+		eval_env->define(formals[i], eval_next(args, curr_env));
 	}
 
 	if (!variadic) {
 		if (!formals.empty()) {
-			eval_env->define(formals.back(), eval_next());
+			eval_env->define(formals.back(), eval_next(args, curr_env));
 		}
 		assert(!args && "too many args");
 
@@ -65,10 +61,10 @@ sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
 		return eval_body();
 	}
 
-	sp<pair> tail(std::make_shared<pair>(eval_next()));
+	sp<pair> tail(std::make_shared<pair>(eval_next(args, curr_env)));
 	eval_env->define(formals.back(), tail);
 	while (args) {
-		sp<pair> new_tail(std::make_shared<pair>(eval_next()));
+		sp<pair> new_tail(std::make_shared<pair>(eval_next(args, curr_env)));
 		tail->cdr = new_tail;
 		tail = new_tail;
 	}

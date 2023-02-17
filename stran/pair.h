@@ -10,6 +10,10 @@ namespace stran {
 
 	sp<datum> next(sp<datum> &args);
 
+	inline sp<datum> eval_next(sp<datum> &args, const sp<env> &curr_env) {
+		return eval(next(args), curr_env);
+	}
+
 	struct func : datum {
 		virtual sp<datum> call(sp<datum> args, const sp<env> &curr_env) const = 0;
 	};
