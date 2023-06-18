@@ -1,8 +1,9 @@
-#include <istream>
-#include <vector>
+#include "parse.h"
 
 #include "datum.h"
-#include "parse.h"
+
+#include <istream>
+#include <vector>
 
 namespace stran {
 

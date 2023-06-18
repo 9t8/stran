@@ -1,6 +1,6 @@
-#include <iostream>
-
 #include "parse.h"
+
+#include <iostream>
 
 namespace stran {
 

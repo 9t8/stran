@@ -1,10 +1,10 @@
 #ifndef _stran_pair_h_
 #define _stran_pair_h_
 
+#include "datum.h"
+
 #include <sstream>
 #include <vector>
-
-#include "datum.h"
 
 namespace stran {
 

@@ -1,6 +1,6 @@
-#include <iostream>
-
 #include "datum.h"
+
+#include <iostream>
 
 namespace stran {
 
