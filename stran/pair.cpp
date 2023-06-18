@@ -5,7 +5,7 @@ namespace stran {
 sp<datum> next(sp<datum> &args) {
   assert(args && "not enough args");
 
-  const sp<pair> curr_pair(std::dynamic_pointer_cast<pair>(args));
+  const sp<pair> curr_pair(sp_cast<pair>(args));
   assert(curr_pair && "improper expression list");
 
   args = curr_pair->cdr;
@@ -16,12 +16,11 @@ pair::operator std::string() const {
   std::string result("(" + to_string(car));
 
   sp<datum> p_tail(cdr);
-  for (sp<pair> curr_pair(std::dynamic_pointer_cast<pair>(p_tail));
-       curr_pair;) {
+  for (sp<pair> curr_pair(sp_cast<pair>(p_tail)); curr_pair;) {
     p_tail = curr_pair->cdr;
 
     result += " " + to_string(curr_pair->car);
-    curr_pair = std::dynamic_pointer_cast<pair>(p_tail);
+    curr_pair = sp_cast<pair>(p_tail);
   }
   if (p_tail) {
     result += " . " + to_string(p_tail);
@@ -38,7 +37,7 @@ sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
     sp<pair> exprs(body);
     while (exprs) {
       result = eval(exprs->car, eval_env);
-      exprs = std::dynamic_pointer_cast<pair>(exprs->cdr);
+      exprs = sp_cast<pair>(exprs->cdr);
     }
     return result;
   });

@@ -12,8 +12,8 @@ static sp<datum> lambda(sp<datum> &args, const sp<env> &curr_env) {
     datum &formal(*p_formal);
     if (typeid(formal) == typeid(iden)) {
       formals.push_back(dynamic_cast<const iden &>(formal).name);
-      return std::make_shared<closure>(
-          formals, true, std::dynamic_pointer_cast<pair>(args), curr_env);
+      return std::make_shared<closure>(formals, true, sp_cast<pair>(args),
+                                       curr_env);
     }
 
     const sp<datum> p_next_formal(next(p_formal));
@@ -26,8 +26,8 @@ static sp<datum> lambda(sp<datum> &args, const sp<env> &curr_env) {
     formals.push_back(dynamic_cast<const iden &>(next_formal).name);
   }
 
-  return std::make_shared<closure>(
-      formals, false, std::dynamic_pointer_cast<pair>(args), curr_env);
+  return std::make_shared<closure>(formals, false, sp_cast<pair>(args),
+                                   curr_env);
 }
 
 static sp<datum> define(sp<datum> &args, const sp<env> &curr_env) {

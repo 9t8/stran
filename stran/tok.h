@@ -8,8 +8,14 @@ namespace stran {
 template <typename t>
 using sp = std::shared_ptr<t>;
 
+template <class t, class u>
+sp<t> sp_cast(const sp<u>& r) {
+  t* p = dynamic_cast<t*>(r.get());
+  return p ? sp<t>(r, p) : sp<t>();
+}
+
 struct tok {
-  friend std::string to_string(const sp<tok> &p_t) {
+  friend std::string to_string(const sp<tok>& p_t) {
     return p_t ? static_cast<std::string>(*p_t) : "()";
   }
 

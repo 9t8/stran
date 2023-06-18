@@ -108,7 +108,7 @@ sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
         std::make_shared<pair>(parse_datum(toks, ++idx)));
   }
 
-  sp<datum> p(std::dynamic_pointer_cast<datum>(toks.at(idx++)));
+  sp<datum> p(sp_cast<datum>(toks.at(idx++)));
   assert(p && "tried to parse an unparsable token");
 
   return p;

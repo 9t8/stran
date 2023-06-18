@@ -27,7 +27,7 @@ struct pair : datum {
   operator std::string() const override;
 
   sp<datum> internal_eval(const sp<env> &curr_env) override {
-    const sp<func> p_func(std::dynamic_pointer_cast<func>(eval(car, curr_env)));
+    const sp<func> p_func(sp_cast<func>(eval(car, curr_env)));
     assert(p_func && "attemped to call an uncallable object");
 
     return p_func->call(cdr, curr_env);
