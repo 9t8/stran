@@ -65,7 +65,7 @@ static sp<datum> quote(sp<datum> &args, const sp<env> &) {
   return contents;
 }
 
-}  // namespace stran
+} // namespace stran
 
 int main(int, const char *[]) {
   stran::tok_list toks(stran::lex(std::cin));

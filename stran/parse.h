@@ -9,6 +9,6 @@ tok_list lex(std::istream &is);
 
 sp<datum> parse_datum(const tok_list &toks, size_t &idx);
 
-}  // namespace stran
+} // namespace stran
 
 #endif

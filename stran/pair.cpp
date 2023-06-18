@@ -70,4 +70,4 @@ sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
   return eval_body();
 }
 
-}  // namespace stran
+} // namespace stran

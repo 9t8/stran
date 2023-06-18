@@ -23,7 +23,7 @@ struct pair : datum {
 
   sp<datum> car, cdr;
 
- private:
+private:
   operator std::string() const override;
 
   sp<datum> internal_eval(const sp<env> &curr_env) override {
@@ -42,7 +42,7 @@ struct native_func : func {
     return p_func(args, curr_env);
   }
 
- private:
+private:
   operator std::string() const override {
     std::ostringstream oss;
     oss << "#native_function@" << this;
@@ -64,7 +64,7 @@ struct closure : func {
 
   sp<datum> call(sp<datum> args, const sp<env> &curr_env) const override;
 
- private:
+private:
   operator std::string() const override {
     std::ostringstream oss;
     oss << "#procedure@" << this;
@@ -80,6 +80,6 @@ struct closure : func {
   const sp<env> context;
 };
 
-}  // namespace stran
+} // namespace stran
 
 #endif

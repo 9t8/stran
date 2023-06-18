@@ -5,48 +5,46 @@
 
 namespace stran {
 
-template <typename t>
-using sp = std::shared_ptr<t>;
+template <typename t> using sp = std::shared_ptr<t>;
 
-template <class t, class u>
-sp<t> sp_cast(const sp<u>& r) {
-  t* p = dynamic_cast<t*>(r.get());
+template <class t, class u> sp<t> sp_cast(const sp<u> &r) {
+  t *p = dynamic_cast<t *>(r.get());
   return p ? sp<t>(r, p) : sp<t>();
 }
 
 struct tok {
-  friend std::string to_string(const sp<tok>& p_t) {
+  friend std::string to_string(const sp<tok> &p_t) {
     return p_t ? static_cast<std::string>(*p_t) : "()";
   }
 
   virtual ~tok() {}
 
- private:
+private:
   virtual operator std::string() const = 0;
 };
 
 typedef std::vector<sp<tok>> tok_list;
 
 struct beginl : tok {
- private:
+private:
   operator std::string() const override { return "("; }
 };
 
 struct endl : tok {
- private:
+private:
   operator std::string() const override { return ")"; }
 };
 
 struct dot : tok {
- private:
+private:
   operator std::string() const override { return "."; }
 };
 
 struct apos : tok {
- private:
+private:
   operator std::string() const override { return "'"; }
 };
 
-}  // namespace stran
+} // namespace stran
 
 #endif

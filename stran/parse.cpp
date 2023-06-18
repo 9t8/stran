@@ -14,19 +14,19 @@ tok_list lex(std::istream &is) {
     int curr_char(is.get());
 
     switch (curr_char) {
-      case ' ':
-      case '\n':
-      case '\t':
-      case EOF:
-      case '(':
-      case ')':
-      case ';':
-      case '\'':
-        break;
+    case ' ':
+    case '\n':
+    case '\t':
+    case EOF:
+    case '(':
+    case ')':
+    case ';':
+    case '\'':
+      break;
 
-      default:
-        curr_word += static_cast<char>(curr_char);
-        continue;
+    default:
+      curr_word += static_cast<char>(curr_char);
+      continue;
     }
 
     if (!curr_word.empty()) {
@@ -48,26 +48,26 @@ tok_list lex(std::istream &is) {
     }
 
     switch (curr_char) {
-      case EOF:
-        return toks;
+    case EOF:
+      return toks;
 
-      case '(':
-        toks.push_back(std::make_shared<beginl>());
-        break;
+    case '(':
+      toks.push_back(std::make_shared<beginl>());
+      break;
 
-      case ')':
-        toks.push_back(std::make_shared<endl>());
-        break;
+    case ')':
+      toks.push_back(std::make_shared<endl>());
+      break;
 
-      case ';':
-        while (curr_char != '\n' && curr_char != EOF) {
-          curr_char = is.get();
-        }
-        break;
+    case ';':
+      while (curr_char != '\n' && curr_char != EOF) {
+        curr_char = is.get();
+      }
+      break;
 
-      case '\'':
-        toks.push_back(std::make_shared<apos>());
-        break;
+    case '\'':
+      toks.push_back(std::make_shared<apos>());
+      break;
     }
   }
 }
@@ -114,4 +114,4 @@ sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
   return p;
 }
 
-}  // namespace stran
+} // namespace stran

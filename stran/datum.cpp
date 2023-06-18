@@ -16,4 +16,4 @@ const sp<datum> &env::find(const std::string &name) const {
   return parent->find(name);
 }
 
-}  // namespace stran
+} // namespace stran

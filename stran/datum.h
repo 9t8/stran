@@ -19,7 +19,7 @@ struct env {
     table[name] = val;
   }
 
- private:
+private:
   std::unordered_map<std::string, sp<datum>> table;
 
   const sp<env> parent;
@@ -31,7 +31,7 @@ struct datum : tok, std::enable_shared_from_this<datum> {
     return p_d->internal_eval(curr_env);
   }
 
- private:
+private:
   // self-evaluating by default
   virtual sp<datum> internal_eval(const sp<env> &) {
     return shared_from_this();
@@ -43,7 +43,7 @@ struct iden : datum {
 
   const std::string name;
 
- private:
+private:
   operator std::string() const override { return name; }
 
   sp<datum> internal_eval(const sp<env> &curr_env) override {
@@ -54,12 +54,12 @@ struct iden : datum {
 struct inexact : datum {
   inexact(const double v) : val(v) {}
 
- private:
+private:
   operator std::string() const override { return std::to_string(val); }
 
   const double val;
 };
 
-}  // namespace stran
+} // namespace stran
 
 #endif
