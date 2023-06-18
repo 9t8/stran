@@ -12,6 +12,10 @@ template <class t, class u> sp<t> sp_cast(const sp<u> &r) {
   return p ? sp<t>(r, p) : sp<t>();
 }
 
+template <class t, class... types> sp<t> make_sp(types &&...args) {
+  return sp<t>(new t(std::forward<types>(args)...));
+}
+
 struct tok {
   friend std::string to_string(const sp<tok> &p_t) {
     return p_t ? static_cast<std::string>(*p_t) : "()";

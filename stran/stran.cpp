@@ -12,8 +12,7 @@ static sp<datum> lambda(sp<datum> &args, const sp<env> &curr_env) {
     datum &formal(*p_formal);
     if (typeid(formal) == typeid(iden)) {
       formals.push_back(dynamic_cast<const iden &>(formal).name);
-      return std::make_shared<closure>(formals, true, sp_cast<pair>(args),
-                                       curr_env);
+      return make_sp<closure>(formals, true, sp_cast<pair>(args), curr_env);
     }
 
     const sp<datum> p_next_formal(next(p_formal));
@@ -26,8 +25,7 @@ static sp<datum> lambda(sp<datum> &args, const sp<env> &curr_env) {
     formals.push_back(dynamic_cast<const iden &>(next_formal).name);
   }
 
-  return std::make_shared<closure>(formals, false, sp_cast<pair>(args),
-                                   curr_env);
+  return make_sp<closure>(formals, false, sp_cast<pair>(args), curr_env);
 }
 
 static sp<datum> define(sp<datum> &args, const sp<env> &curr_env) {
@@ -51,7 +49,7 @@ static sp<datum> define(sp<datum> &args, const sp<env> &curr_env) {
   assert(typeid(caar) == typeid(iden) &&
          "procedure name must be an identifier");
 
-  sp<datum> p_formals(std::make_shared<pair>(p_car, args));
+  sp<datum> p_formals(make_sp<pair>(p_car, args));
   curr_env->define(dynamic_cast<const iden &>(caar).name,
                    lambda(p_formals, curr_env));
 
@@ -87,13 +85,12 @@ int main(int, const char *[]) {
   }
   std::cout << "\n===-- output --===" << std::endl;
 
-  const stran::sp<stran::env> top_level(std::make_shared<stran::env>(nullptr));
+  const stran::sp<stran::env> top_level(stran::make_sp<stran::env>(nullptr));
   top_level->define("lambda",
-                    std::make_shared<stran::native_func>(stran::lambda));
+                    stran::make_sp<stran::native_func>(stran::lambda));
   top_level->define("define",
-                    std::make_shared<stran::native_func>(stran::define));
-  top_level->define("quote",
-                    std::make_shared<stran::native_func>(stran::quote));
+                    stran::make_sp<stran::native_func>(stran::define));
+  top_level->define("quote", stran::make_sp<stran::native_func>(stran::quote));
 
   for (size_t i(0); i < tree.size(); ++i) {
     std::cout << to_string(eval(tree[i], top_level)) << std::endl;

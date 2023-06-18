@@ -31,18 +31,18 @@ tok_list lex(std::istream &is) {
 
     if (!curr_word.empty()) {
       if (curr_word == ".") {
-        toks.push_back(std::make_shared<dot>());
+        toks.push_back(make_sp<dot>());
       } else if ((curr_word[0] != '+' && curr_word[0] != '-' &&
                   curr_word[0] != '.' &&
                   (curr_word[0] < '0' || curr_word[0] > '9')) ||
                  curr_word == "+" || curr_word == "-") {
-        toks.push_back(std::make_shared<iden>(curr_word));
+        toks.push_back(make_sp<iden>(curr_word));
       } else {
         size_t idx(0);
         double val(stod(curr_word, &idx));
         assert(idx == curr_word.size() &&
                "invalid character while parsing number");
-        toks.push_back(std::make_shared<inexact>(val));
+        toks.push_back(make_sp<inexact>(val));
       }
       curr_word.clear();
     }
@@ -52,11 +52,11 @@ tok_list lex(std::istream &is) {
       return toks;
 
     case '(':
-      toks.push_back(std::make_shared<beginl>());
+      toks.push_back(make_sp<beginl>());
       break;
 
     case ')':
-      toks.push_back(std::make_shared<endl>());
+      toks.push_back(make_sp<endl>());
       break;
 
     case ';':
@@ -66,7 +66,7 @@ tok_list lex(std::istream &is) {
       break;
 
     case '\'':
-      toks.push_back(std::make_shared<apos>());
+      toks.push_back(make_sp<apos>());
       break;
     }
   }
@@ -87,7 +87,7 @@ sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
       return nullptr;
     }
 
-    sp<pair> p(std::make_shared<pair>(parse_datum(toks, idx)));
+    sp<pair> p(make_sp<pair>(parse_datum(toks, idx)));
     sp<datum> start(p);
     while (peek_next_type() != typeid(endl)) {
       if (peek_next_type() == typeid(dot)) {
@@ -95,7 +95,7 @@ sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
         assert(peek_next_type() == typeid(endl) && "misplaced dot token");
         break;
       }
-      sp<pair> p_new(std::make_shared<pair>(parse_datum(toks, idx)));
+      sp<pair> p_new(make_sp<pair>(parse_datum(toks, idx)));
       p->cdr = p_new;
       p = p_new;
     }
@@ -103,9 +103,8 @@ sp<datum> parse_datum(const tok_list &toks, size_t &idx) {
     return start;
   }
   if (peek_next_type() == typeid(apos)) {
-    return std::make_shared<pair>(
-        std::make_shared<iden>("quote"),
-        std::make_shared<pair>(parse_datum(toks, ++idx)));
+    return make_sp<pair>(make_sp<iden>("quote"),
+                         make_sp<pair>(parse_datum(toks, ++idx)));
   }
 
   sp<datum> p(sp_cast<datum>(toks.at(idx++)));

@@ -30,7 +30,7 @@ pair::operator std::string() const {
 }
 
 sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
-  const sp<env> eval_env(std::make_shared<env>(context));
+  const sp<env> eval_env(make_sp<env>(context));
 
   const auto eval_body([&]() -> sp<datum> {
     sp<datum> result;
@@ -60,10 +60,10 @@ sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
     return eval_body();
   }
 
-  sp<pair> tail(std::make_shared<pair>(eval_next(args, curr_env)));
+  sp<pair> tail(make_sp<pair>(eval_next(args, curr_env)));
   eval_env->define(formals.back(), tail);
   while (args) {
-    sp<pair> new_tail(std::make_shared<pair>(eval_next(args, curr_env)));
+    sp<pair> new_tail(make_sp<pair>(eval_next(args, curr_env)));
     tail->cdr = new_tail;
     tail = new_tail;
   }
