@@ -1,0 +1,13 @@
+file
+	stran.cpp,
+	datum.h,
+	datum.cpp,
+	pair.h,
+	pair.cpp,
+	parse.h,
+	parse.cpp,
+	tok.h;
+
+mainconfig
+	"" = "";
+
