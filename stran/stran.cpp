@@ -2,7 +2,7 @@
 
 #include "parse.h"
 
-using namespace stran;
+namespace stran {
 
 static sp<datum> lambda(sp<datum> &args, const sp<env> &curr_env) {
   std::vector<std::string> formals;
@@ -65,8 +65,10 @@ static sp<datum> quote(sp<datum> &args, const sp<env> &) {
   return contents;
 }
 
+}  // namespace stran
+
 int main(int, const char *[]) {
-  tok_list toks(lex(std::cin));
+  stran::tok_list toks(stran::lex(std::cin));
 
   std::cout << "===-- tokens --===\n";
   for (size_t i(0); i < toks.size(); ++i) {
@@ -74,7 +76,7 @@ int main(int, const char *[]) {
   }
   std::cout << "\n";
 
-  std::vector<sp<datum>> tree;
+  std::vector<stran::sp<stran::datum>> tree;
   for (size_t i(0); i < toks.size();) {
     tree.push_back(parse_datum(toks, i));
   }
@@ -85,10 +87,13 @@ int main(int, const char *[]) {
   }
   std::cout << "\n===-- output --===" << std::endl;
 
-  const sp<env> top_level(std::make_shared<env>(nullptr));
-  top_level->define("lambda", std::make_shared<native_func>(lambda));
-  top_level->define("define", std::make_shared<native_func>(define));
-  top_level->define("quote", std::make_shared<native_func>(quote));
+  const stran::sp<stran::env> top_level(std::make_shared<stran::env>(nullptr));
+  top_level->define("lambda",
+                    std::make_shared<stran::native_func>(stran::lambda));
+  top_level->define("define",
+                    std::make_shared<stran::native_func>(stran::define));
+  top_level->define("quote",
+                    std::make_shared<stran::native_func>(stran::quote));
 
   for (size_t i(0); i < tree.size(); ++i) {
     std::cout << to_string(eval(tree[i], top_level)) << std::endl;

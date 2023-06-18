@@ -2,7 +2,7 @@
 
 #include "datum.h"
 
-using namespace stran;
+namespace stran {
 
 const sp<datum> &env::find(const std::string &name) const {
   const decltype(table)::const_iterator it(table.find(name));
@@ -15,3 +15,5 @@ const sp<datum> &env::find(const std::string &name) const {
   }
   return parent->find(name);
 }
+
+}  // namespace stran
