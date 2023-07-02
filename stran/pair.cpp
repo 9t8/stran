@@ -1,8 +1,8 @@
 #include "pair.h"
 
-namespace stran {
+using namespace stran;
 
-sp<datum> next(sp<datum> &args) {
+sp<datum> stran::next(sp<datum> &args) {
   assert(args && "not enough args");
 
   const sp<pair> curr_pair(sp_cast<pair>(args));
@@ -69,5 +69,3 @@ sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
   }
   return eval_body();
 }
-
-} // namespace stran

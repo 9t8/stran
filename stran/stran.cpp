@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace stran {
+using namespace stran;
 
 static sp<datum> lambda(sp<datum> &args, const sp<env> &curr_env) {
   std::vector<std::string> formals;
@@ -63,8 +63,6 @@ static sp<datum> quote(sp<datum> &args, const sp<env> &) {
   return contents;
 }
 
-} // namespace stran
-
 int main(int, const char *[]) {
   stran::tok_list toks(stran::lex(std::cin));
 
@@ -74,11 +72,9 @@ int main(int, const char *[]) {
   }
 
   const stran::sp<stran::env> top_level(stran::make_sp<stran::env>(nullptr));
-  top_level->define("lambda",
-                    stran::make_sp<stran::native_func>(stran::lambda));
-  top_level->define("define",
-                    stran::make_sp<stran::native_func>(stran::define));
-  top_level->define("quote", stran::make_sp<stran::native_func>(stran::quote));
+  top_level->define("lambda", stran::make_sp<stran::native_func>(lambda));
+  top_level->define("define", stran::make_sp<stran::native_func>(define));
+  top_level->define("quote", stran::make_sp<stran::native_func>(quote));
 
   for (size_t i(0); i < tree.size(); ++i) {
     std::cout << to_string(eval(tree[i], top_level)) << std::endl;
