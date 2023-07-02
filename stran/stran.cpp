@@ -68,22 +68,10 @@ static sp<datum> quote(sp<datum> &args, const sp<env> &) {
 int main(int, const char *[]) {
   stran::tok_list toks(stran::lex(std::cin));
 
-  std::cout << "===-- tokens --===\n";
-  for (size_t i(0); i < toks.size(); ++i) {
-    std::cout << " " << to_string(toks[i]);
-  }
-  std::cout << "\n";
-
   std::vector<stran::sp<stran::datum>> tree;
   for (size_t i(0); i < toks.size();) {
     tree.push_back(parse_datum(toks, i));
   }
-
-  std::cout << "\n===-- tree --===\n";
-  for (size_t i(0); i < tree.size(); ++i) {
-    std::cout << to_string(tree[i]) << "\n";
-  }
-  std::cout << "\n===-- output --===" << std::endl;
 
   const stran::sp<stran::env> top_level(stran::make_sp<stran::env>(nullptr));
   top_level->define("lambda",
