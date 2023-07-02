@@ -5,7 +5,7 @@
 
 namespace stran {
 
-template <typename t> using sp = std::shared_ptr<t>;
+template <class t> using sp = std::shared_ptr<t>;
 
 template <class t, class u> sp<t> sp_cast(const sp<u> &r) {
   t *p = dynamic_cast<t *>(r.get());
