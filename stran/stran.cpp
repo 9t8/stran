@@ -20,7 +20,7 @@ static sp<datum> lambda(sp<datum> &args, const sp<env> &curr_env) {
 
     const datum &next_formal(*p_next_formal);
     assert(typeid(next_formal) == typeid(iden) &&
-           "all formals must be identifiers (variadics are not supported)");
+           "all formals must be identifiers");
 
     formals.push_back(dynamic_cast<const iden &>(next_formal).name);
   }
