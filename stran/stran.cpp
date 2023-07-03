@@ -64,17 +64,17 @@ static sp<datum> quote(sp<datum> &args, const sp<env> &) {
 }
 
 int main(int, const char *[]) {
-  stran::tok_list toks(stran::lex(std::cin));
+  tok_list toks(lex(std::cin));
 
-  std::vector<stran::sp<stran::datum>> tree;
+  std::vector<sp<datum>> tree;
   for (size_t i(0); i < toks.size();) {
     tree.push_back(parse_datum(toks, i));
   }
 
-  const stran::sp<stran::env> top_level(stran::make_sp<stran::env>(nullptr));
-  top_level->define("lambda", stran::make_sp<stran::native_func>(lambda));
-  top_level->define("define", stran::make_sp<stran::native_func>(define));
-  top_level->define("quote", stran::make_sp<stran::native_func>(quote));
+  const sp<env> top_level(make_sp<env>(nullptr));
+  top_level->define("lambda", make_sp<native_func>(lambda));
+  top_level->define("define", make_sp<native_func>(define));
+  top_level->define("quote", make_sp<native_func>(quote));
 
   for (size_t i(0); i < tree.size(); ++i) {
     std::cout << to_string(eval(tree[i], top_level)) << std::endl;
