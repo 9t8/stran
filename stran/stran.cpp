@@ -36,7 +36,7 @@ static sp<datum> define(sp<datum> &args, const sp<env> &curr_env) {
   if (typeid(car) == typeid(iden)) {
     curr_env->define(dynamic_cast<const iden &>(car).name,
                      eval_next(args, curr_env));
-    assert(!args && "arg list too long or malformed");
+    assert(!args && "too many args");
 
     return nullptr;
   }
