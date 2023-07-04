@@ -64,7 +64,8 @@ static sp<datum> quote(sp<datum> &args, const sp<env> &) {
 }
 
 int main(int, const char *[]) {
-  tok_list toks(lex(std::cin));
+  tok_list toks(lex(std::string(std::istreambuf_iterator<char>(std::cin),
+                                std::istreambuf_iterator<char>())));
 
   std::vector<sp<datum>> tree;
   for (size_t i(0); i < toks.size();) {

@@ -5,7 +5,7 @@
 
 namespace stran {
 
-tok_list lex(std::istream &is);
+tok_list lex(const std::string &s);
 
 sp<datum> parse_datum(const tok_list &toks, size_t &idx);
 
