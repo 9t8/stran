@@ -1,9 +1,5 @@
 # stran
 
-a scheme (r3rs?) interpreter i am writing for fun to learn c++. trying to figure stuff out myself instead of doing it the correct way.
+A Scheme (R3RS?) interpreter I am writing for fun to learn standard C++. I am trying to figure things out myself instead of doing them "correctly."
 
-todo: more keywords, continuations
-
-## todo: gc
-
-plan: `vec<sp<datum>>`
+To do: more keywords, continuations, GC (`vec<sp<datum>>`?)
