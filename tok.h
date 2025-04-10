@@ -2,6 +2,7 @@
 #define _stran_tok_h_
 
 #include <string>
+#include <vector>
 
 namespace stran {
 
