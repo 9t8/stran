@@ -32,16 +32,6 @@ pair::operator std::string() const {
 sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
   const sp<env> eval_env(make_sp<env>(context));
 
-  const auto eval_body([&]() -> sp<datum> {
-    sp<datum> result;
-    sp<pair> exprs(body);
-    while (exprs) {
-      result = eval(exprs->car, eval_env);
-      exprs = sp_cast<pair>(exprs->cdr);
-    }
-    return result;
-  });
-
   for (size_t i(0); i + 1 < formals.size(); ++i) {
     eval_env->define(formals[i], eval_next(args, curr_env));
   }
@@ -51,21 +41,23 @@ sp<datum> closure::call(sp<datum> args, const sp<env> &curr_env) const {
       eval_env->define(formals.back(), eval_next(args, curr_env));
     }
     assert(!args && "too many args");
-
-    return eval_body();
-  }
-
-  if (!args) {
+  } else if (!args) {
     eval_env->define(formals.back(), nullptr);
-    return eval_body();
+  } else {
+    sp<pair> tail(make_sp<pair>(eval_next(args, curr_env)));
+    eval_env->define(formals.back(), tail);
+    while (args) {
+      sp<pair> new_tail(make_sp<pair>(eval_next(args, curr_env)));
+      tail->cdr = new_tail;
+      tail = new_tail;
+    }
   }
 
-  sp<pair> tail(make_sp<pair>(eval_next(args, curr_env)));
-  eval_env->define(formals.back(), tail);
-  while (args) {
-    sp<pair> new_tail(make_sp<pair>(eval_next(args, curr_env)));
-    tail->cdr = new_tail;
-    tail = new_tail;
+  sp<datum> result;
+  sp<pair> exprs(body);
+  while (exprs) {
+    result = eval(exprs->car, eval_env);
+    exprs = sp_cast<pair>(exprs->cdr);
   }
-  return eval_body();
+  return result;
 }
